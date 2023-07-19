@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+// screen
+import 'Screens/NavigationScreen.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
   seedColor: const Color.fromARGB(255, 146, 180, 236),
-  background: const Color.fromARGB(255, 146, 180, 236),
 );
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  // restrict to potrait screen
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]).then((fn) => {runApp(const MyPaymentReminderApp())});
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyPaymentReminderApp extends StatelessWidget {
+  const MyPaymentReminderApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +27,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData().copyWith(
         useMaterial3: true,
         colorScheme: kColorScheme,
+        scaffoldBackgroundColor: kColorScheme.primaryContainer,
         appBarTheme: const AppBarTheme().copyWith(
           backgroundColor: kColorScheme.primaryContainer,
           foregroundColor: kColorScheme.onPrimaryContainer,
@@ -75,39 +83,24 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-      ),
-      home: const MyHomePage(title: 'MyPayment Reminder'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              "MyPayment Reminder",
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-          ],
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          selectedItemColor: const Color.fromARGB(255, 253, 138, 138),
+          unselectedItemColor: Colors.black,
+          selectedIconTheme: const IconThemeData().copyWith(size: 25),
+          unselectedIconTheme: const IconThemeData().copyWith(size: 25),
+          selectedLabelStyle: GoogleFonts.inter(
+            fontSize: 8,
+            fontWeight: FontWeight.bold,
+          ),
+          unselectedLabelStyle: GoogleFonts.inter(
+            fontSize: 8,
+            fontWeight: FontWeight.bold,
+          ),
+          showUnselectedLabels: true,
+          type: BottomNavigationBarType.fixed,
         ),
       ),
+      home: const NavigationScreen(),
     );
   }
 }
