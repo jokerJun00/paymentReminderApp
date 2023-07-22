@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:payment_reminder_app/application/screens/auth/cubit/auth_cubit.dart';
 import 'firebase_options.dart';
 
 // screen
-import 'package:payment_reminder_app/application/screens/HomeScreen.dart';
-import 'package:payment_reminder_app/application/screens/LogInScreen.dart';
-import 'package:payment_reminder_app/application/screens/SignUpScreen.dart';
-import 'package:payment_reminder_app/application/screens/NavigationScreen.dart';
-import 'package:payment_reminder_app/application/screens/BudgetsScreen.dart';
-import 'package:payment_reminder_app/application/screens/PaymentsScreen.dart';
-import 'package:payment_reminder_app/application/screens/ProfileScreen.dart';
-import 'package:payment_reminder_app/application/screens/UpcomingScreen.dart';
+import 'package:payment_reminder_app/application/screens/home_screen.dart';
+import 'package:payment_reminder_app/application/screens/auth/login_screen.dart';
+import 'package:payment_reminder_app/application/screens/auth/signup_screen.dart';
+import 'package:payment_reminder_app/application/screens/navigation_screen.dart';
+import 'package:payment_reminder_app/application/screens/budgets_screen.dart';
+import 'package:payment_reminder_app/application/screens/payments_screen.dart';
+import 'package:payment_reminder_app/application/screens/profile_screen.dart';
+import 'package:payment_reminder_app/application/screens/upcoming_screen.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
   seedColor: const Color.fromARGB(255, 89, 180, 236),
@@ -41,112 +43,115 @@ class MyPaymentReminderApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'MyPayment Reminder',
-      // app theme setting
-      theme: ThemeData().copyWith(
-        useMaterial3: true,
-        colorScheme: kColorScheme,
-        scaffoldBackgroundColor: primaryColor,
-        appBarTheme: const AppBarTheme().copyWith(
-          backgroundColor: kColorScheme.primaryContainer,
-          foregroundColor: kColorScheme.onPrimaryContainer,
-        ),
-        textTheme: ThemeData().textTheme.copyWith(
-              titleLarge: const TextStyle(
-                // font style for title
+    return BlocProvider(
+      create: (context) => AuthCubit(),
+      child: MaterialApp(
+        title: 'MyPayment Reminder',
+        // app theme setting
+        theme: ThemeData().copyWith(
+          useMaterial3: true,
+          colorScheme: kColorScheme,
+          scaffoldBackgroundColor: primaryColor,
+          appBarTheme: const AppBarTheme().copyWith(
+            backgroundColor: kColorScheme.primaryContainer,
+            foregroundColor: kColorScheme.onPrimaryContainer,
+          ),
+          textTheme: ThemeData().textTheme.copyWith(
+                titleLarge: const TextStyle(
+                  // font style for title
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Avenir Next Condensed',
+                  fontSize: 36,
+                  color: Colors.black,
+                ),
+                titleMedium: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Avenir Next Condensed',
+                  fontSize: 30,
+                  color: Colors.black,
+                ),
+                titleSmall: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Avenir Next Condensed',
+                  fontSize: 24,
+                  color: Colors.black,
+                ),
+                labelMedium: GoogleFonts.inter(
+                  fontSize: 24,
+                  color: Colors.black,
+                ),
+                // font style for normal text
+                bodyLarge: GoogleFonts.inter(
+                  fontSize: 20,
+                  color: Colors.black,
+                ),
+                bodyMedium: GoogleFonts.inter(
+                  fontSize: 18,
+                  color: Colors.black,
+                ),
+                bodySmall: GoogleFonts.inter(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
+              ),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+            style: OutlinedButton.styleFrom(
+              backgroundColor: hightlightColor,
+              foregroundColor: Colors.black,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+                side: const BorderSide(color: Colors.black, width: 2),
+              ),
+              textStyle: const TextStyle(
                 fontWeight: FontWeight.bold,
-                fontFamily: 'Avenir Next Condensed',
-                fontSize: 36,
-                color: Colors.black,
-              ),
-              titleMedium: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Avenir Next Condensed',
-                fontSize: 30,
-                color: Colors.black,
-              ),
-              titleSmall: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Avenir Next Condensed',
-                fontSize: 24,
-                color: Colors.black,
-              ),
-              labelMedium: GoogleFonts.inter(
-                fontSize: 24,
-                color: Colors.black,
-              ),
-              // font style for normal text
-              bodyLarge: GoogleFonts.inter(
                 fontSize: 20,
-                color: Colors.black,
-              ),
-              bodyMedium: GoogleFonts.inter(
-                fontSize: 18,
-                color: Colors.black,
-              ),
-              bodySmall: GoogleFonts.inter(
-                fontSize: 16,
-                color: Colors.black,
               ),
             ),
-        outlinedButtonTheme: OutlinedButtonThemeData(
-          style: OutlinedButton.styleFrom(
-            backgroundColor: hightlightColor,
-            foregroundColor: Colors.black,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-              side: const BorderSide(color: Colors.black, width: 2),
-            ),
-            textStyle: const TextStyle(
+          ),
+          bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            selectedItemColor: const Color.fromARGB(255, 253, 138, 138),
+            unselectedItemColor: Colors.black,
+            selectedIconTheme: const IconThemeData().copyWith(size: 25),
+            unselectedIconTheme: const IconThemeData().copyWith(size: 25),
+            selectedLabelStyle: GoogleFonts.inter(
+              fontSize: 8,
               fontWeight: FontWeight.bold,
-              fontSize: 20,
             ),
-          ),
-        ),
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          selectedItemColor: const Color.fromARGB(255, 253, 138, 138),
-          unselectedItemColor: Colors.black,
-          selectedIconTheme: const IconThemeData().copyWith(size: 25),
-          unselectedIconTheme: const IconThemeData().copyWith(size: 25),
-          selectedLabelStyle: GoogleFonts.inter(
-            fontSize: 8,
-            fontWeight: FontWeight.bold,
-          ),
-          unselectedLabelStyle: GoogleFonts.inter(
-            fontSize: 8,
-            fontWeight: FontWeight.bold,
-          ),
-          showUnselectedLabels: true,
-          type: BottomNavigationBarType.fixed,
-        ),
-        inputDecorationTheme: ThemeData().inputDecorationTheme.copyWith(
-              labelStyle: Theme.of(context).textTheme.bodySmall,
-              floatingLabelBehavior: FloatingLabelBehavior.never,
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-                borderSide: const BorderSide(color: Colors.black),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-                borderSide: const BorderSide(color: Colors.black),
-              ),
-              filled: true,
-              fillColor: Colors.white,
-              contentPadding: const EdgeInsets.all(10),
+            unselectedLabelStyle: GoogleFonts.inter(
+              fontSize: 8,
+              fontWeight: FontWeight.bold,
             ),
+            showUnselectedLabels: true,
+            type: BottomNavigationBarType.fixed,
+          ),
+          inputDecorationTheme: ThemeData().inputDecorationTheme.copyWith(
+                labelStyle: Theme.of(context).textTheme.bodySmall,
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: const BorderSide(color: Colors.black),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: const BorderSide(color: Colors.black),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: const EdgeInsets.all(10),
+              ),
+        ),
+        routes: {
+          '/': (context) => const HomeScreen(),
+          '/login': (context) => const LogInScreen(),
+          '/signup': (context) => const SignUpScreen(),
+          '/navigation': (context) => const NavigationScreen(),
+          '/Budgets': (context) => const BudgetsScreen(),
+          '/Profile': (context) => const ProfileScreen(),
+          '/Payments': (context) => const PaymentsScreen(),
+          '/UpcomingScreen': (context) => const UpcomingScreen(),
+        },
+        initialRoute: '/login',
       ),
-      routes: {
-        '/': (context) => const HomeScreen(),
-        '/login': (context) => const LogInScreen(),
-        '/signup': (context) => const SignUpScreen(),
-        '/navigation': (context) => const NavigationScreen(),
-        '/Budgets': (context) => const BudgetsScreen(),
-        '/Profile': (context) => const ProfileScreen(),
-        '/Payments': (context) => const PaymentsScreen(),
-        '/UpcomingScreen': (context) => const UpcomingScreen(),
-      },
-      initialRoute: '/login',
     );
   }
 }

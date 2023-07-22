@@ -1,9 +1,8 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
-final _firebase = FirebaseAuth.instance;
+import 'package:payment_reminder_app/application/screens/auth/cubit/auth_cubit.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -17,7 +16,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   var _username = '';
   var _email = '';
-  var _phoneNumber = '';
+  var _contactNo = '';
   var _password = '';
   var _confirmPassword = '';
 
@@ -34,7 +33,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     e164Key: "",
   );
 
-  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _contactNoController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
@@ -45,8 +44,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     if (isValid) {
       _signupForm.currentState!.save();
-      // print(_email);
-      // print(_password);
+
+      // signup with firebase
+      BlocProvider.of<AuthCubit>(context).signUp(
+        _username,
+        _email,
+        _contactNo,
+        _password,
+      );
     }
   }
 
@@ -150,7 +155,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                             ),
                           ),
-                          suffixIcon: _phoneController.text.length > 9
+                          suffixIcon: _contactNoController.text.length > 9
                               ? Container(
                                   margin: const EdgeInsets.all(10),
                                   decoration: const BoxDecoration(
@@ -168,7 +173,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         autocorrect: false,
                         onChanged: (value) {
                           setState(() {
-                            _phoneController.text = value;
+                            _contactNoController.text = value;
                           });
                         },
                         validator: (value) {
@@ -180,7 +185,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           return null;
                         },
                         onSaved: (value) {
-                          _phoneNumber = value!;
+                          _contactNo = value!;
                         },
                       ),
                       const SizedBox(height: 10),

@@ -1,10 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:payment_reminder_app/application/screens/auth/cubit/auth_cubit.dart';
 import 'package:payment_reminder_app/main.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
-final _firebase = FirebaseAuth.instance;
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({super.key});
@@ -25,8 +24,9 @@ class _LogInScreenState extends State<LogInScreen> {
 
     if (isValid) {
       _loginForm.currentState!.save();
-      print(_email);
-      print(_password);
+
+      // login with firebase
+      BlocProvider.of<AuthCubit>(context).logIn(_email, _password);
     }
   }
 
