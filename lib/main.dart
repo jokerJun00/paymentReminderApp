@@ -1,16 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 // screen
-import 'Screens/NavigationScreen.dart';
+import 'package:payment_reminder_app/Screens/HomeScreen.dart';
+import 'package:payment_reminder_app/Screens/LogInScreen.dart';
+import 'package:payment_reminder_app/Screens/SignUpScreen.dart';
+import 'package:payment_reminder_app/Screens/NavigationScreen.dart';
+import 'package:payment_reminder_app/Screens/BudgetsScreen.dart';
+import 'package:payment_reminder_app/Screens/PaymentsScreen.dart';
+import 'package:payment_reminder_app/Screens/ProfileScreen.dart';
+import 'package:payment_reminder_app/Screens/UpcomingScreen.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
-  seedColor: const Color.fromARGB(255, 146, 180, 236),
+  seedColor: const Color.fromARGB(255, 89, 180, 236),
 );
 
-void main() {
+var primaryColor = const Color.fromARGB(255, 183, 205, 241);
+var secondaryColor = const Color.fromARGB(255, 239, 239, 239);
+var hightlightColor = const Color.fromARGB(255, 242, 223, 58);
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // firebase setup
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   // restrict to potrait screen
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -24,10 +43,11 @@ class MyPaymentReminderApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'MyPayment Reminder',
+      // app theme setting
       theme: ThemeData().copyWith(
         useMaterial3: true,
         colorScheme: kColorScheme,
-        scaffoldBackgroundColor: kColorScheme.primaryContainer,
+        scaffoldBackgroundColor: primaryColor,
         appBarTheme: const AppBarTheme().copyWith(
           backgroundColor: kColorScheme.primaryContainer,
           foregroundColor: kColorScheme.onPrimaryContainer,
@@ -72,10 +92,11 @@ class MyPaymentReminderApp extends StatelessWidget {
             ),
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
-            backgroundColor: const Color.fromARGB(255, 242, 223, 58),
+            backgroundColor: hightlightColor,
             foregroundColor: Colors.black,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
+              side: const BorderSide(color: Colors.black, width: 2),
             ),
             textStyle: const TextStyle(
               fontWeight: FontWeight.bold,
@@ -99,8 +120,33 @@ class MyPaymentReminderApp extends StatelessWidget {
           showUnselectedLabels: true,
           type: BottomNavigationBarType.fixed,
         ),
+        inputDecorationTheme: ThemeData().inputDecorationTheme.copyWith(
+              labelStyle: Theme.of(context).textTheme.bodySmall,
+              floatingLabelBehavior: FloatingLabelBehavior.never,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5),
+                borderSide: const BorderSide(color: Colors.black),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5),
+                borderSide: const BorderSide(color: Colors.black),
+              ),
+              filled: true,
+              fillColor: Colors.white,
+              contentPadding: const EdgeInsets.all(10),
+            ),
       ),
-      home: const NavigationScreen(),
+      routes: {
+        '/': (context) => const HomeScreen(),
+        '/login': (context) => const LogInScreen(),
+        '/signup': (context) => const SignUpScreen(),
+        '/navigation': (context) => const NavigationScreen(),
+        '/Budgets': (context) => const BudgetsScreen(),
+        '/Profile': (context) => const ProfileScreen(),
+        '/Payments': (context) => const PaymentsScreen(),
+        '/UpcomingScreen': (context) => const UpcomingScreen(),
+      },
+      initialRoute: '/login',
     );
   }
 }

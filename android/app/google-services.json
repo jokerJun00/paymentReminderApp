@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "167169533034",
+    "project_id": "my-payment-reminder-app",
+    "storage_bucket": "my-payment-reminder-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:167169533034:android:47071157f97337e329d613",
+        "android_client_info": {
+          "package_name": "com.example.payment_reminder_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "167169533034-mp2a39dmus8gqosi1tsk06kuceqt02u9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBix2S70u8JBZBV0whRXEAG7LYV-O79quI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "167169533034-mp2a39dmus8gqosi1tsk06kuceqt02u9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "167169533034-o3r5m3oersv1j40mq6ppjc5mg0f8kcf2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.paymentReminderApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

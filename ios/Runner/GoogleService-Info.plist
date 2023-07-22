@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>167169533034-o3r5m3oersv1j40mq6ppjc5mg0f8kcf2.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.167169533034-o3r5m3oersv1j40mq6ppjc5mg0f8kcf2</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDGnNN8KU9XtnU7yzGDuezZSlsaMMSkb6A</string>
+	<key>GCM_SENDER_ID</key>
+	<string>167169533034</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.paymentReminderApp</string>
+	<key>PROJECT_ID</key>
+	<string>my-payment-reminder-app</string>
+	<key>STORAGE_BUCKET</key>
+	<string>my-payment-reminder-app.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:167169533034:ios:9a4e8a587e0fbf3d29d613</string>
+</dict>
+</plist>
