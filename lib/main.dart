@@ -5,14 +5,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 // screen
-import 'package:payment_reminder_app/Screens/HomeScreen.dart';
-import 'package:payment_reminder_app/Screens/LogInScreen.dart';
-import 'package:payment_reminder_app/Screens/SignUpScreen.dart';
-import 'package:payment_reminder_app/Screens/NavigationScreen.dart';
-import 'package:payment_reminder_app/Screens/BudgetsScreen.dart';
-import 'package:payment_reminder_app/Screens/PaymentsScreen.dart';
-import 'package:payment_reminder_app/Screens/ProfileScreen.dart';
-import 'package:payment_reminder_app/Screens/UpcomingScreen.dart';
+import 'package:payment_reminder_app/application/screens/HomeScreen.dart';
+import 'package:payment_reminder_app/application/screens/LogInScreen.dart';
+import 'package:payment_reminder_app/application/screens/SignUpScreen.dart';
+import 'package:payment_reminder_app/application/screens/NavigationScreen.dart';
+import 'package:payment_reminder_app/application/screens/BudgetsScreen.dart';
+import 'package:payment_reminder_app/application/screens/PaymentsScreen.dart';
+import 'package:payment_reminder_app/application/screens/ProfileScreen.dart';
+import 'package:payment_reminder_app/application/screens/UpcomingScreen.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
   seedColor: const Color.fromARGB(255, 89, 180, 236),

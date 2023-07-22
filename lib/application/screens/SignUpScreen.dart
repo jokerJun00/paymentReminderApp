@@ -22,16 +22,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
   var _confirmPassword = '';
 
   Country _country = Country(
-      phoneCode: "60",
-      countryCode: "MY",
-      e164Sc: 0,
-      geographic: true,
-      level: 1,
-      name: "Malaysia",
-      example: "Malaysia",
-      displayName: "Malaysia",
-      displayNameNoCountryCode: "Malaysia",
-      e164Key: "");
+    phoneCode: "60",
+    countryCode: "MY",
+    e164Sc: 0,
+    geographic: true,
+    level: 1,
+    name: "Malaysia",
+    example: "Malaysia",
+    displayName: "Malaysia",
+    displayNameNoCountryCode: "Malaysia",
+    e164Key: "",
+  );
 
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();

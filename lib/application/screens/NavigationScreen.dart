@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:payment_reminder_app/Screens/BudgetsScreen.dart';
+import 'package:payment_reminder_app/application/screens/BudgetsScreen.dart';
 
 // screen
-import 'package:payment_reminder_app/Screens/HomeScreen.dart';
-import 'package:payment_reminder_app/Screens/PaymentsScreen.dart';
-import 'package:payment_reminder_app/Screens/ProfileScreen.dart';
-import 'package:payment_reminder_app/Screens/UpcomingScreen.dart';
+import 'package:payment_reminder_app/application/screens/HomeScreen.dart';
+import 'package:payment_reminder_app/application/screens/PaymentsScreen.dart';
+import 'package:payment_reminder_app/application/screens/ProfileScreen.dart';
+import 'package:payment_reminder_app/application/screens/UpcomingScreen.dart';
 
 class NavigationScreen extends StatefulWidget {
   const NavigationScreen({Key? key}) : super(key: key);
