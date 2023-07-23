@@ -18,120 +18,142 @@ class _LogInScreenState extends State<LogInScreen> {
   var _email = '';
   var _password = '';
 
-  void _login() {
-    // validate user input
-    final isValid = _loginForm.currentState!.validate();
-
-    if (isValid) {
-      _loginForm.currentState!.save();
-
-      // login with firebase
-      BlocProvider.of<AuthCubit>(context).logIn(_email, _password);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 45, right: 45),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "LogIn Account",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                // Login From
-                Form(
-                  key: _loginForm,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Email',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        decoration: const InputDecoration(labelText: 'Email'),
-                        style: Theme.of(context).textTheme.bodySmall,
-                        keyboardType: TextInputType.emailAddress,
-                        autocorrect: false,
-                        textCapitalization: TextCapitalization.none,
-                        validator: (value) {
-                          if (value == null ||
-                              value.trim().isEmpty ||
-                              !value.contains('@')) {
-                            return 'Please etner a valid email address.';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _email = value!;
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Password',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        decoration:
-                            const InputDecoration(labelText: 'Password'),
-                        style: Theme.of(context).textTheme.bodySmall,
-                        obscureText: true, // hide text
-                        validator: (value) {
-                          if (value == null ||
-                              value.trim().isEmpty ||
-                              value.trim().length < 8) {
-                            return 'Password must be at least 8 characters long.';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _password = value!;
-                        },
-                      ),
-                      const SizedBox(height: 30),
-                      OutlinedButton(
-                        onPressed: _login,
-                        child: const Text('Login'),
-                      ),
-                      const SizedBox(height: 20),
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'Do not have an account yet? ',
-                              style: GoogleFonts.inter(
-                                color: Colors.black,
-                                fontSize: 12,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'Sign up an account',
-                              style: GoogleFonts.inter(
-                                color: hightlightColor,
-                                fontSize: 12,
-                              ),
-                              // signup navigation
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () =>
-                                    Navigator.pushNamed(context, '/signup'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+    void login() {
+      var authState = BlocProvider.of<AuthCubit>(context);
+      // validate user input
+      final isValid = _loginForm.currentState!.validate();
+
+      if (isValid) {
+        _loginForm.currentState!.save();
+
+        // login with firebase
+        authState.logIn(_email, _password);
+
+        /// Auth state got problem, currently cannot go to AuthStateLoggnedIn
+        /// so need to check datasource code to see why the code cannot return
+        /// User Model
+        Navigator.of(context).pushReplacementNamed("/navigation");
+      }
+    }
+
+    return BlocListener<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is AuthStateLoginedIn) {
+          Navigator.of(context).pushReplacementNamed("/navigation");
+        } else if (state is AuthStateError) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+            ),
+          );
+          Future.delayed(const Duration(seconds: 3));
+          ScaffoldMessenger.of(context).clearSnackBars();
+        }
+      },
+      child: Scaffold(
+        body: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 45, right: 45),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "LogIn Account",
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                ),
-              ],
+                  // Login From
+                  Form(
+                    key: _loginForm,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Email',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          decoration: const InputDecoration(labelText: 'Email'),
+                          style: Theme.of(context).textTheme.bodySmall,
+                          keyboardType: TextInputType.emailAddress,
+                          autocorrect: false,
+                          textCapitalization: TextCapitalization.none,
+                          validator: (value) {
+                            if (value == null ||
+                                value.trim().isEmpty ||
+                                !value.contains('@')) {
+                              return 'Please etner a valid email address.';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _email = value!;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Password',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          decoration:
+                              const InputDecoration(labelText: 'Password'),
+                          style: Theme.of(context).textTheme.bodySmall,
+                          obscureText: true, // hide text
+                          validator: (value) {
+                            if (value == null ||
+                                value.trim().isEmpty ||
+                                value.trim().length < 8) {
+                              return 'Password must be at least 8 characters long.';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _password = value!;
+                          },
+                        ),
+                        const SizedBox(height: 30),
+                        OutlinedButton(
+                          onPressed: login,
+                          child: const Text('Login'),
+                        ),
+                        const SizedBox(height: 20),
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'Do not have an account yet? ',
+                                style: GoogleFonts.inter(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              TextSpan(
+                                text: 'Sign up an account',
+                                style: GoogleFonts.inter(
+                                  color: hightlightColor,
+                                  fontSize: 12,
+                                ),
+                                // signup navigation
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () =>
+                                      Navigator.pushNamed(context, '/signup'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

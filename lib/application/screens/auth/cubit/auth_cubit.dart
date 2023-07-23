@@ -59,6 +59,10 @@ class AuthCubit extends Cubit<AuthState> {
         return 'Error connecting to server. Please try again later.';
       case CacheFailure:
         return 'Cache failed. Please try again later.';
+      case LogInFailedFailure:
+        return 'Login failed. Please check your email and password';
+      case SignUpFailedFailure:
+        return 'Signup failed. Please check your phone number and password';
       default:
         return 'Something went wrong. Please try again later.';
     }

@@ -6,17 +6,26 @@ import '../models/user_model.dart';
 
 abstract class AuthDataSource {
   /// log in user from Firebase
-  ///
+  /// return [UserModel]
+  /// authenticate user log in
   Future<UserModel> logInFromDataSource(String email, String password);
 
+  /// sign up user from Firebase
+  /// return [UserModel]
+  /// create an account in Firebase Authentication and an data in Users collection in Firestore database
   Future<UserModel> signUpFromDataSource(
       String username, String email, String contactNo, String password);
 
+  /// log out user from Firebase
+  /// return [UserModel]
+  /// sign out from Firebase Authentication
   Future<bool> logOutFromDataSource();
 }
 
 class AuthDataSourceImpl implements AuthDataSource {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   @override
   Future<UserModel> logInFromDataSource(String email, String password) async {
     final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
@@ -42,6 +51,12 @@ class AuthDataSourceImpl implements AuthDataSource {
     if (_firebaseAuth.currentUser == null) {
       throw SignUpFailedException();
     } else {
+      await userCredential.user!.updateDisplayName(username);
+      await _firestore.collection('Users').doc(userCredential.user!.uid).set({
+        'name': username,
+        'email': email,
+        'contactNo': contactNo,
+      });
       return UserModel.fromFirebaseAuth(userCredential);
     }
   }

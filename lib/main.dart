@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:payment_reminder_app/application/screens/auth/cubit/auth_cubit.dart';
+import 'package:payment_reminder_app/application/screens/splash_screen.dart';
 import 'firebase_options.dart';
 
 // screen
@@ -135,6 +136,16 @@ class MyPaymentReminderApp extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5),
                   borderSide: const BorderSide(color: Colors.black),
                 ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: const BorderSide(color: Colors.red),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: const BorderSide(color: Colors.red),
+                ),
+                errorStyle: GoogleFonts.inter(color: Colors.red, fontSize: 12),
+                errorMaxLines: 3,
                 filled: true,
                 fillColor: Colors.white,
                 contentPadding: const EdgeInsets.all(10),
@@ -142,6 +153,7 @@ class MyPaymentReminderApp extends StatelessWidget {
         ),
         routes: {
           '/': (context) => const HomeScreen(),
+          '/splash': (context) => const SplashScreen(),
           '/login': (context) => const LogInScreen(),
           '/signup': (context) => const SignUpScreen(),
           '/navigation': (context) => const NavigationScreen(),
@@ -150,7 +162,7 @@ class MyPaymentReminderApp extends StatelessWidget {
           '/Payments': (context) => const PaymentsScreen(),
           '/UpcomingScreen': (context) => const UpcomingScreen(),
         },
-        initialRoute: '/login',
+        initialRoute: '/splash',
       ),
     );
   }

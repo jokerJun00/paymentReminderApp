@@ -6,16 +6,15 @@ import 'package:payment_reminder_app/domain/failures/failures.dart';
 class AuthUseCases {
   final AuthRepoImpl authRepoFirestore = AuthRepoImpl();
 
-  Future<Either<UserEntity, Failure>> logIn(
-      String email, String password) async {
-    return await authRepoFirestore.logInFromDataSource(email, password);
+  Future<Either<UserEntity, Failure>> logIn(String email, String password) {
+    return authRepoFirestore.logInFromDataSource(email, password);
   }
 
   Future<Either<UserEntity, Failure>> signUp(
-      String username, String email, String contactNo, String password) async {
+      String username, String email, String contactNo, String password) {
     authRepoFirestore.signUpFromDataSource(
         username, email, contactNo, password);
-    return await authRepoFirestore.signUpFromDataSource(
+    return authRepoFirestore.signUpFromDataSource(
       username,
       email,
       contactNo,
@@ -23,7 +22,7 @@ class AuthUseCases {
     );
   }
 
-  Future<Either<bool, Failure>> logOut() async {
-    return await authRepoFirestore.logOutFromDataSource();
+  Future<Either<bool, Failure>> logOut() {
+    return authRepoFirestore.logOutFromDataSource();
   }
 }

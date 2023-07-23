@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:payment_reminder_app/data/datasources/auth_datasource.dart';
 import 'package:payment_reminder_app/data/exceptions/exceptions.dart';
 import 'package:payment_reminder_app/domain/entities/user_entitiy.dart';
@@ -13,11 +14,12 @@ class AuthRepoImpl implements AuthRepo {
       String email, String password) async {
     try {
       // log in
-      final user = await authDataSource.logInFromDataSource(email, password);
-      return left(user);
-    } on ServerException catch (_) {
-      return right(ServerFailure());
-    } on LogInFailedException catch (_) {
+      // final user = await authDataSource.logInFromDataSource(email, password);
+      // return left(user);
+
+      return left(await authDataSource.logInFromDataSource(email, password));
+    } on FirebaseAuthException catch (e) {
+      print(e.message);
       return right(LogInFailedFailure());
     } catch (e) {
       return right(GeneralFailure());
