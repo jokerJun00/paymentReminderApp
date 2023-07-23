@@ -4,7 +4,7 @@ import 'package:payment_reminder_app/application/screens/budgets_screen.dart';
 // screen
 import 'package:payment_reminder_app/application/screens/home_screen.dart';
 import 'package:payment_reminder_app/application/screens/payments_screen.dart';
-import 'package:payment_reminder_app/application/screens/profile_screen.dart';
+import 'package:payment_reminder_app/application/screens/auth/profile_screen.dart';
 import 'package:payment_reminder_app/application/screens/upcoming_screen.dart';
 
 class NavigationScreen extends StatefulWidget {

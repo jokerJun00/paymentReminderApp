@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:payment_reminder_app/application/screens/auth/cubit/auth_cubit.dart';
+import 'package:payment_reminder_app/application/screens/auth/edit_user_profile_screen.dart';
 import 'package:payment_reminder_app/application/screens/splash_screen.dart';
 import 'firebase_options.dart';
 
@@ -14,7 +15,7 @@ import 'package:payment_reminder_app/application/screens/auth/signup_screen.dart
 import 'package:payment_reminder_app/application/screens/navigation_screen.dart';
 import 'package:payment_reminder_app/application/screens/budgets_screen.dart';
 import 'package:payment_reminder_app/application/screens/payments_screen.dart';
-import 'package:payment_reminder_app/application/screens/profile_screen.dart';
+import 'package:payment_reminder_app/application/screens/auth/profile_screen.dart';
 import 'package:payment_reminder_app/application/screens/upcoming_screen.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
@@ -80,6 +81,7 @@ class MyPaymentReminderApp extends StatelessWidget {
                 labelMedium: GoogleFonts.inter(
                   fontSize: 24,
                   color: Colors.black,
+                  fontWeight: FontWeight.bold,
                 ),
                 // font style for normal text
                 bodyLarge: GoogleFonts.inter(
@@ -103,7 +105,7 @@ class MyPaymentReminderApp extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5),
                 side: const BorderSide(color: Colors.black, width: 2),
               ),
-              textStyle: const TextStyle(
+              textStyle: GoogleFonts.inter(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               ),
@@ -157,10 +159,11 @@ class MyPaymentReminderApp extends StatelessWidget {
           '/login': (context) => const LogInScreen(),
           '/signup': (context) => const SignUpScreen(),
           '/navigation': (context) => const NavigationScreen(),
-          '/Budgets': (context) => const BudgetsScreen(),
-          '/Profile': (context) => const ProfileScreen(),
-          '/Payments': (context) => const PaymentsScreen(),
-          '/UpcomingScreen': (context) => const UpcomingScreen(),
+          '/budgets': (context) => const BudgetsScreen(),
+          '/profile': (context) => const ProfileScreen(),
+          '/payments': (context) => const PaymentsScreen(),
+          '/upcomingScreen': (context) => const UpcomingScreen(),
+          '/editUserProfile': (context) => const EditUserProfileScreen(),
         },
         initialRoute: '/splash',
       ),
