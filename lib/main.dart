@@ -45,12 +45,8 @@ class MyPaymentReminderApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => AuthCubit(),
-        ),
-      ],
+    return BlocProvider(
+      create: (context) => AuthCubit(),
       child: MaterialApp(
         title: 'MyPayment Reminder',
         // app theme setting
@@ -158,7 +154,7 @@ class MyPaymentReminderApp extends StatelessWidget {
               ),
         ),
         routes: {
-          '/home': (context) => const HomeScreen(),
+          '/': (context) => const HomeScreen(),
           '/splash': (context) => const SplashScreen(),
           '/login': (context) => const LogInScreen(),
           '/signup': (context) => const SignUpScreen(),
