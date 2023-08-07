@@ -32,7 +32,7 @@ class AuthCubit extends Cubit<AuthState> {
       contactNo,
       password,
     );
-    print("user or failure = ${userOrFailure.runtimeType}");
+
     userOrFailure.fold(
       (user) => emit(AuthStateLoginedIn(user: user)),
       (failure) => emit(AuthStateError(message: failure.getError)),

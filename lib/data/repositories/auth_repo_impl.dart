@@ -30,6 +30,7 @@ class AuthRepoImpl implements AuthRepo {
       // sign up
       final user = await authDataSource.signUpFromDataSource(
           username, email, contactNo, password);
+
       return left(user);
     } on FirebaseAuthException catch (e) {
       return right(FirebaseAuthFailure(error: e.message!));

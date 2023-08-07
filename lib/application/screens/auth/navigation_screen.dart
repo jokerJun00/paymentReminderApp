@@ -5,6 +5,7 @@ import 'package:payment_reminder_app/application/screens/budgets_screen.dart';
 // screen
 import 'package:payment_reminder_app/application/screens/home_screen.dart';
 import 'package:payment_reminder_app/application/screens/payments_screen.dart';
+import 'package:payment_reminder_app/application/screens/user/cubit/user_cubit.dart';
 import 'package:payment_reminder_app/application/screens/user/profile_screen.dart';
 import 'package:payment_reminder_app/application/screens/upcoming_screen.dart';
 
@@ -53,7 +54,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
         break;
       case 4:
         {
-          activeScreen = const ProfileScreen();
+          activeScreen = BlocProvider(
+            create: (context) => UserCubit(),
+            child: const ProfileScreen(),
+          );
         }
         break;
       default:
