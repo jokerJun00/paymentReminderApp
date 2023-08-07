@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:payment_reminder_app/data/exceptions/exceptions.dart';
+import 'package:payment_reminder_app/domain/failures/failures.dart';
 
 import '../models/user_model.dart';
 
@@ -28,36 +29,48 @@ class AuthDataSourceImpl implements AuthDataSource {
 
   @override
   Future<UserModel> logInFromDataSource(String email, String password) async {
-    final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+    await _firebaseAuth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
 
+    String contactNo = "";
+
     if (_firebaseAuth.currentUser == null) {
-      throw LogInFailedException();
+      throw ServerException();
     } else {
-      return UserModel.fromFirebaseAuth(userCredential);
+      await _firestore
+          .collection('Users')
+          .doc(_firebaseAuth.currentUser!.uid)
+          .get()
+          .then((userData) => {contactNo = userData.data()!["contactNo"]})
+          .catchError((e) => throw GeneralFailure(error: e));
+
+      return UserModel.fromFirebaseAuth(_firebaseAuth.currentUser!, contactNo);
     }
   }
 
   @override
   Future<UserModel> signUpFromDataSource(
       String username, String email, String contactNo, String password) async {
-    final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+    await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
 
     if (_firebaseAuth.currentUser == null) {
-      throw SignUpFailedException();
+      throw ServerException();
     } else {
-      await userCredential.user!.updateDisplayName(username);
-      await _firestore.collection('Users').doc(userCredential.user!.uid).set({
+      await _firebaseAuth.currentUser!.updateDisplayName(username);
+      await _firestore
+          .collection('Users')
+          .doc(_firebaseAuth.currentUser!.uid)
+          .set({
         'name': username,
         'email': email,
         'contactNo': contactNo,
       });
-      return UserModel.fromFirebaseAuth(userCredential);
+      return UserModel.fromFirebaseAuth(_firebaseAuth.currentUser!, contactNo);
     }
   }
 

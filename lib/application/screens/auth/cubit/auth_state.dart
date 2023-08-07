@@ -9,8 +9,6 @@ abstract class AuthState extends Equatable {
 
 class AuthInitial extends AuthState {}
 
-class AuthStateLogingIn extends AuthState {}
-
 class AuthStateLoginedIn extends AuthState {
   const AuthStateLoginedIn({required this.user});
 
@@ -20,11 +18,9 @@ class AuthStateLoginedIn extends AuthState {
   List<Object> get props => [user];
 }
 
-class AuthStateSigningUp extends AuthState {}
-
-class AuthStateLogingOut extends AuthState {}
-
 class AuthStateLogOut extends AuthState {}
+
+class AuthStateLoading extends AuthState {}
 
 class AuthStateError extends AuthState {
   const AuthStateError({required this.message});

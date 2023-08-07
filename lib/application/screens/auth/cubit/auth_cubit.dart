@@ -3,8 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:payment_reminder_app/domain/entities/user_entitiy.dart';
 import 'package:payment_reminder_app/domain/usecases/auth_usecases.dart';
 
-import '../../../../domain/failures/failures.dart';
-
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -13,19 +11,19 @@ class AuthCubit extends Cubit<AuthState> {
   final AuthUseCases authUseCases = AuthUseCases();
 
   void logIn(String email, String password) async {
-    emit(AuthStateLogingIn());
+    emit(AuthStateLoading());
 
     // firebase login authentication
     final userOrFailure = await authUseCases.logIn(email, password);
     userOrFailure.fold(
       (user) => emit(AuthStateLoginedIn(user: user)),
-      (failure) => emit(AuthStateError(message: _mapFailureMessage(failure))),
+      (failure) => emit(AuthStateError(message: failure.getError)),
     );
   }
 
   void signUp(
       String username, String email, String contactNo, String password) async {
-    emit(AuthStateSigningUp());
+    emit(AuthStateLoading());
 
     // firebase signup authentication
     final userOrFailure = await authUseCases.signUp(
@@ -34,37 +32,23 @@ class AuthCubit extends Cubit<AuthState> {
       contactNo,
       password,
     );
-
+    print("user or failure = ${userOrFailure.runtimeType}");
     userOrFailure.fold(
       (user) => emit(AuthStateLoginedIn(user: user)),
-      (failure) => emit(AuthStateError(message: _mapFailureMessage(failure))),
+      (failure) => emit(AuthStateError(message: failure.getError)),
     );
   }
 
   void logOut() async {
-    emit(AuthStateLogingOut());
+    emit(AuthStateLoading());
 
     // logout process
     final loggedOutOrFailure = await authUseCases.logOut();
     loggedOutOrFailure.fold(
       (loggedOut) => emit(AuthStateLogOut()),
-      (failure) => emit(AuthStateError(message: _mapFailureMessage(failure))),
+      (failure) => emit(AuthStateError(message: failure.getError)),
     );
   }
 
-  String _mapFailureMessage(Failure failure) {
-    // check failure type
-    switch (failure.runtimeType) {
-      case ServerFailure:
-        return 'Error connecting to server. Please try again later.';
-      case CacheFailure:
-        return 'Cache failed. Please try again later.';
-      case LogInFailedFailure:
-        return 'Login failed. Please check your email and password';
-      case SignUpFailedFailure:
-        return 'Signup failed. Please check your phone number and password';
-      default:
-        return 'Something went wrong. Please try again later.';
-    }
-  }
+  void get UserData async {}
 }

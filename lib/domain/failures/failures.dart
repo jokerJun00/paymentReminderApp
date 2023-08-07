@@ -1,11 +1,25 @@
-abstract class Failure {}
+abstract class Failure {
+  Failure({required this.error});
 
-class ServerFailure extends Failure {}
+  final String error;
 
-class CacheFailure extends Failure {}
+  String get getError {
+    return error;
+  }
+}
 
-class LogInFailedFailure extends Failure {}
+class ServerFailure extends Failure {
+  ServerFailure({required super.error});
+}
 
-class SignUpFailedFailure extends Failure {}
+class CacheFailure extends Failure {
+  CacheFailure({required super.error});
+}
 
-class GeneralFailure extends Failure {}
+class FirebaseAuthFailure extends Failure {
+  FirebaseAuthFailure({required super.error});
+}
+
+class GeneralFailure extends Failure {
+  GeneralFailure({required super.error});
+}

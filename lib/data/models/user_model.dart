@@ -10,12 +10,12 @@ class UserModel extends UserEntity with EquatableMixin {
     required super.contactNo,
   });
 
-  factory UserModel.fromFirebaseAuth(UserCredential userCredential) {
+  factory UserModel.fromFirebaseAuth(User user, String contactNo) {
     return UserModel(
-      id: userCredential.user!.uid,
-      name: userCredential.user!.displayName!,
-      email: userCredential.user!.email!,
-      contactNo: userCredential.user!.phoneNumber!,
+      id: user.uid,
+      name: user.displayName!,
+      email: user.email!,
+      contactNo: contactNo,
     );
   }
 }

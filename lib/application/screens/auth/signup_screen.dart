@@ -16,9 +16,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   var _username = '';
   var _email = '';
-  var _contactNo = '';
-  var _password = '';
-  var _confirmPassword = '';
 
   Country _country = Country(
     phoneCode: "60",
@@ -45,15 +42,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (isValid) {
       _signupForm.currentState!.save();
 
-      // signup with firebase
+      // sign up with firebase
       BlocProvider.of<AuthCubit>(context).signUp(
         _username,
         _email,
-        '${_country.phoneCode}$_contactNo',
-        _password,
+        '${_country.phoneCode}${_contactNoController.text}',
+        _passwordController.text,
       );
-
-      Navigator.of(context).pushReplacementNamed("/navigation");
     }
   }
 
@@ -76,13 +71,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthStateLoginedIn) {
-          Navigator.of(context).pushReplacementNamed("/navigation");
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Sign up successfully")),
+          );
         } else if (state is AuthStateError) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-            ),
+            SnackBar(content: Text(state.message)),
           );
         }
       },
@@ -129,7 +125,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             if (value == null ||
                                 value.trim().isEmpty ||
                                 value.length < 4) {
-                              return 'Please enter a valid username. (Atleast 4 character)';
+                              return 'Please enter a valid username. (At least 4 character)';
                             }
                             return null;
                           },
@@ -209,7 +205,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             return null;
                           },
                           onSaved: (value) {
-                            _contactNo = value!;
+                            _contactNoController.text = value!;
                           },
                         ),
                         const SizedBox(height: 10),
@@ -232,7 +228,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             return null;
                           },
                           onSaved: (value) {
-                            _password = value!;
+                            _passwordController.text = value!;
                           },
                         ),
                         const SizedBox(height: 10),
@@ -256,7 +252,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             return null;
                           },
                           onSaved: (value) {
-                            _confirmPassword = value!;
+                            _confirmPasswordController.text = value!;
                           },
                         ),
                         const SizedBox(height: 30),

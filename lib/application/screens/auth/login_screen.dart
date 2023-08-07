@@ -21,7 +21,6 @@ class _LogInScreenState extends State<LogInScreen> {
   @override
   Widget build(BuildContext context) {
     void login() {
-      var authState = BlocProvider.of<AuthCubit>(context);
       // validate user input
       final isValid = _loginForm.currentState!.validate();
 
@@ -29,12 +28,7 @@ class _LogInScreenState extends State<LogInScreen> {
         _loginForm.currentState!.save();
 
         // login with firebase
-        authState.logIn(_email, _password);
-
-        /// Auth state got problem, currently cannot go to AuthStateLoggnedIn
-        /// so need to check datasource code to see why the code cannot return
-        /// User Model
-        Navigator.of(context).pushReplacementNamed("/navigation");
+        BlocProvider.of<AuthCubit>(context).logIn(_email, _password);
       }
     }
 
@@ -42,15 +36,15 @@ class _LogInScreenState extends State<LogInScreen> {
       listener: (context, state) {
         if (state is AuthStateLoginedIn) {
           Navigator.of(context).pushReplacementNamed("/navigation");
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Login successfully")),
+          );
         } else if (state is AuthStateError) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-            ),
+            SnackBar(content: Text(state.message)),
           );
-          Future.delayed(const Duration(seconds: 3));
-          ScaffoldMessenger.of(context).clearSnackBars();
         }
       },
       child: Scaffold(

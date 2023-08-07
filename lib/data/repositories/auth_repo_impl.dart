@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:payment_reminder_app/data/datasources/auth_datasource.dart';
-import 'package:payment_reminder_app/data/exceptions/exceptions.dart';
 import 'package:payment_reminder_app/domain/entities/user_entitiy.dart';
 import 'package:payment_reminder_app/domain/failures/failures.dart';
 import 'package:payment_reminder_app/domain/repositories/auth_repo.dart';
@@ -14,15 +13,13 @@ class AuthRepoImpl implements AuthRepo {
       String email, String password) async {
     try {
       // log in
-      // final user = await authDataSource.logInFromDataSource(email, password);
-      // return left(user);
-
-      return left(await authDataSource.logInFromDataSource(email, password));
+      final user = await authDataSource.logInFromDataSource(email, password);
+      return left(user);
     } on FirebaseAuthException catch (e) {
-      print(e.message);
-      return right(LogInFailedFailure());
+      return right(FirebaseAuthFailure(error: e.message!));
     } catch (e) {
-      return right(GeneralFailure());
+      return right(
+          GeneralFailure(error: "Something went wrong, please try again"));
     }
   }
 
@@ -34,12 +31,11 @@ class AuthRepoImpl implements AuthRepo {
       final user = await authDataSource.signUpFromDataSource(
           username, email, contactNo, password);
       return left(user);
-    } on ServerException catch (_) {
-      return right(ServerFailure());
-    } on LogInFailedException catch (_) {
-      return right(LogInFailedFailure());
+    } on FirebaseAuthException catch (e) {
+      return right(FirebaseAuthFailure(error: e.message!));
     } catch (e) {
-      return right(GeneralFailure());
+      return right(
+          GeneralFailure(error: "Something went wrong, please try again"));
     }
   }
 

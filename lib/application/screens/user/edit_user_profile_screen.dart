@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:payment_reminder_app/data/models/user_model.dart';
+// import 'package:payment_reminder_app/data/models/user_model.dart';
 
 class EditUserProfileScreen extends StatefulWidget {
   const EditUserProfileScreen({super.key});
@@ -70,7 +70,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
                       if (value == null ||
                           value.trim().isEmpty ||
                           value.length < 4) {
-                        return 'Please enter a valid username. (Atleast 4 character)';
+                        return 'Please enter a valid username. (At least 4 character)';
                       }
                       return null;
                     },
@@ -94,7 +94,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
                       if (value == null ||
                           value.trim().isEmpty ||
                           !value.contains('@')) {
-                        return 'Please etner a valid email address.';
+                        return 'Please enter a valid email address.';
                       }
                       return null;
                     },

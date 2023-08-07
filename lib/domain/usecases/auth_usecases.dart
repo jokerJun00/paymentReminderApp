@@ -13,7 +13,12 @@ class AuthUseCases {
   Future<Either<UserEntity, Failure>> signUp(
       String username, String email, String contactNo, String password) {
     authRepoFirestore.signUpFromDataSource(
-        username, email, contactNo, password);
+      username,
+      email,
+      contactNo,
+      password,
+    );
+
     return authRepoFirestore.signUpFromDataSource(
       username,
       email,

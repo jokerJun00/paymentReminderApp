@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../auth/cubit/auth_cubit.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -8,6 +11,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  void logout() {
+    BlocProvider.of<AuthCubit>(context).logOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,6 +37,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const Spacer(),
+                  OutlinedButton(
+                    onPressed: () => _dialogBuilder(context),
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 253, 138, 138),
+                    ),
+                    child: const Text('Logout'),
+                  ),
+                  const SizedBox(width: 5),
                   OutlinedButton(
                     onPressed: () =>
                         Navigator.of(context).pushNamed("/editUserProfile"),
@@ -92,6 +107,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _dialogBuilder(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Ready to logout',
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
+          content: const Text('Are you sure you want to logout?'),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text(
+                'Logout',
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                logout();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
