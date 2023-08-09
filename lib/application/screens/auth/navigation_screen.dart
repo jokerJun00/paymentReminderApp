@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payment_reminder_app/application/screens/budgets_screen.dart';
 
 // screen
-import 'package:payment_reminder_app/application/screens/home_screen.dart';
 import 'package:payment_reminder_app/application/screens/payment/payments_screen.dart';
+import 'package:payment_reminder_app/application/screens/payment/home_screen.dart';
 import 'package:payment_reminder_app/application/screens/user/cubit/user_cubit.dart';
 import 'package:payment_reminder_app/application/screens/user/profile_screen.dart';
 import 'package:payment_reminder_app/application/screens/payment/upcoming_screen.dart';
+import 'package:payment_reminder_app/application/screens/budgets_screen.dart';
 
 import 'cubit/auth_cubit.dart';
 
@@ -34,7 +34,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     switch (_selectedScreenIndex) {
       case 0:
         {
-          activeScreen = const PaymentsScreen();
+          activeScreen = const PaymentScreen();
         }
         break;
       case 1:

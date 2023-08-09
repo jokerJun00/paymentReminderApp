@@ -13,12 +13,12 @@ import 'firebase_options.dart';
 import '.env';
 
 // screen
-import 'package:payment_reminder_app/application/screens/home_screen.dart';
+import 'package:payment_reminder_app/application/screens/payment/payments_screen.dart';
 import 'package:payment_reminder_app/application/screens/auth/login_screen.dart';
 import 'package:payment_reminder_app/application/screens/auth/signup_screen.dart';
 import 'package:payment_reminder_app/application/screens/auth/navigation_screen.dart';
 import 'package:payment_reminder_app/application/screens/budgets_screen.dart';
-import 'package:payment_reminder_app/application/screens/payment/payments_screen.dart';
+import 'package:payment_reminder_app/application/screens/payment/home_screen.dart';
 import 'package:payment_reminder_app/application/screens/user/profile_screen.dart';
 import 'package:payment_reminder_app/application/screens/payment/upcoming_screen.dart';
 
@@ -182,14 +182,13 @@ class _MyPaymentReminderAppState extends State<MyPaymentReminderApp> {
           '/navigation': (context) => const NavigationScreen(),
           '/budgets': (context) => const BudgetsScreen(),
           '/profile': (context) => const ProfileScreen(),
-          '/payments': (context) => const PaymentsScreen(),
+          '/payments': (context) => const PaymentScreen(),
           '/upcomingScreen': (context) => const UpcomingScreen(),
           '/addCard': (context) => const AddCardScreen(),
         },
         initialRoute: FirebaseAuth.instance.currentUser == null
             ? '/splash'
             : '/navigation',
-        // initialRoute: '/navigation',
       ),
     );
   }

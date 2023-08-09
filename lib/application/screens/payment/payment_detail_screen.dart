@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../data/models/payment_model.dart';
+
 class PaymentDetailScreen extends StatefulWidget {
-  const PaymentDetailScreen({super.key});
+  const PaymentDetailScreen({super.key, required this.payment});
+
+  final PaymentModel payment;
 
   @override
   State<PaymentDetailScreen> createState() => _PaymentDetailScreenState();
