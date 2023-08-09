@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:payment_reminder_app/application/screens/user/add_card_screen.dart';
 import 'package:payment_reminder_app/application/screens/auth/cubit/auth_cubit.dart';
-import 'package:payment_reminder_app/application/screens/user/edit_user_profile_screen.dart';
 import 'package:payment_reminder_app/application/screens/splash_screen.dart';
 import 'firebase_options.dart';
 
@@ -19,9 +18,9 @@ import 'package:payment_reminder_app/application/screens/auth/login_screen.dart'
 import 'package:payment_reminder_app/application/screens/auth/signup_screen.dart';
 import 'package:payment_reminder_app/application/screens/auth/navigation_screen.dart';
 import 'package:payment_reminder_app/application/screens/budgets_screen.dart';
-import 'package:payment_reminder_app/application/screens/payments_screen.dart';
+import 'package:payment_reminder_app/application/screens/payment/payments_screen.dart';
 import 'package:payment_reminder_app/application/screens/user/profile_screen.dart';
-import 'package:payment_reminder_app/application/screens/upcoming_screen.dart';
+import 'package:payment_reminder_app/application/screens/payment/upcoming_screen.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
   seedColor: const Color.fromARGB(255, 89, 180, 236),
@@ -185,12 +184,12 @@ class _MyPaymentReminderAppState extends State<MyPaymentReminderApp> {
           '/profile': (context) => const ProfileScreen(),
           '/payments': (context) => const PaymentsScreen(),
           '/upcomingScreen': (context) => const UpcomingScreen(),
-          '/editUserProfile': (context) => const EditUserProfileScreen(),
           '/addCard': (context) => const AddCardScreen(),
         },
         initialRoute: FirebaseAuth.instance.currentUser == null
             ? '/splash'
             : '/navigation',
+        // initialRoute: '/navigation',
       ),
     );
   }

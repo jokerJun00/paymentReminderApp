@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:payment_reminder_app/application/screens/user/cubit/user_cubit.dart';
+import 'package:payment_reminder_app/application/screens/user/edit_password_screen.dart';
+import 'package:payment_reminder_app/application/screens/user/edit_user_profile_screen.dart';
+import 'package:payment_reminder_app/data/models/user_model.dart';
 
 import '../auth/cubit/auth_cubit.dart';
 
@@ -12,13 +15,17 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  void logout() {
+  String _id = "";
+  String _username = "";
+  String _email = "";
+  String _contactNo = "";
+
+  void _logout() {
     BlocProvider.of<AuthCubit>(context).logOut();
   }
 
   @override
   void initState() {
-    // load user data
     BlocProvider.of<UserCubit>(context).getUser();
     super.initState();
   }
@@ -27,7 +34,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<UserCubit, UserState>(
       listener: (context, state) {
-        if (state is UserStateError) {
+        if (state is UserStateInitial) {
+          _id = state.user.id;
+          _username = state.user.name;
+          _email = state.user.email;
+          _contactNo = state.user.contactNo;
+        } else if (state is UserStateError) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),
@@ -35,107 +47,131 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
       },
       builder: (context, state) {
-        if (state is UserStateInitial) {
-          return Scaffold(
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: 90,
-                  left: 20,
-                  right: 20,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'User Profile',
-                          style: Theme.of(context).textTheme.titleMedium,
+        if (state is UserStateLoadingData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return Scaffold(
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 90),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'User Profile',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const Spacer(),
+                      OutlinedButton(
+                        onPressed: () => _logoutDialogBuilder(context),
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 253, 138, 138),
                         ),
-                        const Spacer(),
-                        OutlinedButton(
-                          onPressed: () => _dialogBuilder(context),
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor:
-                                const Color.fromARGB(255, 253, 138, 138),
-                          ),
-                          child: const Text('Logout'),
-                        ),
-                        const SizedBox(width: 5),
-                        OutlinedButton(
-                          onPressed: () => Navigator.of(context)
-                              .pushNamed("/editUserProfile"),
-                          child: const Text('Edit'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 35),
-                    Text(
-                      'Username',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    Text(
-                      state.user.name,
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Phone Number',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    Text(
-                      "+${state.user.contactNo}",
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Email',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    Text(
-                      state.user.email,
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                    const SizedBox(height: 15),
-                    OutlinedButton(
-                        onPressed: () {}, child: const Text('Edit Password')),
-                    const SizedBox(height: 60),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'Main Card',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        const Spacer(),
-                        InkWell(
-                          onTap: () {},
-                          child: Text(
-                            'view all',
-                            style:
-                                Theme.of(context).textTheme.bodySmall!.copyWith(
-                                      color: Colors.white,
-                                      decoration: TextDecoration.underline,
-                                    ),
+                        child: const Text('Logout'),
+                      ),
+                      const SizedBox(width: 5),
+                      OutlinedButton(
+                        onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => BlocProvider.value(
+                              value: BlocProvider.of<UserCubit>(context),
+                              child: EditUserProfileScreen(
+                                user: UserModel(
+                                  id: _id,
+                                  name: _username,
+                                  email: _email,
+                                  contactNo: _contactNo,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                        child: const Text('Edit'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 35),
+                  Text(
+                    'Username',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  Text(
+                    _username,
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Phone Number',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  Text(
+                    "+$_contactNo",
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Email',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  Text(
+                    _email,
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
+                  const SizedBox(height: 15),
+                  OutlinedButton(
+                      onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => BlocProvider.value(
+                                value: BlocProvider.of<UserCubit>(context),
+                                child: EditPasswordScreen(
+                                  user: UserModel(
+                                    id: _id,
+                                    name: _username,
+                                    email: _email,
+                                    contactNo: _contactNo,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      child: const Text('Edit Password')),
+                  const SizedBox(height: 60),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Main Card',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const Spacer(),
+                      InkWell(
+                        onTap: () {},
+                        child: Text(
+                          'view all',
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: Colors.white,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          );
-        }
-        return const Center(child: CircularProgressIndicator());
+          ),
+        );
       },
     );
   }
 
-  Future<void> _dialogBuilder(BuildContext context) {
+  Future<void> _logoutDialogBuilder(BuildContext context) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -162,7 +198,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: TextStyle(color: Colors.red),
               ),
               onPressed: () {
-                logout();
+                _logout();
                 Navigator.of(context).pop();
               },
             ),

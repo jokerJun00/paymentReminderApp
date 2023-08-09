@@ -4,10 +4,10 @@ import 'package:payment_reminder_app/application/screens/budgets_screen.dart';
 
 // screen
 import 'package:payment_reminder_app/application/screens/home_screen.dart';
-import 'package:payment_reminder_app/application/screens/payments_screen.dart';
+import 'package:payment_reminder_app/application/screens/payment/payments_screen.dart';
 import 'package:payment_reminder_app/application/screens/user/cubit/user_cubit.dart';
 import 'package:payment_reminder_app/application/screens/user/profile_screen.dart';
-import 'package:payment_reminder_app/application/screens/upcoming_screen.dart';
+import 'package:payment_reminder_app/application/screens/payment/upcoming_screen.dart';
 
 import 'cubit/auth_cubit.dart';
 

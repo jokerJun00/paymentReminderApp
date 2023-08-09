@@ -81,14 +81,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
             SnackBar(content: Text(state.message)),
           );
         }
-
-        // else if (state is AuthStateLoading) {
-        //   showDialog(
-        //     context: context,
-        //     builder: (context) =>
-        //         const Center(child: CircularProgressIndicator()),
-        //   );
-        // }
       },
       child: Scaffold(
         body: Center(

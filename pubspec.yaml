@@ -48,6 +48,7 @@ dependencies:
   equatable: ^2.0.5
   dartz: ^0.10.1
   flutter_stripe: ^9.3.0
+  fl_chart: ^0.63.0
 
 dev_dependencies:
   flutter_test:

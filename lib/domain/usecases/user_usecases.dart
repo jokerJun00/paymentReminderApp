@@ -11,12 +11,15 @@ class UserUseCases {
     return userRepoFirestore.getUserFromDataSource();
   }
 
-  Future<Either<UserEntity, Failure>> editUser(
-      String username, String email, String contactNo) {
-    return userRepoFirestore.editUserFromDataSource(username, email, contactNo);
+  Future<Either<UserEntity, Failure>> editUser(String id, String username,
+      String email, String contactNo, String oldEmail, String password) {
+    return userRepoFirestore.editUserFromDataSource(
+        id, username, email, contactNo, oldEmail, password);
   }
 
-  Future<Either<void, Failure>> editPassword(String newPassword) {
-    return userRepoFirestore.editPasswordFromDataSource(newPassword);
+  Future<Either<void, Failure>> editPassword(
+      String email, String oldPassword, String newPassword) {
+    return userRepoFirestore.editPasswordFromDataSource(
+        email, oldPassword, newPassword);
   }
 }
