@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:payment_reminder_app/domain/failures/failures.dart';
 
 import '../exceptions/exceptions.dart';
 import '../models/user_model.dart';
