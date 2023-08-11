@@ -31,7 +31,7 @@ exports.resetPaymentReminder = functions.firestore
       // TODO:: change the payment reminder notification period
 
       // notify user notification period has change
-      return admin.messaging().sendToTopic("chat", {
+      return admin.messaging().sendToTopic("resetPaymentReminder", {
         notification: {
           title: snapshot.data()["name"] + "reminder set",
           body: "We will remind your payment " + snapshot.data()["notification_period"] + " days before every " + snapshot.data()["payment_date"],
@@ -41,3 +41,11 @@ exports.resetPaymentReminder = functions.firestore
     }
     return null;
   });
+
+// schedule functions
+// https://firebase.google.com/docs/functions/schedule-functions?gen=1st
+// https://stackoverflow.com/questions/66680239/flutter-how-can-i-create-repeating-push-notifications
+
+// stripe pay to 3rd parties
+// https://stripe.com/docs/connect/collect-then-transfer-guide
+
