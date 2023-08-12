@@ -26,6 +26,7 @@ abstract class UserDataSource {
 class UserDataSourceImpl implements UserDataSource {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   @override
   Future<void> editPasswordFromDataSource(
       String email, String oldPassword, String newPassword) async {
@@ -77,7 +78,7 @@ class UserDataSourceImpl implements UserDataSource {
 
     if (newUserData.exists) {
       // return edited user data
-      return UserModel.fromFirestore(id, newUserData);
+      return UserModel.fromFirestore(newUserData);
     } else {
       throw ServerException();
     }
@@ -93,7 +94,7 @@ class UserDataSourceImpl implements UserDataSource {
         .catchError((_) => throw ServerException());
 
     if (userData.exists) {
-      return UserModel.fromFirestore(currentUserId, userData);
+      return UserModel.fromFirestore(userData);
     } else {
       throw ServerException();
     }

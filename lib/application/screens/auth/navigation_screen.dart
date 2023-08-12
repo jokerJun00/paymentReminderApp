@@ -1,5 +1,7 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:payment_reminder_app/application/screens/payment/cubit/payment_cubit.dart';
 
 // screen
 import 'package:payment_reminder_app/application/screens/payment/payments_screen.dart';
@@ -27,24 +29,54 @@ class _NavigationScreenState extends State<NavigationScreen> {
     });
   }
 
+  void goToUpcoming() {
+    setState(() {
+      _selectedScreenIndex = 1;
+    });
+  }
+
+  void setupPushNotification() async {
+    final fcm = FirebaseMessaging.instance;
+
+    await fcm.subscribeToTopic('setPaymentReminder');
+    await fcm.subscribeToTopic('resetPaymentReminder');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    // push notification setup
+    setupPushNotification();
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget activeScreen = const HomeScreen();
+    PaymentCubit paymentCubit = PaymentCubit();
+    Widget activeScreen = HomeScreen(navigateToUpcoming: goToUpcoming);
 
     switch (_selectedScreenIndex) {
       case 0:
         {
-          activeScreen = const PaymentScreen();
+          activeScreen = BlocProvider.value(
+            value: paymentCubit,
+            child: const PaymentScreen(),
+          );
         }
         break;
       case 1:
         {
-          activeScreen = const UpcomingScreen();
+          activeScreen = BlocProvider.value(
+            value: paymentCubit,
+            child: const UpcomingScreen(),
+          );
         }
         break;
       case 2:
         {
-          activeScreen = const HomeScreen();
+          activeScreen = HomeScreen(
+            navigateToUpcoming: goToUpcoming,
+          );
         }
         break;
       case 3:
@@ -62,7 +94,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
         break;
       default:
         {
-          activeScreen = const HomeScreen();
+          activeScreen = HomeScreen(
+            navigateToUpcoming: goToUpcoming,
+          );
         }
         break;
     }

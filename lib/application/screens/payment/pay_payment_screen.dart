@@ -3,16 +3,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../data/models/payment_model.dart';
 
-class PaymentDetailScreen extends StatefulWidget {
-  const PaymentDetailScreen({super.key, required this.payment});
+class PayPaymentScreen extends StatelessWidget {
+  const PayPaymentScreen({super.key, required this.payment});
 
   final PaymentModel payment;
 
-  @override
-  State<PaymentDetailScreen> createState() => _PaymentDetailScreenState();
-}
-
-class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +28,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
               ),
               const SizedBox(height: 30),
               Text(
-                'Update Payment',
+                'Pay Payment',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ],

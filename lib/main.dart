@@ -173,9 +173,17 @@ class _MyPaymentReminderAppState extends State<MyPaymentReminderApp> {
                 fillColor: Colors.white,
                 contentPadding: const EdgeInsets.all(10),
               ),
+          snackBarTheme: ThemeData().snackBarTheme.copyWith(
+                backgroundColor: Colors.white,
+                contentTextStyle: const TextStyle(color: Colors.black),
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              ),
         ),
         routes: {
-          '/': (context) => const HomeScreen(),
+          // '/': (context) => const HomeScreen(),
           '/splash': (context) => const SplashScreen(),
           '/login': (context) => const LogInScreen(),
           '/signup': (context) => const SignUpScreen(),

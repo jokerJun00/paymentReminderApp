@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:payment_reminder_app/application/screens/payment/pay_payment_screen.dart';
-import 'package:payment_reminder_app/application/screens/payment/payment_detail_screen.dart';
 import 'package:payment_reminder_app/data/models/payment_model.dart';
 
 import '../../date_time_formatter.dart';
 
-class PaymentCard extends StatelessWidget {
-  const PaymentCard({super.key, required this.payment});
+class UpcomingPaymentCard extends StatelessWidget {
+  const UpcomingPaymentCard({super.key, required this.payment});
 
   final PaymentModel payment;
 
@@ -25,7 +24,7 @@ class PaymentCard extends StatelessWidget {
           splashColor: Colors.grey.withAlpha(30),
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => PaymentDetailScreen(payment: payment),
+              builder: (_) => PayPaymentScreen(payment: payment),
             ),
           ),
           child: Padding(
@@ -55,28 +54,10 @@ class PaymentCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Payment Date: ${DateTimeFormatter.formatDay(payment.payment_date)}",
-                        ),
-                        Text(
-                            "Notify Period: ${payment.notification_period} days"),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const Text("Billing Cycle:"),
-                        Text(payment.billing_cycle),
-                      ],
-                    ),
-                  ],
+                const SizedBox(height: 18),
+                Text(
+                  "Due on: ${DateTimeFormatter.formatDateTime(payment.payment_date)}",
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
             ),

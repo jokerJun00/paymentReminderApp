@@ -1,10 +1,10 @@
 // import 'package:fl_chart/fl_chart.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:payment_reminder_app/application/screens/payment/payment_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.navigateToUpcoming});
+
+  final Function() navigateToUpcoming;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -12,21 +12,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   // List<Payment> _monthlyPaymentsData = List<Payment>.empty(growable: true);
-
-  void setupPushNotification() async {
-    final fcm = FirebaseMessaging.instance;
-
-    await fcm.subscribeToTopic('paymentReminder');
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    // push notification setup
-    setupPushNotification();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,11 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const Spacer(),
               InkWell(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const PaymentListScreen(),
-                  ),
-                ),
+                onTap: () => widget.navigateToUpcoming,
                 child: Text(
                   'view all',
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(

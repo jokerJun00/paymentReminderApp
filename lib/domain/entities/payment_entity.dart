@@ -5,6 +5,7 @@ class PaymentEntity extends Equatable {
     required this.id,
     required this.name,
     required this.description,
+    required this.payment_date,
     required this.notification_period,
     required this.billing_cycle,
     required this.expected_amount,
@@ -16,8 +17,9 @@ class PaymentEntity extends Equatable {
   final String id;
   final String name;
   final String description;
-  final DateTime notification_period;
-  final DateTime billing_cycle;
+  final DateTime payment_date;
+  final int notification_period;
+  final String billing_cycle;
   final double expected_amount;
   final String user_id;
   final String receiver_id;
@@ -27,6 +29,7 @@ class PaymentEntity extends Equatable {
   List<Object?> get props => [
         name,
         description,
+        payment_date,
         notification_period,
         billing_cycle,
         expected_amount,

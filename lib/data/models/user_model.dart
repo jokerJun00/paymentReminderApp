@@ -21,7 +21,7 @@ class UserModel extends UserEntity with EquatableMixin {
   }
 
   factory UserModel.fromFirestore(
-      String userId, DocumentSnapshot<Map<String, dynamic>> userData) {
+      DocumentSnapshot<Map<String, dynamic>> userData) {
     final data = userData.data()!;
 
     return UserModel(
