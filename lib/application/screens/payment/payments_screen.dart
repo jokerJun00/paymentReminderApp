@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:payment_reminder_app/application/screens/payment/add_payment_screen.dart';
+import 'package:payment_reminder_app/data/models/category_model.dart';
 
 import '../../../data/models/payment_model.dart';
 import '../../widgets/payment_card.dart';
@@ -14,12 +16,20 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  List<PaymentModel> payments = <PaymentModel>[];
+  List<PaymentModel> paymentList = [];
+  List<CategoryModel> categoryList = [];
+
+  final _firebaseAuth = FirebaseAuth.instance;
+  var _userId = "";
 
   @override
   void initState() {
     BlocProvider.of<PaymentCubit>(context).getAllPayments();
     super.initState();
+
+    setState(() {
+      _userId = _firebaseAuth.currentUser!.uid;
+    });
   }
 
   @override
@@ -27,7 +37,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return BlocConsumer<PaymentCubit, PaymentState>(
       listener: (context, state) {
         if (state is PaymentStateInitial) {
-          payments = state.payments as List<PaymentModel>;
+          paymentList = state.paymentList as List<PaymentModel>;
+          categoryList = state.categoryList as List<CategoryModel>;
         } else if (state is PaymentStateError) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
@@ -41,7 +52,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
-        } else if (state is PaymentStateInitial && payments.length == 0) {
+        } else if (state is PaymentStateInitial && paymentList.isEmpty) {
           return const Scaffold(
             body: Center(child: Text("You do not have any payment yet")),
           );
@@ -70,22 +81,30 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           OutlinedButton(
                             onPressed: () => Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => const AddPaymentScreen(),
+                                builder: (_) => BlocProvider.value(
+                                  value: context.read<PaymentCubit>(),
+                                  child: AddPaymentScreen(
+                                    userId: _userId,
+                                    categoryList: categoryList,
+                                  ),
+                                ),
                               ),
                             ),
                             child: const Text("Add"),
                           ),
                         ],
                       ),
-                      (payments.isEmpty)
+                      (paymentList.isEmpty)
                           ? const Center(
                               child: Text("You do not have any payment yet"),
                             )
                           : Expanded(
                               child: ListView.builder(
-                                itemCount: payments.length,
+                                itemCount: paymentList.length,
                                 itemBuilder: (context, index) {
-                                  return PaymentCard(payment: payments[index]);
+                                  return PaymentCard(
+                                    payment: paymentList[index],
+                                  );
                                 },
                               ),
                             ),

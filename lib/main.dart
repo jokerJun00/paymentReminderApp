@@ -18,7 +18,6 @@ import 'package:payment_reminder_app/application/screens/auth/login_screen.dart'
 import 'package:payment_reminder_app/application/screens/auth/signup_screen.dart';
 import 'package:payment_reminder_app/application/screens/auth/navigation_screen.dart';
 import 'package:payment_reminder_app/application/screens/budgets_screen.dart';
-import 'package:payment_reminder_app/application/screens/payment/home_screen.dart';
 import 'package:payment_reminder_app/application/screens/user/profile_screen.dart';
 import 'package:payment_reminder_app/application/screens/payment/upcoming_screen.dart';
 

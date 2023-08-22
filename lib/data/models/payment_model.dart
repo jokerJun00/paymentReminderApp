@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:payment_reminder_app/domain/entities/payment_entity.dart';
 
 class PaymentModel extends PaymentEntity with EquatableMixin {
-  const PaymentModel({
+  PaymentModel({
     required super.id,
     required super.name,
     required super.description,

@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class PaymentEntity extends Equatable {
-  const PaymentEntity({
+  PaymentEntity({
     required this.id,
     required this.name,
     required this.description,
@@ -14,16 +14,16 @@ class PaymentEntity extends Equatable {
     required this.category_id,
   });
 
-  final String id;
-  final String name;
-  final String description;
-  final DateTime payment_date;
-  final int notification_period;
-  final String billing_cycle;
-  final double expected_amount;
-  final String user_id;
-  final String receiver_id;
-  final String category_id;
+  String id;
+  String name;
+  String description;
+  DateTime payment_date;
+  int notification_period;
+  String billing_cycle;
+  double expected_amount;
+  String user_id;
+  String receiver_id;
+  String category_id;
 
   @override
   List<Object?> get props => [

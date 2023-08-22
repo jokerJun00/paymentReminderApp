@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DateTimeFormatter {
@@ -7,6 +6,15 @@ class DateTimeFormatter {
     final DateTime now = DateTime.now();
 
     final updatedDateTime = DateTime(now.year, dateTime.month, dateTime.day);
+
+    return formatter.format(dateTime);
+  }
+
+  static String formatPaymentDate(DateTime dateTime) {
+    final DateFormat formatter = DateFormat('dd/MM');
+    final DateTime now = DateTime.now();
+
+    final updatedPaymentDate = DateTime(now.year, dateTime.month, dateTime.day);
 
     return formatter.format(dateTime);
   }
