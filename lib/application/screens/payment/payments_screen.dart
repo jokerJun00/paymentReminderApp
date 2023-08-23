@@ -38,7 +38,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
       listener: (context, state) {
         if (state is PaymentStateInitial) {
           paymentList = state.paymentList as List<PaymentModel>;
-          categoryList = state.categoryList as List<CategoryModel>;
         } else if (state is PaymentStateError) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
@@ -85,7 +84,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   value: context.read<PaymentCubit>(),
                                   child: AddPaymentScreen(
                                     userId: _userId,
-                                    categoryList: categoryList,
                                   ),
                                 ),
                               ),

@@ -4,6 +4,7 @@ import 'package:payment_reminder_app/domain/entities/payment_entity.dart';
 import 'package:payment_reminder_app/domain/failures/failures.dart';
 
 import '../../data/models/bank_model.dart';
+import '../../data/models/category_model.dart';
 import '../../data/models/payment_model.dart';
 import '../../data/repositories/payment_repo_impl.dart';
 import '../entities/category_entity.dart';
@@ -38,5 +39,9 @@ class PaymentUseCases {
 
   Future<Either<List<BankModel>, Failure>> getBankList() {
     return paymentRepoFirestore.getBankList();
+  }
+
+  Future<Either<List<CategoryModel>, Failure>> getCategoryList() {
+    return paymentRepoFirestore.getCategoryList();
   }
 }

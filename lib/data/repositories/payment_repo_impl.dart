@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:payment_reminder_app/data/datasources/payment_datasource.dart';
 import 'package:payment_reminder_app/data/models/bank_model.dart';
+import 'package:payment_reminder_app/data/models/category_model.dart';
 import 'package:payment_reminder_app/domain/entities/category_entity.dart';
 
 import 'package:payment_reminder_app/domain/entities/payment_entity.dart';
@@ -97,6 +98,17 @@ class PaymentRepoImpl implements PaymentRepo {
       return left(await paymentDataSource.getBankList());
     } on ServerException catch (_) {
       return right(ServerFailure(error: "Fail to get bank list"));
+    } catch (e) {
+      return right(GeneralFailure(error: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<List<CategoryModel>, Failure>> getCategoryList() async {
+    try {
+      return left(await paymentDataSource.getCategoryList());
+    } on ServerException catch (_) {
+      return right(ServerFailure(error: "Fail to get category list"));
     } catch (e) {
       return right(GeneralFailure(error: e.toString()));
     }

@@ -31,6 +31,8 @@ abstract class PaymentDataSource {
   Future<void> addCategory(String categoryName);
 
   Future<List<BankModel>> getBankList();
+
+  Future<List<CategoryModel>> getCategoryList();
 }
 
 class PaymentDataSourceImpl implements PaymentDataSource {
@@ -176,5 +178,37 @@ class PaymentDataSourceImpl implements PaymentDataSource {
     });
 
     return bankList;
+  }
+
+  @override
+  Future<List<CategoryModel>> getCategoryList() async {
+    final user_id = await _firebaseAuth.currentUser!.uid;
+    List<CategoryModel> categoryList = [];
+
+    // get all default category
+    final defaultCategoriesData = await _firestore
+        .collection('Categories')
+        .where('user_id', isEqualTo: "")
+        .get()
+        .catchError((_) => throw ServerException());
+
+    defaultCategoriesData.docs.forEach((data) {
+      CategoryModel category = CategoryModel.fromFirestore(data);
+      categoryList.add(category);
+    });
+
+    // get all user setting category
+    final userCategoriesData = await _firestore
+        .collection('Categories')
+        .where('user_id', isEqualTo: user_id)
+        .get()
+        .catchError((_) => throw ServerException());
+
+    userCategoriesData.docs.forEach((data) {
+      CategoryModel category = CategoryModel.fromFirestore(data);
+      categoryList.add(category);
+    });
+
+    return categoryList;
   }
 }

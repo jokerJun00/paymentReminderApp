@@ -1,18 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:payment_reminder_app/data/models/category_model.dart';
 import 'package:payment_reminder_app/data/models/receiver_model.dart';
 import 'package:payment_reminder_app/domain/entities/payment_entity.dart';
 
 import '../../../../data/models/bank_model.dart';
 import '../../../../data/models/payment_model.dart';
-import '../../../../domain/entities/category_entity.dart';
 import '../../../../domain/usecases/payment_usecases.dart';
 
 part 'payment_state.dart';
 
 class PaymentCubit extends Cubit<PaymentState> {
-  PaymentCubit()
-      : super(const PaymentStateInitial(paymentList: [], categoryList: []));
+  PaymentCubit() : super(const PaymentStateInitial(paymentList: []));
 
   final PaymentUseCases paymentUseCases = PaymentUseCases();
 
@@ -20,18 +19,23 @@ class PaymentCubit extends Cubit<PaymentState> {
     emit(PaymentStateLoadingData());
 
     final paymentsOrFailure = await paymentUseCases.getAllPayments();
-    final categoriesOrFailure = await paymentUseCases.getAllCategories();
 
     paymentsOrFailure.fold(
-      (paymentList) {
-        categoriesOrFailure.fold(
-          (categoryList) => emit(PaymentStateInitial(
-              paymentList: paymentList, categoryList: categoryList)),
-          (failure) => emit(PaymentStateError(message: failure.getError)),
-        );
-      },
+      (paymentList) => emit(PaymentStateInitial(paymentList: paymentList)),
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
+    // final categoriesOrFailure = await paymentUseCases.getAllCategories();
+
+    // paymentsOrFailure.fold(
+    //   (paymentList) {
+    //     categoriesOrFailure.fold(
+    //       (categoryList) => emit(PaymentStateInitial(
+    //           paymentList: paymentList, categoryList: categoryList)),
+    //       (failure) => emit(PaymentStateError(message: failure.getError)),
+    //     );
+    //   },
+    //   (failure) => emit(PaymentStateError(message: failure.getError)),
+    // );
   }
 
   void addPayments(PaymentModel payment, ReceiverModel receiver) async {
@@ -101,5 +105,18 @@ class PaymentCubit extends Cubit<PaymentState> {
     return bankList;
   }
 
-  Future<void> addReceiver() async {}
+  Future<List<CategoryModel>> getCategoryList() async {
+    emit(PaymentStateLoadingData());
+    final categoryListOrFailure = await paymentUseCases.getCategoryList();
+    List<CategoryModel> categoryList = <CategoryModel>[];
+
+    categoryListOrFailure.fold(
+      (categoryListFromDatabase) => categoryList = categoryListFromDatabase,
+      (failure) => emit(PaymentStateError(message: failure.getError)),
+    );
+
+    getAllPayments();
+
+    return categoryList;
+  }
 }

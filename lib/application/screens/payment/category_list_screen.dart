@@ -9,11 +9,9 @@ import 'cubit/payment_cubit.dart';
 class CategoryListScreen extends StatefulWidget {
   const CategoryListScreen({
     super.key,
-    required this.categoryList,
     required this.saveCategory,
   });
 
-  final List<CategoryModel> categoryList;
   final Function saveCategory;
 
   @override
@@ -34,23 +32,31 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
 
       // add new category to firestore
       BlocProvider.of<PaymentCubit>(context).addCategory(categoryName);
+
+      getCategory();
     }
+  }
+
+  void getCategory() async {
+    final categoryListFromDatabase =
+        await BlocProvider.of<PaymentCubit>(context).getCategoryList();
+
+    setState(() {
+      categoryList = categoryListFromDatabase;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    categoryList = widget.categoryList;
+    getCategory();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PaymentCubit, PaymentState>(
       listener: (context, state) {
-        if (state is PaymentStateInitial) {
-          categoryList = state.categoryList as List<CategoryModel>;
-          print(state.categoryList);
-        } else if (state is PaymentStateEditSuccess) {
+        if (state is PaymentStateEditSuccess) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
