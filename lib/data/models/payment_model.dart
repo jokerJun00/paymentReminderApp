@@ -36,4 +36,18 @@ class PaymentModel extends PaymentEntity with EquatableMixin {
       category_id: payment["category_id"],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'description': description,
+      'payment_date': payment_date,
+      'notification_period': notification_period,
+      'billing_cycle': billing_cycle,
+      'expected_amount': expected_amount.toString(),
+      'user_id': user_id,
+      'receiver_id': receiver_id,
+      'category_id': category_id,
+    };
+  }
 }

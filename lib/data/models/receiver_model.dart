@@ -23,4 +23,13 @@ class ReceiverModel extends ReceiverEntity with EquatableMixin {
       user_id: data["user_id"],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'bank_id': bank_id,
+      'bank_account_no': bank_account_no,
+      'user_id': user_id,
+    };
+  }
 }

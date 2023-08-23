@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:payment_reminder_app/data/exceptions/exceptions.dart';
 import 'package:payment_reminder_app/data/models/receiver_model.dart';
@@ -44,31 +43,36 @@ class PaymentDataSourceImpl implements PaymentDataSource {
     final user_id = await _firebaseAuth.currentUser!.uid;
 
     receiverInfo.user_id = user_id;
+    newPayment.user_id = user_id;
 
     // check if the receiver already created
     final receiverData = await _firestore
         .collection('Receivers')
         .where('user_id', isEqualTo: user_id)
         .where('name', isEqualTo: receiverInfo.name)
-        // .where('bank_id', isEqualTo: receiverInfo.bank_id)
         .where('bank_account_no', isEqualTo: receiverInfo.bank_account_no)
         .get()
         .catchError((_) => throw ServerException());
 
     // if there is same receiver in database
     if (receiverData.size > 0) {
-      print("Existing receiver in database");
+      ReceiverModel receiver =
+          ReceiverModel.fromFirestore(receiverData.docs.first);
+      newPayment.receiver_id = receiver.id;
     } else {
-      print("No existing receiver in database");
-      // store new receiver data into database
+      // store new receiver data into database and set new payment receiver_id
+      await _firestore
+          .collection('Receivers')
+          .add(receiverInfo.toJson())
+          .then((DocumentReference doc) => newPayment.receiver_id = doc.id)
+          .catchError((e) => throw ServerException());
     }
 
-    // set receiver id to new payment
-    // newPayment.receiver_id = receiver.id;
-
-    throw ServerException();
-
     // store new payment to Firestore
+    await _firestore
+        .collection('Payments')
+        .add(newPayment.toJson())
+        .catchError((_) => throw ServerException());
   }
 
   @override
