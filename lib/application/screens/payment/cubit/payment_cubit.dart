@@ -48,7 +48,7 @@ class PaymentCubit extends Cubit<PaymentState> {
     getAllPayments();
   }
 
-  void editPayments(PaymentModel payment) async {
+  void editPayments(PaymentModel payment, ReceiverModel receiver) async {
     emit(PaymentStateEditingData());
 
     final paymentOrFailure = await paymentUseCases.editPayment(payment);

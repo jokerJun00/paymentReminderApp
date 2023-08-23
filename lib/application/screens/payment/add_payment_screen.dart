@@ -41,6 +41,7 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
     category_id: "",
     user_id: "",
   );
+
   var receiver = ReceiverModel(
     id: "",
     name: "",
@@ -200,6 +201,7 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
                             child: FaIcon(FontAwesomeIcons.calendar),
                           ),
                         ),
+                        readOnly: true,
                         keyboardType: TextInputType.datetime,
                         onTap: () async {
                           DateTime? pickedDate = await showDatePicker(
@@ -284,6 +286,12 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
                                 int.tryParse(value.toString())!;
                           });
                         },
+                        validator: (value) {
+                          if (value == null) {
+                            return "Please select a notification period";
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 20),
                       Text(
@@ -312,6 +320,12 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
                               .toString()
                               .replaceFirst("BillingCycle.", "");
                         },
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Please select a billing cycle';
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 20),
                       Text(
@@ -335,6 +349,12 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
                             },
                           ),
                         ),
+                        validator: (value) {
+                          if (newPayment.category_id == "") {
+                            return "Please select a category";
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 20),
                       Text(
@@ -349,7 +369,8 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
                         ),
                         keyboardType: TextInputType.number,
                         validator: (value) {
-                          if (value == null || value.trim() == "") {
+                          final valueInDouble = double.tryParse(value!);
+                          if (value.trim() == "" || valueInDouble! <= 0) {
                             return "Please provide a value more than 0";
                           }
                           return null;
@@ -406,6 +427,12 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
                             .toList(),
                         onChanged: (value) {
                           receiver.bank_id = value!.id;
+                        },
+                        validator: (value) {
+                          if (value == null) {
+                            return "Please select a bank for receiver";
+                          }
+                          return null;
                         },
                       ),
                       const SizedBox(height: 20),
