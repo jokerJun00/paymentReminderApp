@@ -40,10 +40,12 @@ class PaymentCubit extends Cubit<PaymentState> {
     getAllPayments();
   }
 
-  void editPayments(PaymentModel payment, ReceiverModel receiver) async {
+  void editPayments(
+      PaymentModel editedPaymentInfo, ReceiverModel editedReceiverInfo) async {
     emit(PaymentStateEditingData());
 
-    final paymentOrFailure = await paymentUseCases.editPayment(payment);
+    final paymentOrFailure = await paymentUseCases.editPayment(
+        editedPaymentInfo, editedReceiverInfo);
 
     paymentOrFailure.fold(
       (payments) => emit(PaymentStateEditSuccess()),
@@ -53,10 +55,10 @@ class PaymentCubit extends Cubit<PaymentState> {
     getAllPayments();
   }
 
-  void deletePayments(String paymentId) async {
+  Future<void> deletePayments(PaymentModel payment) async {
     emit(PaymentStateEditingData());
 
-    final paymentOrFailure = await paymentUseCases.deletePayment(paymentId);
+    final paymentOrFailure = await paymentUseCases.deletePayment(payment);
 
     paymentOrFailure.fold(
       (payments) => emit(PaymentStateEditSuccess()),
@@ -124,7 +126,6 @@ class PaymentCubit extends Cubit<PaymentState> {
 
     receiverOrFailure.fold(
       (receiverFromDatabase) {
-        print("Receiver from database ===> $receiverFromDatabase");
         receiver = receiverFromDatabase;
         emit(PaymentStateLoaded());
       },

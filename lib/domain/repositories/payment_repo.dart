@@ -14,10 +14,12 @@ abstract class PaymentRepo {
       getAllCategoriesFromDataSource();
   Future<Either<void, Failure>> addPaymentFromDataSource(
       PaymentModel newPayment, ReceiverModel receiver);
-  Future<Either<void, Failure>> editPaymentFromDataSource(PaymentModel payment);
-  Future<Either<void, Failure>> deletePaymentFromDataSource(String paymentId);
+  Future<Either<void, Failure>> editPaymentFromDataSource(
+      PaymentModel editedPaymentInfo, ReceiverModel editedReceiverInfo);
+  Future<Either<void, Failure>> deletePaymentFromDataSource(
+      PaymentModel payment);
   Future<Either<void, Failure>> addCategory(String categoryName);
   Future<Either<List<BankModel>, Failure>> getBankList();
   Future<Either<List<CategoryModel>, Failure>> getCategoryList();
-  Future<Either<ReceiverModel, Failure>> getReceiver(String reciverId);
+  Future<Either<ReceiverModel, Failure>> getReceiver(String receiverId);
 }

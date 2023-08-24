@@ -25,12 +25,14 @@ class PaymentUseCases {
     return paymentRepoFirestore.addPaymentFromDataSource(payment, receiver);
   }
 
-  Future<Either<void, Failure>> editPayment(PaymentModel payment) {
-    return paymentRepoFirestore.editPaymentFromDataSource(payment);
+  Future<Either<void, Failure>> editPayment(
+      PaymentModel editedPaymentInfo, ReceiverModel editedReceiverInfo) {
+    return paymentRepoFirestore.editPaymentFromDataSource(
+        editedPaymentInfo, editedReceiverInfo);
   }
 
-  Future<Either<void, Failure>> deletePayment(String paymentId) {
-    return paymentRepoFirestore.deletePaymentFromDataSource(paymentId);
+  Future<Either<void, Failure>> deletePayment(PaymentModel payment) {
+    return paymentRepoFirestore.deletePaymentFromDataSource(payment);
   }
 
   Future<Either<void, Failure>> addCategory(String categoryName) {

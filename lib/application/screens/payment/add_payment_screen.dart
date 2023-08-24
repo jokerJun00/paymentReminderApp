@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:payment_reminder_app/application/screens/payment/cubit/payment_cubit.dart';
 import 'package:payment_reminder_app/data/models/bank_model.dart';
 import 'package:payment_reminder_app/data/models/receiver_model.dart';
@@ -464,10 +465,27 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
                             receiver.bank_account_no = value!;
                           },
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 65),
                         OutlinedButton(
                           onPressed: addPayment,
-                          child: const Text("Add Payment"),
+                          style: Theme.of(context)
+                              .outlinedButtonTheme
+                              .style!
+                              .copyWith(
+                                textStyle: MaterialStatePropertyAll(
+                                  GoogleFonts.inter(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 24,
+                                  ),
+                                ),
+                              ),
+                          child: const SizedBox(
+                            width: double.infinity,
+                            height: 60,
+                            child: Center(
+                              child: Text('Add Payment'),
+                            ),
+                          ),
                         ),
                       ],
                     ),

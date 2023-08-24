@@ -1,6 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../data/models/bank_model.dart';
 import '../../../data/models/category_model.dart';
@@ -34,10 +36,12 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
 
   var bankList = <BankModel>[];
   var categoryList = <CategoryModel>[];
+  BankModel? selectedBank;
 
   var paymentDateController = TextEditingController();
-
   var categoryController = TextEditingController();
+  var receiverNameController = TextEditingController();
+  var receiverBankAccountController = TextEditingController();
 
   void getBankList() async {
     var bankListFromDatabase =
@@ -68,6 +72,10 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
 
     setState(() {
       receiver = receiverFromDatabase;
+      receiverNameController.text = receiverFromDatabase.name;
+      selectedBank =
+          bankList.firstWhereOrNull((bank) => bank.id == receiver.bank_id);
+      receiverBankAccountController.text = receiverFromDatabase.bank_account_no;
     });
   }
 
@@ -430,7 +438,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
-                          initialValue: receiver.name,
+                          controller: receiverNameController,
                           decoration:
                               const InputDecoration(labelText: 'Receiver Name'),
                           keyboardType: TextInputType.name,
@@ -454,11 +462,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                         ),
                         const SizedBox(height: 10),
                         DropdownButtonFormField<BankModel>(
-                          value: bankList.firstWhere(
-                            (element) =>
-                                element.id.trim() == receiver.bank_id.trim(),
-                            orElse: () => bankList.first,
-                          ),
+                          value: selectedBank,
                           items: bankList
                               .map((BankModel bank) =>
                                   DropdownMenuItem<BankModel>(
@@ -471,7 +475,8 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                                       )))
                               .toList(),
                           onChanged: (value) {
-                            receiver.bank_id = value!.id;
+                            selectedBank = value!;
+                            receiver.bank_id = value.id;
                           },
                           validator: (value) {
                             if (value == null) {
@@ -487,7 +492,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
-                          initialValue: receiver.bank_account_no,
+                          controller: receiverBankAccountController,
                           decoration: const InputDecoration(
                               labelText: 'Bank Account Number'),
                           keyboardType: TextInputType.number,
@@ -504,10 +509,27 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                             receiver.bank_account_no = value!;
                           },
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 65),
                         OutlinedButton(
                           onPressed: editPayment,
-                          child: const Text("Add Payment"),
+                          style: Theme.of(context)
+                              .outlinedButtonTheme
+                              .style!
+                              .copyWith(
+                                textStyle: MaterialStatePropertyAll(
+                                  GoogleFonts.inter(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 24,
+                                  ),
+                                ),
+                              ),
+                          child: const SizedBox(
+                            width: double.infinity,
+                            height: 60,
+                            child: Center(
+                              child: Text('Update Payment'),
+                            ),
+                          ),
                         ),
                       ],
                     ),

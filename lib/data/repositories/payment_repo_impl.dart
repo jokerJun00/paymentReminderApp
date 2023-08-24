@@ -32,10 +32,9 @@ class PaymentRepoImpl implements PaymentRepo {
 
   @override
   Future<Either<void, Failure>> deletePaymentFromDataSource(
-      String paymentId) async {
+      PaymentModel payment) async {
     try {
-      return left(
-          await paymentDataSource.deletePaymentFromDataSource(paymentId));
+      return left(await paymentDataSource.deletePaymentFromDataSource(payment));
     } on ServerException catch (_) {
       return right(
           ServerFailure(error: "Edit payment failed. Please check your input"));
@@ -46,9 +45,12 @@ class PaymentRepoImpl implements PaymentRepo {
 
   @override
   Future<Either<void, Failure>> editPaymentFromDataSource(
-      PaymentModel payment) async {
+      PaymentModel editedPaymentInfo, ReceiverModel editedReceiverInfo) async {
     try {
-      return left(await paymentDataSource.editPaymentFromDataSource(payment));
+      return left(await paymentDataSource.editPaymentFromDataSource(
+        editedPaymentInfo,
+        editedReceiverInfo,
+      ));
     } on ServerException catch (_) {
       return right(
           ServerFailure(error: "Edit payment failed. Please check your input"));

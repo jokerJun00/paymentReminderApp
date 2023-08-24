@@ -1,6 +1,11 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart';
 import 'package:payment_reminder_app/application/screens/payment/add_payment_screen.dart';
 import 'package:payment_reminder_app/data/models/category_model.dart';
 
@@ -21,6 +26,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   final _firebaseAuth = FirebaseAuth.instance;
   var _userId = "";
+
+  void deletePayment(PaymentModel payment) async {
+    await BlocProvider.of<PaymentCubit>(context)
+        .deletePayments(payment)
+        .then((value) {
+      // remove payment and update state
+      final removedPayment = paymentList
+          .firstWhere((element) => element.id.trim() == payment.id.trim());
+      final index = paymentList.indexOf(removedPayment);
+
+      setState(() {
+        paymentList.removeAt(index);
+      });
+    });
+  }
 
   @override
   void initState() {
@@ -46,17 +66,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
         }
       },
       builder: (context, state) {
-        if (state is PaymentStateLoadingData ||
-            state is PaymentStateLoadingData) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        } else if (state is PaymentStateInitial && paymentList.isEmpty) {
-          return const Scaffold(
-            body: Center(child: Text("You do not have any payment yet")),
-          );
-        }
-
         return Scaffold(
           body: (state is PaymentStateEditingData ||
                   state is PaymentStateLoadingData)
@@ -92,20 +101,35 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           ),
                         ],
                       ),
-                      (paymentList.isEmpty)
-                          ? const Center(
-                              child: Text("You do not have any payment yet"),
-                            )
-                          : Expanded(
-                              child: ListView.builder(
-                                itemCount: paymentList.length,
-                                itemBuilder: (context, index) {
-                                  return PaymentCard(
-                                    payment: paymentList[index],
-                                  );
-                                },
-                              ),
-                            ),
+                      Expanded(
+                        child: Center(
+                          child: paymentList.isEmpty
+                              ? const Text("You do not have any payment yet")
+                              : ListView.builder(
+                                  itemCount: paymentList.length,
+                                  itemBuilder: (context, index) {
+                                    return Slidable(
+                                      endActionPane: ActionPane(
+                                          motion: const BehindMotion(),
+                                          children: [
+                                            SlidableAction(
+                                              onPressed: (_) => deletePayment(
+                                                  paymentList[index]),
+                                              backgroundColor: Colors.red,
+                                              icon: FontAwesomeIcons.trashCan,
+                                              label: "Delete",
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            )
+                                          ]),
+                                      child: PaymentCard(
+                                        payment: paymentList[index],
+                                      ),
+                                    );
+                                  },
+                                ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

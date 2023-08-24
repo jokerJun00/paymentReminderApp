@@ -24,9 +24,10 @@ abstract class PaymentDataSource {
   /// edit payments
   /// return [List<PaymentModel>>]
   /// edit the selected payment information into Firestore 'Payments' collection
-  Future<void> editPaymentFromDataSource(PaymentModel payment);
+  Future<void> editPaymentFromDataSource(
+      PaymentModel editedPaymentInfo, ReceiverModel editedReceiverInfo);
 
-  Future<void> deletePaymentFromDataSource(String paymentId);
+  Future<void> deletePaymentFromDataSource(PaymentModel payment);
 
   Future<void> addCategory(String categoryName);
 
@@ -80,21 +81,68 @@ class PaymentDataSourceImpl implements PaymentDataSource {
   }
 
   @override
-  Future<void> deletePaymentFromDataSource(String paymentId) {
-    // delete payment from Firebase
-    // check if the receiver already no use in the database
-    // if not in use, delete
+  Future<void> deletePaymentFromDataSource(PaymentModel payment) async {
+    print("Operating database, received payment info : $payment");
+    // delete payment from Firestore
+    await _firestore
+        .collection('Payments')
+        .doc(payment.id.trim())
+        .delete()
+        .catchError((_) => throw ServerException());
 
-    // TODO: implement deletePaymentFromDataSource
-    throw UnimplementedError();
+    final paymentsWithSameReceiverId = await _firestore
+        .collection('Payments')
+        .where('receiver_id', isEqualTo: payment.receiver_id.trim())
+        .get()
+        .catchError((_) => throw ServerException());
+
+    // if receiver is not in use, delete receiver
+    if (paymentsWithSameReceiverId.size == 0) {
+      await _firestore
+          .collection('Receivers')
+          .doc(payment.receiver_id.trim())
+          .delete()
+          .catchError((_) => throw ServerException());
+    }
   }
 
   @override
-  Future<void> editPaymentFromDataSource(PaymentModel payment) {
-    //
+  Future<void> editPaymentFromDataSource(
+      PaymentModel editedPaymentInfo, ReceiverModel editedReceiverInfo) async {
+    // check if receiver info updated
+    final receiverInfoInDatabase = await _firestore
+        .collection('Receivers')
+        .doc(editedPaymentInfo.id.trim())
+        .get()
+        .then((value) => ReceiverModel.fromFirestore(value))
+        .catchError((_) => throw ServerException());
 
-    // TODO: implement editPaymentFromDataSource
-    throw UnimplementedError();
+    print("Testing testing 321");
+
+    // if (receiverInfoInDatabase.name != editedReceiverInfo.name ||
+    //     receiverInfoInDatabase.bank_id != editedReceiverInfo.bank_id ||
+    //     receiverInfoInDatabase.bank_account_no !=
+    //         editedReceiverInfo.bank_account_no ||
+    //     receiverInfoInDatabase.user_id != editedReceiverInfo.user_id) {
+    //   print("Both are different");
+    //   await _firestore
+    //       .collection('Receivers')
+    //       .doc(editedPaymentInfo.id.trim())
+    //       .set(editedReceiverInfo.toJson())
+    //       .catchError((_) => throw ServerException());
+    // } else {
+    //   print("Both are same");
+    // }
+
+    print("Testing testing 123");
+
+    throw ServerException();
+
+    // final editedPaymentInfoJson = editedPaymentInfo.toJson();
+    // await _firestore
+    //     .collection('Payments')
+    //     .doc(editedPaymentInfo.id.trim())
+    //     .set(editedPaymentInfoJson).catchError((_) => throw ServerException());
   }
 
   @override
@@ -220,9 +268,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
         .collection('Receivers')
         .doc(receiverId.trim())
         .get()
-        .then((value) {
-      print(ReceiverModel.fromFirestore(value));
-      return ReceiverModel.fromFirestore(value);
-    }).catchError((_) => throw ServerException());
+        .then((value) => ReceiverModel.fromFirestore(value))
+        .catchError((_) => throw ServerException());
   }
 }
