@@ -44,4 +44,8 @@ class PaymentUseCases {
   Future<Either<List<CategoryModel>, Failure>> getCategoryList() {
     return paymentRepoFirestore.getCategoryList();
   }
+
+  Future<Either<ReceiverModel, Failure>> getReceiver(String receiverId) {
+    return paymentRepoFirestore.getReceiver(receiverId);
+  }
 }

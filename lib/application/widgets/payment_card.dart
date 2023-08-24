@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:payment_reminder_app/application/screens/payment/cubit/payment_cubit.dart';
 import 'package:payment_reminder_app/application/screens/payment/payment_detail_screen.dart';
 import 'package:payment_reminder_app/data/models/payment_model.dart';
 
@@ -24,7 +26,10 @@ class PaymentCard extends StatelessWidget {
           splashColor: Colors.grey.withAlpha(30),
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => PaymentDetailScreen(payment: payment),
+              builder: (_) => BlocProvider.value(
+                value: context.read<PaymentCubit>(),
+                child: PaymentDetailScreen(payment: payment),
+              ),
             ),
           ),
           child: Padding(

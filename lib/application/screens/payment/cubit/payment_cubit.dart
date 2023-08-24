@@ -24,18 +24,6 @@ class PaymentCubit extends Cubit<PaymentState> {
       (paymentList) => emit(PaymentStateInitial(paymentList: paymentList)),
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
-    // final categoriesOrFailure = await paymentUseCases.getAllCategories();
-
-    // paymentsOrFailure.fold(
-    //   (paymentList) {
-    //     categoriesOrFailure.fold(
-    //       (categoryList) => emit(PaymentStateInitial(
-    //           paymentList: paymentList, categoryList: categoryList)),
-    //       (failure) => emit(PaymentStateError(message: failure.getError)),
-    //     );
-    //   },
-    //   (failure) => emit(PaymentStateError(message: failure.getError)),
-    // );
   }
 
   void addPayments(PaymentModel payment, ReceiverModel receiver) async {
@@ -96,11 +84,12 @@ class PaymentCubit extends Cubit<PaymentState> {
     List<BankModel> bankList = <BankModel>[];
 
     bankListOrFailure.fold(
-      (bankListFromDatabase) => bankList = bankListFromDatabase,
+      (bankListFromDatabase) {
+        bankList = bankListFromDatabase;
+        emit(PaymentStateLoaded());
+      },
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
-
-    getAllPayments();
 
     return bankList;
   }
@@ -111,12 +100,37 @@ class PaymentCubit extends Cubit<PaymentState> {
     List<CategoryModel> categoryList = <CategoryModel>[];
 
     categoryListOrFailure.fold(
-      (categoryListFromDatabase) => categoryList = categoryListFromDatabase,
+      (categoryListFromDatabase) {
+        categoryList = categoryListFromDatabase;
+        emit(PaymentStateLoaded());
+      },
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
 
-    getAllPayments();
-
     return categoryList;
+  }
+
+  Future<ReceiverModel> getReceiver(String receiverId) async {
+    emit(PaymentStateLoadingData());
+    final receiverOrFailure = await paymentUseCases.getReceiver(receiverId);
+
+    ReceiverModel receiver = ReceiverModel(
+      id: "",
+      name: "",
+      bank_id: "",
+      bank_account_no: "",
+      user_id: "",
+    );
+
+    receiverOrFailure.fold(
+      (receiverFromDatabase) {
+        print("Receiver from database ===> $receiverFromDatabase");
+        receiver = receiverFromDatabase;
+        emit(PaymentStateLoaded());
+      },
+      (failure) => emit(PaymentStateError(message: failure.getError)),
+    );
+
+    return receiver;
   }
 }

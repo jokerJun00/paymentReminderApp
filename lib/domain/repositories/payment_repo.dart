@@ -19,4 +19,5 @@ abstract class PaymentRepo {
   Future<Either<void, Failure>> addCategory(String categoryName);
   Future<Either<List<BankModel>, Failure>> getBankList();
   Future<Either<List<CategoryModel>, Failure>> getCategoryList();
+  Future<Either<ReceiverModel, Failure>> getReceiver(String reciverId);
 }

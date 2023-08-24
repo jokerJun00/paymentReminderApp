@@ -35,53 +35,107 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
   var bankList = <BankModel>[];
   var categoryList = <CategoryModel>[];
 
-  var paymentDateController = TextEditingController(
-    text: DateTimeFormatter.formatPaymentDate(DateTime.now()),
-  );
+  var paymentDateController = TextEditingController();
 
   var categoryController = TextEditingController();
 
   void getBankList() async {
     var bankListFromDatabase =
         await BlocProvider.of<PaymentCubit>(context).getBankList();
+
     setState(() {
       bankList = bankListFromDatabase;
     });
+  }
+
+  void getSelectedCategory() async {
+    var categoryListFromDatabase =
+        await BlocProvider.of<PaymentCubit>(context).getCategoryList();
+
+    // use trim to avoid any whitespace
+    final selectedCategory = categoryListFromDatabase.firstWhere(
+        (category) => category.id.trim() == widget.payment.category_id.trim());
+
+    setState(() {
+      categoryList = categoryListFromDatabase;
+      categoryController.text = selectedCategory.name;
+    });
+  }
+
+  void getReceiver() async {
+    var receiverFromDatabase = await BlocProvider.of<PaymentCubit>(context)
+        .getReceiver(widget.payment.receiver_id);
+
+    setState(() {
+      receiver = receiverFromDatabase;
+    });
+  }
+
+  void editPayment() {
+    final isValid = _editPaymentForm.currentState!.validate();
+
+    if (isValid) {
+      _editPaymentForm.currentState!.save();
+
+      // edit Payment info into Firebase
+      BlocProvider.of<PaymentCubit>(context).editPayments(
+        widget.payment,
+        receiver,
+      );
+    }
+  }
+
+  void saveCategory(CategoryModel selectedCategory) {
+    Navigator.of(context).pop();
+    setState(() {
+      widget.payment.category_id = selectedCategory.id;
+      categoryController.text = selectedCategory.name;
+    });
+  }
+
+  BillingCycle stringToEnum(String billingCycleString) {
+    switch (billingCycleString) {
+      case "weekly":
+        return BillingCycle.weekly;
+      case "biweekly":
+        return BillingCycle.biweekly;
+      case "monthly":
+        return BillingCycle.monthly;
+      case "yearly":
+        return BillingCycle.yearly;
+      default:
+        return BillingCycle.monthly;
+    }
   }
 
   @override
   void initState() {
     super.initState();
     getBankList();
+    getSelectedCategory();
+    getReceiver();
+    setState(() {
+      paymentDateController.text =
+          DateTimeFormatter.formatPaymentDate(widget.payment.payment_date);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    void editPayment() {
-      final isValid = _editPaymentForm.currentState!.validate();
-
-      if (isValid) {
-        _editPaymentForm.currentState!.save();
-
-        // // add New Payment info into Firebase
-        BlocProvider.of<PaymentCubit>(context).editPayments(
-          widget.payment,
-          receiver,
-        );
-      }
-    }
-
-    void saveCategory(CategoryModel selectedCategory) {
-      Navigator.of(context).pop();
-      setState(() {
-        widget.payment.category_id = selectedCategory.id;
-        categoryController.text = selectedCategory.name;
-      });
-    }
-
     return BlocConsumer<PaymentCubit, PaymentState>(
       listener: (context, state) {
-        // TODO: implement listener
+        if (state is PaymentStateEditSuccess) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Payment edit successfully")),
+          );
+        } else if (state is PaymentStateError) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        }
       },
       builder: (context, state) {
         if (state is PaymentStateEditingData) {
@@ -109,7 +163,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                   ),
                   const SizedBox(height: 30),
                   Text(
-                    'New Payment',
+                    'Update Payment',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 35),
@@ -130,6 +184,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          initialValue: widget.payment.name,
                           decoration: const InputDecoration(labelText: 'Name'),
                           keyboardType: TextInputType.name,
                           autocorrect: false,
@@ -152,6 +207,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          initialValue: widget.payment.description,
                           decoration:
                               const InputDecoration(labelText: 'Description'),
                           keyboardType: TextInputType.multiline,
@@ -189,6 +245,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                               initialDate: DateTime.now(),
                               firstDate: DateTime(2000),
                               lastDate: DateTime(2101),
+                              currentDate: widget.payment.payment_date,
                             );
 
                             if (pickedDate != null) {
@@ -280,6 +337,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                         ),
                         const SizedBox(height: 10),
                         DropdownButtonFormField<BillingCycle>(
+                          value: stringToEnum(widget.payment.billing_cycle),
                           items: BillingCycle.values
                               .map((BillingCycle billingCycle) {
                             return DropdownMenuItem<BillingCycle>(
@@ -372,6 +430,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          initialValue: receiver.name,
                           decoration:
                               const InputDecoration(labelText: 'Receiver Name'),
                           keyboardType: TextInputType.name,
@@ -395,6 +454,11 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                         ),
                         const SizedBox(height: 10),
                         DropdownButtonFormField<BankModel>(
+                          value: bankList.firstWhere(
+                            (element) =>
+                                element.id.trim() == receiver.bank_id.trim(),
+                            orElse: () => bankList.first,
+                          ),
                           items: bankList
                               .map((BankModel bank) =>
                                   DropdownMenuItem<BankModel>(
@@ -423,6 +487,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          initialValue: receiver.bank_account_no,
                           decoration: const InputDecoration(
                               labelText: 'Bank Account Number'),
                           keyboardType: TextInputType.number,

@@ -18,6 +18,8 @@ class PaymentStateInitial extends PaymentState {
 
 class PaymentStateLoadingData extends PaymentState {}
 
+class PaymentStateLoaded extends PaymentState {}
+
 class PaymentStateEditingData extends PaymentState {}
 
 class PaymentStateEditSuccess extends PaymentState {}

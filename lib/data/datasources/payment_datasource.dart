@@ -33,6 +33,8 @@ abstract class PaymentDataSource {
   Future<List<BankModel>> getBankList();
 
   Future<List<CategoryModel>> getCategoryList();
+
+  Future<ReceiverModel> getReceiver(String receiverId);
 }
 
 class PaymentDataSourceImpl implements PaymentDataSource {
@@ -210,5 +212,17 @@ class PaymentDataSourceImpl implements PaymentDataSource {
     });
 
     return categoryList;
+  }
+
+  @override
+  Future<ReceiverModel> getReceiver(String receiverId) async {
+    return await _firestore
+        .collection('Receivers')
+        .doc(receiverId.trim())
+        .get()
+        .then((value) {
+      print(ReceiverModel.fromFirestore(value));
+      return ReceiverModel.fromFirestore(value);
+    }).catchError((_) => throw ServerException());
   }
 }

@@ -113,4 +113,15 @@ class PaymentRepoImpl implements PaymentRepo {
       return right(GeneralFailure(error: e.toString()));
     }
   }
+
+  @override
+  Future<Either<ReceiverModel, Failure>> getReceiver(String receiverId) async {
+    try {
+      return left(await paymentDataSource.getReceiver(receiverId));
+    } on ServerException catch (_) {
+      return right(ServerFailure(error: "Fail to get receiver"));
+    } catch (e) {
+      return right(GeneralFailure(error: e.toString()));
+    }
+  }
 }
