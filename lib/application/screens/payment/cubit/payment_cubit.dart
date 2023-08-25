@@ -26,6 +26,24 @@ class PaymentCubit extends Cubit<PaymentState> {
     );
   }
 
+  Future<List<PaymentModel>> getUpcomingPayment() async {
+    emit(PaymentStateLoadingData());
+    List<PaymentModel> upcomingPaymentList = <PaymentModel>[];
+
+    final paymentsOrFailure = await paymentUseCases.getUpcomingPayments();
+
+    paymentsOrFailure.fold(
+      (upcomingPaymentListFromDatabase) {
+        upcomingPaymentList =
+            upcomingPaymentListFromDatabase as List<PaymentModel>;
+        emit(PaymentStateLoaded());
+      },
+      (failure) => emit(PaymentStateError(message: failure.getError)),
+    );
+
+    return upcomingPaymentList;
+  }
+
   void addPayments(PaymentModel payment, ReceiverModel receiver) async {
     emit(PaymentStateEditingData());
 

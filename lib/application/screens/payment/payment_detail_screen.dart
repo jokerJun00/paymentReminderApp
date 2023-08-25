@@ -12,6 +12,9 @@ import '../../../date_time_formatter.dart';
 import 'category_list_screen.dart';
 import 'cubit/payment_cubit.dart';
 
+// the bank drop down cannot display selected bank
+// should find a way to update value of the drop down button
+
 enum BillingCycle { weekly, biweekly, monthly, yearly }
 
 class PaymentDetailScreen extends StatefulWidget {

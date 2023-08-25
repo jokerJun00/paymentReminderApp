@@ -10,6 +10,8 @@ import '../../data/models/payment_model.dart';
 
 abstract class PaymentRepo {
   Future<Either<List<PaymentEntity>, Failure>> getAllPaymentsFromDataSource();
+  Future<Either<List<PaymentEntity>, Failure>>
+      getUpcomingPaymentsFromDataSource();
   Future<Either<List<CategoryEntity>, Failure>>
       getAllCategoriesFromDataSource();
   Future<Either<void, Failure>> addPaymentFromDataSource(

@@ -16,6 +16,10 @@ class PaymentUseCases {
     return paymentRepoFirestore.getAllPaymentsFromDataSource();
   }
 
+  Future<Either<List<PaymentEntity>, Failure>> getUpcomingPayments() {
+    return paymentRepoFirestore.getUpcomingPaymentsFromDataSource();
+  }
+
   Future<Either<List<CategoryEntity>, Failure>> getAllCategories() {
     return paymentRepoFirestore.getAllCategoriesFromDataSource();
   }

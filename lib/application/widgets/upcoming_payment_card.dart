@@ -36,21 +36,18 @@ class UpcomingPaymentCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Flexible(
-                      flex: 6,
                       child: Text(
                         payment.name,
                         style: Theme.of(context).textTheme.bodyLarge,
                         overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Flexible(
-                      flex: 4,
-                      child: Text(
-                        "RM ${payment.expected_amount.toStringAsFixed(2)}",
-                        style: GoogleFonts.inter(
-                            fontSize: 22, fontWeight: FontWeight.bold),
-                      ),
+                    Text(
+                      "RM ${payment.expected_amount.toStringAsFixed(2)}",
+                      style: GoogleFonts.inter(
+                          fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),

@@ -126,4 +126,16 @@ class PaymentRepoImpl implements PaymentRepo {
       return right(GeneralFailure(error: e.toString()));
     }
   }
+
+  @override
+  Future<Either<List<PaymentEntity>, Failure>>
+      getUpcomingPaymentsFromDataSource() async {
+    try {
+      return left(await paymentDataSource.getUpcomingPaymentsFromDataSource());
+    } on ServerException catch (_) {
+      return right(ServerFailure(error: "Fail to retrieve payment data"));
+    } catch (e) {
+      return right(GeneralFailure(error: e.toString()));
+    }
+  }
 }

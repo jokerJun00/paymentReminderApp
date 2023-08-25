@@ -13,6 +13,8 @@ abstract class PaymentDataSource {
   /// get all payments that associate with userId
   Future<List<PaymentModel>> getAllPaymentsFromDataSource();
 
+  Future<List<PaymentModel>> getUpcomingPaymentsFromDataSource();
+
   Future<List<CategoryModel>> getAllCategoriesFromDataSource();
 
   /// add a new payments
@@ -270,5 +272,78 @@ class PaymentDataSourceImpl implements PaymentDataSource {
         .get()
         .then((value) => ReceiverModel.fromFirestore(value))
         .catchError((_) => throw ServerException());
+  }
+
+  @override
+  Future<List<PaymentModel>> getUpcomingPaymentsFromDataSource() async {
+    final user_id = await _firebaseAuth.currentUser!.uid;
+    List<PaymentModel> upcomingPaymentList = [];
+
+    final upcomingPaymentData = await _firestore
+        .collection('Payments')
+        .where('user_id', isEqualTo: user_id)
+        .get()
+        .catchError((_) => throw ServerException());
+
+    upcomingPaymentData.docs.forEach((data) {
+      PaymentModel payment = PaymentModel.fromFirestore(data);
+      print("Payment =====> $payment");
+
+      final currentDate = DateTime.now();
+      final paymentDate = payment.payment_date;
+      final difference = paymentDate.difference(currentDate).inDays;
+
+      // if (difference >= 0) {
+      //   if (difference <= 7) {
+      //     upcomingPaymentList.add(payment);
+      //   } else if (payment.billing_cycle == 'weekly' && difference <= 14) {
+      //     upcomingPaymentList.add(payment);
+      //   } else if (payment.billing_cycle == 'biweekly' && difference <= 14) {
+      //     upcomingPaymentList.add(payment);
+      //   } else if (payment.billing_cycle == 'monthly' &&
+      //       currentDate.day <= paymentDate.day &&
+      //       difference <= 30) {
+      //     upcomingPaymentList.add(payment);
+      //   } else if (payment.billing_cycle == 'yearly' &&
+      //       currentDate.month <= paymentDate.month &&
+      //       currentDate.day <= paymentDate.day &&
+      //       difference <= 365) {
+      //     upcomingPaymentList.add(payment);
+      //   }
+      // }
+
+      if (difference >= 0) {
+        DateTime? upcomingPaymentDate;
+
+        if (difference <= 7) {
+          upcomingPaymentDate = paymentDate;
+        } else if (payment.billing_cycle == 'weekly' && difference <= 14) {
+          upcomingPaymentDate = paymentDate.add(const Duration(days: 7));
+        } else if (payment.billing_cycle == 'biweekly' && difference <= 14) {
+          upcomingPaymentDate = paymentDate.add(const Duration(days: 14));
+        } else if (payment.billing_cycle == 'monthly' &&
+            currentDate.day <= paymentDate.day &&
+            difference <= 30) {
+          final nextMonth =
+              currentDate.month + 1 <= 12 ? currentDate.month + 1 : 1;
+          final nextYear =
+              nextMonth == 1 ? currentDate.year + 1 : currentDate.year;
+          upcomingPaymentDate = DateTime(nextYear, nextMonth, paymentDate.day);
+        } else if (payment.billing_cycle == 'yearly' &&
+            currentDate.month <= paymentDate.month &&
+            currentDate.day <= paymentDate.day &&
+            difference <= 365) {
+          upcomingPaymentDate = DateTime(
+              currentDate.year + 1, paymentDate.month, paymentDate.day);
+        }
+
+        if (upcomingPaymentDate != null) {
+          payment.payment_date = upcomingPaymentDate;
+          upcomingPaymentList.add(payment);
+        }
+      }
+    });
+
+    return upcomingPaymentList;
   }
 }
