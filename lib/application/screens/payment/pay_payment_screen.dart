@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../data/models/payment_model.dart';
@@ -31,6 +32,11 @@ class PayPaymentScreen extends StatelessWidget {
                 'Pay Payment',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
+              const SizedBox(height: 20),
+              CardFormField(
+                controller: CardFormEditController(),
+                // style: CardFormStyle(borderWidth: 3, borderRadius: 5),
+              )
             ],
           ),
         ),

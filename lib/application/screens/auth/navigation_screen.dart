@@ -74,8 +74,11 @@ class _NavigationScreenState extends State<NavigationScreen> {
         break;
       case 2:
         {
-          activeScreen = HomeScreen(
-            navigateToUpcoming: goToUpcoming,
+          activeScreen = BlocProvider.value(
+            value: paymentCubit,
+            child: HomeScreen(
+              navigateToUpcoming: goToUpcoming,
+            ),
           );
         }
         break;
