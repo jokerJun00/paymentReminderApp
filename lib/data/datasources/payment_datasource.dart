@@ -428,8 +428,23 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
   @override
   Future<void> markPaymentAsPaidFromDataSource(PaymentModel payment) async {
-    print("You have reach the datasource ");
-    print("Payment Info =======> $payment");
+    final user_id = await _firebaseAuth.currentUser!.uid;
+    ReceiverModel receiver = await getReceiver(payment.receiver_id);
+
+    PaidPaymentModel paidPaymentRecord = PaidPaymentModel(
+      id: "",
+      date: DateTime.now(),
+      amount_paid: payment.expected_amount,
+      payment_name: payment.name,
+      receiver_name: receiver.name,
+      user_id: user_id,
+      payment_id: payment.id,
+    );
+
+    await _firestore
+        .collection('PaidPayments')
+        .add(paidPaymentRecord.toJson())
+        .catchError((_) => throw ServerException());
   }
 
   @override
