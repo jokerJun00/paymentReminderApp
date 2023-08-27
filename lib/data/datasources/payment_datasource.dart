@@ -453,7 +453,9 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
     paidPaymentListData.docs.forEach((data) {
       PaidPaymentModel paidPayment = PaidPaymentModel.fromFirestore(data);
-      paidPaymentList.add(paidPayment);
+      if (paidPayment.date.month == date.month) {
+        paidPaymentList.add(paidPayment);
+      }
     });
 
     return paidPaymentList;

@@ -112,9 +112,11 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
               ],
             ),
             const SizedBox(height: 10),
-            Text("Payment History",
-                style: Theme.of(context).textTheme.bodyMedium),
-            const SizedBox(height: 30),
+            Text(
+              "Payment History",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
                 itemCount: paidPaymentList.length,
