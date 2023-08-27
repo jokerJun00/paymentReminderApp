@@ -2,24 +2,28 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:payment_reminder_app/application/screens/user/add_card_screen.dart';
-import 'package:payment_reminder_app/application/screens/auth/cubit/auth_cubit.dart';
-import 'package:payment_reminder_app/application/screens/splash_screen.dart';
 import 'firebase_options.dart';
-
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 import '.env';
 
 // screen
 import 'package:payment_reminder_app/application/screens/payment/payments_screen.dart';
 import 'package:payment_reminder_app/application/screens/auth/login_screen.dart';
 import 'package:payment_reminder_app/application/screens/auth/signup_screen.dart';
-import 'package:payment_reminder_app/application/screens/auth/navigation_screen.dart';
+import 'package:payment_reminder_app/application/screens/navigation_screen.dart';
 import 'package:payment_reminder_app/application/screens/budgets_screen.dart';
 import 'package:payment_reminder_app/application/screens/user/profile_screen.dart';
 import 'package:payment_reminder_app/application/screens/payment/upcoming_screen.dart';
+import 'package:payment_reminder_app/application/screens/user/add_card_screen.dart';
+import 'package:payment_reminder_app/application/screens/splash_screen.dart';
+
+// cubit
+import 'package:payment_reminder_app/application/screens/auth/cubit/auth_cubit.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
   seedColor: const Color.fromARGB(255, 89, 180, 236),
@@ -40,6 +44,19 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // local push notification setup
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  const AndroidInitializationSettings androidInitializationSettings =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  const InitializationSettings initializationSettings =
+      InitializationSettings(android: androidInitializationSettings);
+
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+  tz.initializeTimeZones();
 
   // restrict to potrait screen
   SystemChrome.setPreferredOrientations([

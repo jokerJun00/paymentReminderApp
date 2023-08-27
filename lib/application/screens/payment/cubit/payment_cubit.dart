@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:payment_reminder_app/data/models/category_model.dart';
+import 'package:payment_reminder_app/data/models/paid_payment.dart';
 import 'package:payment_reminder_app/data/models/receiver_model.dart';
 import 'package:payment_reminder_app/domain/entities/payment_entity.dart';
 
@@ -151,5 +152,45 @@ class PaymentCubit extends Cubit<PaymentState> {
     );
 
     return receiver;
+  }
+
+  Future<void> markPaymentAsPaid(PaymentModel payment) async {
+    emit(PaymentStateEditingData());
+
+    final paidOrFailure = await paymentUseCases.markPaymentAsPaid(payment);
+
+    paidOrFailure.fold(
+      (paid) => emit(PaymentStateEditSuccess()),
+      (failure) => emit(PaymentStateError(message: failure.getError)),
+    );
+  }
+
+  Future<void> payViaApp(PaymentModel payment) async {
+    emit(PaymentStateEditingData());
+
+    final paidOrFailure = await paymentUseCases.payViaApp(payment);
+
+    paidOrFailure.fold(
+      (paid) => emit(PaymentStateEditSuccess()),
+      (failure) => emit(PaymentStateError(message: failure.getError)),
+    );
+  }
+
+  Future<List<PaidPaymentModel>> getPaidPaymentList(DateTime date) async {
+    emit(PaymentStateLoadingData());
+    List<PaidPaymentModel> paidPaymentList = [];
+
+    final paidPaymentListOrFailure =
+        await paymentUseCases.getPaidPaymentList(date);
+
+    paidPaymentListOrFailure.fold(
+      (paidPaymentListFromDatabase) {
+        paidPaymentList = paidPaymentListFromDatabase;
+        emit(PaymentStateEditSuccess());
+      },
+      (failure) => emit(PaymentStateError(message: failure.getError)),
+    );
+
+    return paidPaymentList;
   }
 }

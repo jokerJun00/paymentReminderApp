@@ -8,7 +8,7 @@ import '../../../data/models/bank_model.dart';
 import '../../../data/models/category_model.dart';
 import '../../../data/models/payment_model.dart';
 import '../../../data/models/receiver_model.dart';
-import '../../../date_time_formatter.dart';
+import '../../core/services/date_time_formatter.dart';
 import 'category_list_screen.dart';
 import 'cubit/payment_cubit.dart';
 

@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:payment_reminder_app/data/datasources/payment_datasource.dart';
 import 'package:payment_reminder_app/data/models/bank_model.dart';
 import 'package:payment_reminder_app/data/models/category_model.dart';
+import 'package:payment_reminder_app/data/models/paid_payment.dart';
 import 'package:payment_reminder_app/domain/entities/category_entity.dart';
 
 import 'package:payment_reminder_app/domain/entities/payment_entity.dart';
@@ -134,6 +135,44 @@ class PaymentRepoImpl implements PaymentRepo {
       return left(await paymentDataSource.getUpcomingPaymentsFromDataSource());
     } on ServerException catch (_) {
       return right(ServerFailure(error: "Fail to retrieve payment data"));
+    } catch (e) {
+      return right(GeneralFailure(error: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<void, Failure>> markPaymentAsPaid(PaymentModel payment) async {
+    try {
+      return left(
+          await paymentDataSource.markPaymentAsPaidFromDataSource(payment));
+    } on ServerException catch (_) {
+      return right(ServerFailure(error: "Fail to mark payment as paid"));
+    } catch (e) {
+      return right(GeneralFailure(error: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<void, Failure>> payViaApp(PaymentModel payment) async {
+    try {
+      return left(await paymentDataSource.payViaAppFromDataSource(payment));
+    } on ServerException catch (_) {
+      return right(ServerFailure(
+          error:
+              "Transaction fail, please check if your information provided is correct"));
+    } catch (e) {
+      return right(GeneralFailure(error: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<List<PaidPaymentModel>, Failure>> getPaidPaymentList(
+      DateTime date) async {
+    try {
+      return left(
+          await paymentDataSource.getPaidPaymentListFromDataSource(date));
+    } on ServerException catch (_) {
+      return right(ServerFailure(error: "Fail to retrieve paid payment data"));
     } catch (e) {
       return right(GeneralFailure(error: e.toString()));
     }

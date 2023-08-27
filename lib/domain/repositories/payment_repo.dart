@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:payment_reminder_app/data/models/category_model.dart';
+import 'package:payment_reminder_app/data/models/paid_payment.dart';
 import 'package:payment_reminder_app/data/models/receiver_model.dart';
 import 'package:payment_reminder_app/domain/entities/category_entity.dart';
 import 'package:payment_reminder_app/domain/entities/payment_entity.dart';
@@ -24,4 +25,8 @@ abstract class PaymentRepo {
   Future<Either<List<BankModel>, Failure>> getBankList();
   Future<Either<List<CategoryModel>, Failure>> getCategoryList();
   Future<Either<ReceiverModel, Failure>> getReceiver(String receiverId);
+  Future<Either<void, Failure>> markPaymentAsPaid(PaymentModel payment);
+  Future<Either<void, Failure>> payViaApp(PaymentModel payment);
+  Future<Either<List<PaidPaymentModel>, Failure>> getPaidPaymentList(
+      DateTime date);
 }

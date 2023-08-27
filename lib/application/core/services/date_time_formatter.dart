@@ -3,18 +3,12 @@ import 'package:intl/intl.dart';
 class DateTimeFormatter {
   static String formatDateTime(DateTime dateTime) {
     final DateFormat formatter = DateFormat('dd/MM/yyyy');
-    final DateTime now = DateTime.now();
-
-    final updatedDateTime = DateTime(now.year, dateTime.month, dateTime.day);
 
     return formatter.format(dateTime);
   }
 
   static String formatPaymentDate(DateTime dateTime) {
     final DateFormat formatter = DateFormat('dd/MM');
-    final DateTime now = DateTime.now();
-
-    final updatedPaymentDate = DateTime(now.year, dateTime.month, dateTime.day);
 
     return formatter.format(dateTime);
   }
@@ -29,6 +23,37 @@ class DateTimeFormatter {
       return '${day}rd';
     } else {
       return '${day}th';
+    }
+  }
+
+  static String formatMonth(DateTime date) {
+    switch (date.month) {
+      case 1:
+        return "January";
+      case 2:
+        return "February";
+      case 3:
+        return "March";
+      case 4:
+        return "April";
+      case 5:
+        return "May";
+      case 6:
+        return "June";
+      case 7:
+        return "July";
+      case 8:
+        return "August";
+      case 9:
+        return "September";
+      case 10:
+        return "October";
+      case 11:
+        return "November";
+      case 12:
+        return "December";
+      default:
+        return "Wrong format, month cannot retrieve";
     }
   }
 

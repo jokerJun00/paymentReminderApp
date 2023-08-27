@@ -1,7 +1,5 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payment_reminder_app/application/screens/payment/cubit/payment_cubit.dart';
 
 // screen
 import 'package:payment_reminder_app/application/screens/payment/payments_screen.dart';
@@ -11,7 +9,9 @@ import 'package:payment_reminder_app/application/screens/user/profile_screen.dar
 import 'package:payment_reminder_app/application/screens/payment/upcoming_screen.dart';
 import 'package:payment_reminder_app/application/screens/budgets_screen.dart';
 
-import 'cubit/auth_cubit.dart';
+// cubit
+import 'package:payment_reminder_app/application/screens/auth/cubit/auth_cubit.dart';
+import 'package:payment_reminder_app/application/screens/payment/cubit/payment_cubit.dart';
 
 class NavigationScreen extends StatefulWidget {
   const NavigationScreen({Key? key}) : super(key: key);
@@ -22,6 +22,7 @@ class NavigationScreen extends StatefulWidget {
 
 class _NavigationScreenState extends State<NavigationScreen> {
   int _selectedScreenIndex = 2;
+  String? deviceToken = "";
 
   void _selectPage(int index) {
     setState(() {
@@ -29,31 +30,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
     });
   }
 
-  void goToUpcoming() {
-    setState(() {
-      _selectedScreenIndex = 1;
-    });
-  }
-
-  void setupPushNotification() async {
-    final fcm = FirebaseMessaging.instance;
-
-    await fcm.subscribeToTopic('setPaymentReminder');
-    await fcm.subscribeToTopic('resetPaymentReminder');
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    // push notification setup
-    setupPushNotification();
-  }
-
   @override
   Widget build(BuildContext context) {
     PaymentCubit paymentCubit = PaymentCubit();
-    Widget activeScreen = HomeScreen(navigateToUpcoming: goToUpcoming);
+    Widget activeScreen = HomeScreen();
 
     switch (_selectedScreenIndex) {
       case 0:
@@ -76,9 +56,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
         {
           activeScreen = BlocProvider.value(
             value: paymentCubit,
-            child: HomeScreen(
-              navigateToUpcoming: goToUpcoming,
-            ),
+            child: const HomeScreen(),
           );
         }
         break;
@@ -97,9 +75,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
         break;
       default:
         {
-          activeScreen = HomeScreen(
-            navigateToUpcoming: goToUpcoming,
-          );
+          activeScreen = const HomeScreen();
         }
         break;
     }

@@ -27,7 +27,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
   final TextEditingController _contactNoController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  Country _country = Country(
+  final Country _country = Country(
     phoneCode: "60",
     countryCode: "MY",
     e164Sc: 0,
@@ -40,20 +40,6 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
     e164Key: "",
   );
 
-  void _selectCountry() {
-    showCountryPicker(
-      context: context,
-      countryListTheme: const CountryListThemeData(bottomSheetHeight: 550),
-      onSelect: (value) {
-        setState(
-          () {
-            _country = value;
-          },
-        );
-      },
-    );
-  }
-
   void _editProfile() {
     final isValid = _updateProfileForm.currentState!.validate();
 
@@ -65,7 +51,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
         _id,
         _username,
         _email,
-        _contactNoController.text,
+        "${_country.phoneCode}${_contactNoController.text}",
         _oldEmail,
         _passwordController.text,
       );
@@ -81,7 +67,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
     _username = widget.user.name;
     _email = widget.user.email;
     _oldEmail = widget.user.email;
-    _contactNoController.text = widget.user.contactNo;
+    _contactNoController.text = widget.user.contactNo.substring(2);
   }
 
   @override
@@ -201,12 +187,9 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
                             labelText: 'Phone Number',
                             prefixIcon: Container(
                               padding: const EdgeInsets.all(12),
-                              child: InkWell(
-                                onTap: _selectCountry,
-                                child: Text(
-                                  "${_country.flagEmoji} + ${_country.phoneCode}",
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
+                              child: Text(
+                                "${_country.flagEmoji} + ${_country.phoneCode}",
+                                style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ),
                             suffixIcon: _contactNoController.text.length > 9

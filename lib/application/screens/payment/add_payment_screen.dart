@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:payment_reminder_app/application/screens/payment/cubit/payment_cubit.dart';
 import 'package:payment_reminder_app/data/models/bank_model.dart';
 import 'package:payment_reminder_app/data/models/receiver_model.dart';
-import 'package:payment_reminder_app/date_time_formatter.dart';
+import 'package:payment_reminder_app/application/core/services/date_time_formatter.dart';
 
 import '../../../data/models/category_model.dart';
 import '../../../data/models/payment_model.dart';
@@ -79,7 +79,7 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
       if (isValid) {
         _addPaymentForm.currentState!.save();
 
-        // // add New Payment info into Firebase
+        // add New Payment info into Firebase
         BlocProvider.of<PaymentCubit>(context).addPayments(
           newPayment,
           receiver,

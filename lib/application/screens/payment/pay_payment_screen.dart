@@ -35,7 +35,12 @@ class PayPaymentScreen extends StatelessWidget {
               const SizedBox(height: 20),
               CardFormField(
                 controller: CardFormEditController(),
-                // style: CardFormStyle(borderWidth: 3, borderRadius: 5),
+                style: CardFormStyle(
+                  cursorColor: Colors.white,
+                  textColor: Colors.white,
+                  textErrorColor: Colors.red,
+                  placeholderColor: Colors.white,
+                ),
               )
             ],
           ),

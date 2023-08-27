@@ -28,30 +28,39 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 100),
-              child: Text(
-                'MyPayment Reminder',
-                style: Theme.of(context).textTheme.titleLarge,
-                textAlign: TextAlign.center,
-              ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        return Scaffold(
+          body: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 100),
+                  child: Text(
+                    'MyPayment Reminder',
+                    style: width > 600
+                        ? Theme.of(context).textTheme.titleLarge
+                        : Theme.of(context).textTheme.titleMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 345),
+                Text(
+                  'Powered by UTAR',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall!
+                      .copyWith(fontSize: 12),
+                ),
+                const SizedBox(height: 25),
+              ],
             ),
-            const SizedBox(height: 345),
-            Text(
-              'Powered by UTAR',
-              style:
-                  Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 12),
-            ),
-            const SizedBox(height: 25),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

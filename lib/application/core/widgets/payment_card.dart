@@ -5,12 +5,14 @@ import 'package:payment_reminder_app/application/screens/payment/cubit/payment_c
 import 'package:payment_reminder_app/application/screens/payment/payment_detail_screen.dart';
 import 'package:payment_reminder_app/data/models/payment_model.dart';
 
-import '../../date_time_formatter.dart';
+import '../services/date_time_formatter.dart';
 
 class PaymentCard extends StatelessWidget {
-  const PaymentCard({super.key, required this.payment});
+  const PaymentCard(
+      {super.key, required this.payment, required this.deviceWidth});
 
   final PaymentModel payment;
+  final double deviceWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -71,13 +73,15 @@ class PaymentCard extends StatelessWidget {
                             "Notify Period: ${payment.notification_period} days"),
                       ],
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const Text("Billing Cycle:"),
-                        Text(payment.billing_cycle),
-                      ],
-                    ),
+                    deviceWidth > 350
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              const Text("Billing Cycle:"),
+                              Text(payment.billing_cycle),
+                            ],
+                          )
+                        : Container(),
                   ],
                 ),
               ],

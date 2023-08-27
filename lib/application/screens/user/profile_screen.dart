@@ -50,122 +50,183 @@ class _ProfileScreenState extends State<ProfileScreen> {
         if (state is UserStateLoadingData) {
           return const Center(child: CircularProgressIndicator());
         }
-        return Scaffold(
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 90),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final width = constraints.maxWidth;
+            return Scaffold(
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 90),
+                  child: Column(
                     mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'User Profile',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const Spacer(),
-                      OutlinedButton(
-                        onPressed: () => _logoutDialogBuilder(context),
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 253, 138, 138),
-                        ),
-                        child: const Text('Logout'),
-                      ),
-                      const SizedBox(width: 5),
-                      OutlinedButton(
-                        onPressed: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => BlocProvider.value(
-                              value: BlocProvider.of<UserCubit>(context),
-                              child: EditUserProfileScreen(
-                                user: UserModel(
-                                  id: _id,
-                                  name: _username,
-                                  email: _email,
-                                  contactNo: _contactNo,
+                      width > 350
+                          ? Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'User Profile',
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
                                 ),
-                              ),
+                                const Spacer(),
+                                OutlinedButton(
+                                  onPressed: () =>
+                                      _logoutDialogBuilder(context),
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: const Color.fromARGB(
+                                        255, 253, 138, 138),
+                                  ),
+                                  child: const Text('Logout'),
+                                ),
+                                const SizedBox(width: 5),
+                                OutlinedButton(
+                                  onPressed: () => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) => BlocProvider.value(
+                                        value:
+                                            BlocProvider.of<UserCubit>(context),
+                                        child: EditUserProfileScreen(
+                                          user: UserModel(
+                                            id: _id,
+                                            name: _username,
+                                            email: _email,
+                                            contactNo: _contactNo,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  child: const Text('Edit'),
+                                ),
+                              ],
+                            )
+                          : Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'User Profile',
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    OutlinedButton(
+                                      onPressed: () =>
+                                          _logoutDialogBuilder(context),
+                                      style: OutlinedButton.styleFrom(
+                                        backgroundColor: const Color.fromARGB(
+                                            255, 253, 138, 138),
+                                      ),
+                                      child: const Text('Logout'),
+                                    ),
+                                    const SizedBox(width: 5),
+                                    OutlinedButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (_) => BlocProvider.value(
+                                            value: BlocProvider.of<UserCubit>(
+                                                context),
+                                            child: EditUserProfileScreen(
+                                              user: UserModel(
+                                                id: _id,
+                                                name: _username,
+                                                email: _email,
+                                                contactNo: _contactNo,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      child: const Text('Edit'),
+                                    ),
+                                  ],
+                                )
+                              ],
                             ),
-                          ),
-                        ),
-                        child: const Text('Edit'),
+                      const SizedBox(height: 35),
+                      Text(
+                        'Username',
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 35),
-                  Text(
-                    'Username',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  Text(
-                    _username,
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Phone Number',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  Text(
-                    "+$_contactNo",
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Email',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  Text(
-                    _email,
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                  const SizedBox(height: 15),
-                  OutlinedButton(
-                      onPressed: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => BlocProvider.value(
-                                value: BlocProvider.of<UserCubit>(context),
-                                child: EditPasswordScreen(
-                                  user: UserModel(
-                                    id: _id,
-                                    name: _username,
-                                    email: _email,
-                                    contactNo: _contactNo,
+                      Text(
+                        _username,
+                        style: Theme.of(context).textTheme.labelMedium,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Phone Number',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      Text(
+                        "+$_contactNo",
+                        style: Theme.of(context).textTheme.labelMedium,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Email',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      Text(
+                        _email,
+                        style: Theme.of(context).textTheme.labelMedium,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 15),
+                      OutlinedButton(
+                          onPressed: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => BlocProvider.value(
+                                    value: BlocProvider.of<UserCubit>(context),
+                                    child: EditPasswordScreen(
+                                      user: UserModel(
+                                        id: _id,
+                                        name: _username,
+                                        email: _email,
+                                        contactNo: _contactNo,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+                          child: const Text('Edit Password')),
+                      const SizedBox(height: 60),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Main Card',
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
-                      child: const Text('Edit Password')),
-                  const SizedBox(height: 60),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Main Card',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const Spacer(),
-                      InkWell(
-                        onTap: () {},
-                        child: Text(
-                          'view all',
-                          style:
-                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                          const Spacer(),
+                          InkWell(
+                            onTap: () {},
+                            child: Text(
+                              'view all',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(
                                     color: Colors.white,
                                     decoration: TextDecoration.underline,
                                   ),
-                        ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );

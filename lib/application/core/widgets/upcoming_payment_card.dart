@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:payment_reminder_app/application/screens/payment/pay_payment_screen.dart';
 import 'package:payment_reminder_app/data/models/payment_model.dart';
 
-import '../../date_time_formatter.dart';
+import '../../screens/payment/cubit/payment_cubit.dart';
+import '../services/date_time_formatter.dart';
 
 class UpcomingPaymentCard extends StatelessWidget {
   const UpcomingPaymentCard({super.key, required this.payment});
@@ -12,6 +14,10 @@ class UpcomingPaymentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void markAsPaid() {
+      BlocProvider.of<PaymentCubit>(context).markPaymentAsPaid(payment);
+    }
+
     return SizedBox(
       width: double.infinity,
       child: Card(
@@ -22,11 +28,7 @@ class UpcomingPaymentCard extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(5))),
         child: InkWell(
           splashColor: Colors.grey.withAlpha(30),
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => PayPaymentScreen(payment: payment),
-            ),
-          ),
+          onTap: () => _dialogBuilder(context, markAsPaid),
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
@@ -61,6 +63,47 @@ class UpcomingPaymentCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _dialogBuilder(BuildContext context, Function markAsPaid) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Select Pay Payment Options',
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
+          content: Text(
+            "Pay your payment via this app or just mark your payment as paid",
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Mark as Paid'),
+              onPressed: () {
+                markAsPaid();
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Pay via app'),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => PayPaymentScreen(payment: payment),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

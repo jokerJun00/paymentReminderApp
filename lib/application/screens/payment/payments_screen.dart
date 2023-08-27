@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:payment_reminder_app/application/screens/payment/add_payment_screen.dart';
 
 import '../../../data/models/payment_model.dart';
-import '../../widgets/payment_card.dart';
+import '../../core/widgets/payment_card.dart';
 import 'cubit/payment_cubit.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -61,73 +61,82 @@ class _PaymentScreenState extends State<PaymentScreen> {
         }
       },
       builder: (context, state) {
-        return Scaffold(
-          body: (state is PaymentStateEditingData ||
-                  state is PaymentStateLoadingData)
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 90),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+        return LayoutBuilder(
+          builder: (context, constraint) {
+            final width = constraint.maxWidth;
+            return Scaffold(
+              body: (state is PaymentStateEditingData ||
+                      state is PaymentStateLoadingData)
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Padding(
+                      padding:
+                          const EdgeInsets.only(left: 20, right: 20, top: 90),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Payment List",
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          const Spacer(),
-                          OutlinedButton(
-                            onPressed: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => BlocProvider.value(
-                                  value: context.read<PaymentCubit>(),
-                                  child: AddPaymentScreen(
-                                    userId: _userId,
+                          Row(
+                            children: [
+                              Text(
+                                "Payment List",
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              const Spacer(),
+                              OutlinedButton(
+                                onPressed: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => BlocProvider.value(
+                                      value: context.read<PaymentCubit>(),
+                                      child: AddPaymentScreen(
+                                        userId: _userId,
+                                      ),
+                                    ),
                                   ),
                                 ),
+                                child: const Text("Add"),
                               ),
+                            ],
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: paymentList.isEmpty
+                                  ? const Text(
+                                      "You do not have any payment yet")
+                                  : ListView.builder(
+                                      itemCount: paymentList.length,
+                                      itemBuilder: (context, index) {
+                                        return Slidable(
+                                          endActionPane: ActionPane(
+                                              motion: const BehindMotion(),
+                                              children: [
+                                                SlidableAction(
+                                                  onPressed: (_) =>
+                                                      deletePayment(
+                                                          paymentList[index]),
+                                                  backgroundColor: Colors.red,
+                                                  icon:
+                                                      FontAwesomeIcons.trashCan,
+                                                  label: "Delete",
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                )
+                                              ]),
+                                          child: PaymentCard(
+                                            payment: paymentList[index],
+                                            deviceWidth: width,
+                                          ),
+                                        );
+                                      },
+                                    ),
                             ),
-                            child: const Text("Add"),
                           ),
                         ],
                       ),
-                      Expanded(
-                        child: Center(
-                          child: paymentList.isEmpty
-                              ? const Text("You do not have any payment yet")
-                              : ListView.builder(
-                                  itemCount: paymentList.length,
-                                  itemBuilder: (context, index) {
-                                    return Slidable(
-                                      endActionPane: ActionPane(
-                                          motion: const BehindMotion(),
-                                          children: [
-                                            SlidableAction(
-                                              onPressed: (_) => deletePayment(
-                                                  paymentList[index]),
-                                              backgroundColor: Colors.red,
-                                              icon: FontAwesomeIcons.trashCan,
-                                              label: "Delete",
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            )
-                                          ]),
-                                      child: PaymentCard(
-                                        payment: paymentList[index],
-                                      ),
-                                    );
-                                  },
-                                ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
+            );
+          },
         );
       },
     );

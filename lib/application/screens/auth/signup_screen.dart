@@ -17,7 +17,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   var _username = '';
   var _email = '';
 
-  Country _country = Country(
+  final Country _country = Country(
     phoneCode: "60",
     countryCode: "MY",
     e164Sc: 0,
@@ -50,20 +50,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         _passwordController.text,
       );
     }
-  }
-
-  void _selectCountry() {
-    showCountryPicker(
-      context: context,
-      countryListTheme: const CountryListThemeData(bottomSheetHeight: 550),
-      onSelect: (value) {
-        setState(
-          () {
-            _country = value;
-          },
-        );
-      },
-    );
   }
 
   @override
@@ -167,12 +153,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             labelText: 'Phone Number',
                             prefixIcon: Container(
                               padding: const EdgeInsets.all(12),
-                              child: InkWell(
-                                onTap: _selectCountry,
-                                child: Text(
-                                  "${_country.flagEmoji} + ${_country.phoneCode}",
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
+                              child: Text(
+                                "${_country.flagEmoji} + ${_country.phoneCode}",
+                                style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ),
                             suffixIcon: _contactNoController.text.length > 9

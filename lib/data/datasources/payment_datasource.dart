@@ -1,7 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:payment_reminder_app/data/exceptions/exceptions.dart';
+import 'package:payment_reminder_app/data/models/paid_payment.dart';
 import 'package:payment_reminder_app/data/models/receiver_model.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 import '../models/bank_model.dart';
 import '../models/category_model.dart';
@@ -38,6 +43,13 @@ abstract class PaymentDataSource {
   Future<List<CategoryModel>> getCategoryList();
 
   Future<ReceiverModel> getReceiver(String receiverId);
+
+  Future<void> markPaymentAsPaidFromDataSource(PaymentModel payment);
+
+  Future<void> payViaAppFromDataSource(PaymentModel payment);
+
+  Future<List<PaidPaymentModel>> getPaidPaymentListFromDataSource(
+      DateTime date);
 }
 
 class PaymentDataSourceImpl implements PaymentDataSource {
@@ -79,7 +91,12 @@ class PaymentDataSourceImpl implements PaymentDataSource {
     await _firestore
         .collection('Payments')
         .add(newPayment.toJson())
-        .catchError((_) => throw ServerException());
+        .then((value) {
+      newPayment.id = value.id;
+    }).catchError((_) => throw ServerException());
+
+    showAddNewPaymentNotification(newPayment);
+    setPaymentReminder(newPayment);
   }
 
   @override
@@ -287,30 +304,10 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
     upcomingPaymentData.docs.forEach((data) {
       PaymentModel payment = PaymentModel.fromFirestore(data);
-      print("Payment =====> $payment");
 
       final currentDate = DateTime.now();
       final paymentDate = payment.payment_date;
       final difference = paymentDate.difference(currentDate).inDays;
-
-      // if (difference >= 0) {
-      //   if (difference <= 7) {
-      //     upcomingPaymentList.add(payment);
-      //   } else if (payment.billing_cycle == 'weekly' && difference <= 14) {
-      //     upcomingPaymentList.add(payment);
-      //   } else if (payment.billing_cycle == 'biweekly' && difference <= 14) {
-      //     upcomingPaymentList.add(payment);
-      //   } else if (payment.billing_cycle == 'monthly' &&
-      //       currentDate.day <= paymentDate.day &&
-      //       difference <= 30) {
-      //     upcomingPaymentList.add(payment);
-      //   } else if (payment.billing_cycle == 'yearly' &&
-      //       currentDate.month <= paymentDate.month &&
-      //       currentDate.day <= paymentDate.day &&
-      //       difference <= 365) {
-      //     upcomingPaymentList.add(payment);
-      //   }
-      // }
 
       if (difference >= 0) {
         DateTime? upcomingPaymentDate;
@@ -345,5 +342,120 @@ class PaymentDataSourceImpl implements PaymentDataSource {
     });
 
     return upcomingPaymentList;
+  }
+
+  void showAddNewPaymentNotification(PaymentModel payment) async {
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
+      '1',
+      "Set Payment Reminder",
+      channelDescription: 'A new reminder has set to this account',
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'ticker',
+    );
+
+    int notification_id = 1;
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
+
+    await flutterLocalNotificationsPlugin.show(
+      notification_id,
+      "${payment.name} reminder has set",
+      "A reminder will be sent ${payment.notification_period} days before the due date",
+      notificationDetails,
+      payload: 'Not present',
+    );
+  }
+
+  void setPaymentReminder(PaymentModel payment) async {
+    final notificationDate = payment.payment_date
+        .subtract(Duration(days: payment.notification_period));
+
+    if (payment.billing_cycle == 'weekly') {
+      _scheduleNotification(
+        notificationDate,
+        DateTimeComponents.dayOfWeekAndTime,
+      );
+    } else if (payment.billing_cycle == 'biweekly') {
+      // _scheduleNotification(
+      //   notificationDate,
+      //   DateTimeComponents.dayOfWeekAndTime,
+      // );
+    } else if (payment.billing_cycle == 'monthly') {
+      _scheduleNotification(
+        notificationDate,
+        DateTimeComponents.dayOfMonthAndTime,
+      );
+    } else if (payment.billing_cycle == 'yearly') {
+      _scheduleNotification(
+        notificationDate,
+        DateTimeComponents.dateAndTime,
+      );
+    }
+  }
+
+  Future<void> _scheduleNotification(
+      DateTime notificationDate, DateTimeComponents cycle) async {
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      '123',
+      'Payment Reminder',
+      channelDescription: 'Payment Reminder Notification',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      2,
+      'Payment Reminder',
+      'Your payment is due soon.',
+      tz.TZDateTime.from(notificationDate, tz.local),
+      platformChannelSpecifics,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      androidAllowWhileIdle: true,
+      matchDateTimeComponents: cycle,
+    );
+  }
+
+  @override
+  Future<void> markPaymentAsPaidFromDataSource(PaymentModel payment) async {
+    print("You have reach the datasource ");
+    print("Payment Info =======> $payment");
+  }
+
+  @override
+  Future<void> payViaAppFromDataSource(PaymentModel payment) async {
+    print("You have reach the datasource ");
+    print("Payment Info =======> $payment");
+  }
+
+  @override
+  Future<List<PaidPaymentModel>> getPaidPaymentListFromDataSource(
+      DateTime date) async {
+    final user_id = await _firebaseAuth.currentUser!.uid;
+
+    List<PaidPaymentModel> paidPaymentList = [];
+
+    final paidPaymentListData = await _firestore
+        .collection('PaidPayments')
+        .where('user_id', isEqualTo: user_id)
+        .get()
+        .catchError((_) => throw ServerException());
+
+    paidPaymentListData.docs.forEach((data) {
+      PaidPaymentModel paidPayment = PaidPaymentModel.fromFirestore(data);
+      paidPaymentList.add(paidPayment);
+    });
+
+    return paidPaymentList;
   }
 }
