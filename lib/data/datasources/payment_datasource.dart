@@ -150,11 +150,12 @@ class PaymentDataSourceImpl implements PaymentDataSource {
     if (receiverInfoInDatabase.name != editedReceiverInfo.name ||
         receiverInfoInDatabase.bank_id != editedReceiverInfo.bank_id ||
         receiverInfoInDatabase.bank_account_no !=
-            editedReceiverInfo.bank_account_no ||
-        receiverInfoInDatabase.user_id != editedReceiverInfo.user_id) {
+            editedReceiverInfo.bank_account_no) {
+      print("Original Receiver Info ====> $receiverInfoData");
+      print("edited receiver info ======> $editedReceiverInfo");
       await _firestore
           .collection('Receivers')
-          .doc(editedPaymentInfo.id.trim())
+          .doc(editedReceiverInfo.id)
           .set(editedReceiverInfo.toJson())
           .catchError((_) => throw ServerException());
     }
