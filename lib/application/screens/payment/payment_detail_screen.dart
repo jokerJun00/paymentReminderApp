@@ -57,7 +57,6 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
     // use trim to avoid any whitespace
     final selectedCategory = categoryListFromDatabase.firstWhere(
         (category) => category.id.trim() == widget.payment.category_id.trim());
-
     final bank = bankListFromDatabase.firstWhereOrNull(
         (bank) => bank.id.trim() == receiverFromDatabase.bank_id.trim());
 

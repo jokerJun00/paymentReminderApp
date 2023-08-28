@@ -12,17 +12,29 @@ import '../../../../domain/usecases/payment_usecases.dart';
 part 'payment_state.dart';
 
 class PaymentCubit extends Cubit<PaymentState> {
-  PaymentCubit() : super(const PaymentStateInitial(paymentList: []));
+  PaymentCubit() : super(const PaymentStateInitial(groupedPaymentList: {}));
 
   final PaymentUseCases paymentUseCases = PaymentUseCases();
 
-  void getAllPayments() async {
+  // void getAllPayments() async {
+  //   emit(PaymentStateLoadingData());
+
+  //   final paymentsOrFailure = await paymentUseCases.getAllPayments();
+
+  //   paymentsOrFailure.fold(
+  //     (groupedPaymentList) => emit(PaymentStateInitial(groupedPaymentList: groupedPaymentList)),
+  //     (failure) => emit(PaymentStateError(message: failure.getError)),
+  //   );
+  // }
+
+  void getGroupedPayments() async {
     emit(PaymentStateLoadingData());
 
-    final paymentsOrFailure = await paymentUseCases.getAllPayments();
+    final paymentsOrFailure = await paymentUseCases.getGroupedPayments();
 
     paymentsOrFailure.fold(
-      (paymentList) => emit(PaymentStateInitial(paymentList: paymentList)),
+      (groupedPaymentList) =>
+          emit(PaymentStateInitial(groupedPaymentList: groupedPaymentList)),
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
   }
@@ -56,7 +68,7 @@ class PaymentCubit extends Cubit<PaymentState> {
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
 
-    getAllPayments();
+    getGroupedPayments();
   }
 
   void editPayments(
@@ -71,7 +83,7 @@ class PaymentCubit extends Cubit<PaymentState> {
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
 
-    getAllPayments();
+    getGroupedPayments();
   }
 
   Future<void> deletePayments(PaymentModel payment) async {
@@ -84,7 +96,7 @@ class PaymentCubit extends Cubit<PaymentState> {
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
 
-    getAllPayments();
+    getGroupedPayments();
   }
 
   void addCategory(String categoryName) async {
@@ -96,7 +108,7 @@ class PaymentCubit extends Cubit<PaymentState> {
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
 
-    getAllPayments();
+    getGroupedPayments();
   }
 
   Future<List<BankModel>> getBankList() async {

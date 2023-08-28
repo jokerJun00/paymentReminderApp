@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:group_list_view/group_list_view.dart';
 import 'package:payment_reminder_app/application/screens/payment/add_payment_screen.dart';
 
 import '../../../data/models/payment_model.dart';
@@ -18,6 +19,7 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   List<PaymentModel> paymentList = [];
+  Map<String, List<PaymentModel>> groupedPaymentList = {};
 
   final _firebaseAuth = FirebaseAuth.instance;
   var _userId = "";
@@ -39,7 +41,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   void initState() {
-    BlocProvider.of<PaymentCubit>(context).getAllPayments();
+    BlocProvider.of<PaymentCubit>(context).getGroupedPayments();
     super.initState();
 
     setState(() {
@@ -52,7 +54,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return BlocConsumer<PaymentCubit, PaymentState>(
       listener: (context, state) {
         if (state is PaymentStateInitial) {
-          paymentList = state.paymentList as List<PaymentModel>;
+          groupedPaymentList =
+              state.groupedPaymentList as Map<String, List<PaymentModel>>;
         } else if (state is PaymentStateError) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
@@ -101,30 +104,56 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           ),
                           Expanded(
                             child: Center(
-                              child: paymentList.isEmpty
+                              child: groupedPaymentList.isEmpty
                                   ? const Text(
                                       "You do not have any payment yet")
-                                  : ListView.builder(
-                                      itemCount: paymentList.length,
-                                      itemBuilder: (context, index) {
+                                  : GroupListView(
+                                      sectionsCount: groupedPaymentList.keys
+                                          .toList()
+                                          .length,
+                                      countOfItemInSection: (int section) {
+                                        return groupedPaymentList.values
+                                            .toList()[section]
+                                            .length;
+                                      },
+                                      groupHeaderBuilder:
+                                          (BuildContext context, int section) {
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 15),
+                                          child: Text(
+                                            groupedPaymentList.keys
+                                                .toList()[section],
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium,
+                                          ),
+                                        );
+                                      },
+                                      itemBuilder: (BuildContext context,
+                                          IndexPath index) {
                                         return Slidable(
                                           endActionPane: ActionPane(
-                                              motion: const BehindMotion(),
-                                              children: [
-                                                SlidableAction(
-                                                  onPressed: (_) =>
-                                                      deletePayment(
-                                                          paymentList[index]),
-                                                  backgroundColor: Colors.red,
-                                                  icon:
-                                                      FontAwesomeIcons.trashCan,
-                                                  label: "Delete",
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                )
-                                              ]),
+                                            motion: const BehindMotion(),
+                                            children: [
+                                              SlidableAction(
+                                                onPressed: (_) => deletePayment(
+                                                    groupedPaymentList.values
+                                                                .toList()[
+                                                            index.section]
+                                                        [index.index]),
+                                                backgroundColor: Colors.red,
+                                                icon: FontAwesomeIcons.trashCan,
+                                                label: "Delete",
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ],
+                                          ),
                                           child: PaymentCard(
-                                            payment: paymentList[index],
+                                            payment: groupedPaymentList.values
+                                                    .toList()[index.section]
+                                                [index.index],
                                             deviceWidth: width,
                                           ),
                                         );

@@ -8,12 +8,12 @@ abstract class PaymentState extends Equatable {
 }
 
 class PaymentStateInitial extends PaymentState {
-  const PaymentStateInitial({required this.paymentList});
+  const PaymentStateInitial({required this.groupedPaymentList});
 
-  final List<PaymentEntity> paymentList;
+  final Map<String, List<PaymentEntity>> groupedPaymentList;
 
   @override
-  List<Object> get props => [paymentList];
+  List<Object> get props => [groupedPaymentList];
 }
 
 class PaymentStateLoadingData extends PaymentState {}

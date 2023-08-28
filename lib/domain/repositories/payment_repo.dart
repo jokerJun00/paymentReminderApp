@@ -10,7 +10,8 @@ import '../../data/models/bank_model.dart';
 import '../../data/models/payment_model.dart';
 
 abstract class PaymentRepo {
-  Future<Either<List<PaymentEntity>, Failure>> getAllPaymentsFromDataSource();
+  Future<Either<Map<String, List<PaymentEntity>>, Failure>>
+      getGroupedPaymentsFromDataSource();
   Future<Either<List<PaymentEntity>, Failure>>
       getUpcomingPaymentsFromDataSource();
   Future<Either<List<CategoryEntity>, Failure>>

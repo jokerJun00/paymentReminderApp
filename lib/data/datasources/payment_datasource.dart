@@ -18,6 +18,8 @@ abstract class PaymentDataSource {
   /// get all payments that associate with userId
   Future<List<PaymentModel>> getAllPaymentsFromDataSource();
 
+  Future<Map<String, List<PaymentModel>>> getGroupedPaymentsFromDataSource();
+
   Future<List<PaymentModel>> getUpcomingPaymentsFromDataSource();
 
   Future<List<CategoryModel>> getAllCategoriesFromDataSource();
@@ -151,11 +153,9 @@ class PaymentDataSourceImpl implements PaymentDataSource {
         receiverInfoInDatabase.bank_id != editedReceiverInfo.bank_id ||
         receiverInfoInDatabase.bank_account_no !=
             editedReceiverInfo.bank_account_no) {
-      print("Original Receiver Info ====> $receiverInfoData");
-      print("edited receiver info ======> $editedReceiverInfo");
       await _firestore
           .collection('Receivers')
-          .doc(editedReceiverInfo.id)
+          .doc(editedPaymentInfo.id)
           .set(editedReceiverInfo.toJson())
           .catchError((_) => throw ServerException());
     }
@@ -635,5 +635,34 @@ class PaymentDataSourceImpl implements PaymentDataSource {
     });
 
     return categorySummary;
+  }
+
+  @override
+  Future<Map<String, List<PaymentModel>>>
+      getGroupedPaymentsFromDataSource() async {
+    final user_id = _firebaseAuth.currentUser!.uid;
+    final categoryList = await getCategoryList();
+    List<PaymentModel> paymentList = [];
+
+    final paymentsData = await _firestore
+        .collection('Payments')
+        .where('user_id', isEqualTo: user_id)
+        .get()
+        .catchError((_) => throw ServerException());
+
+    paymentsData.docs.forEach((data) {
+      PaymentModel payment = PaymentModel.fromFirestore(data);
+      paymentList.add(payment);
+    });
+
+    Map<String, List<PaymentModel>> groupedPaymentList =
+        groupBy(paymentList, (PaymentModel payment) {
+      CategoryModel? category = categoryList.firstWhereOrNull(
+          (category) => category.id.trim() == payment.category_id.trim());
+
+      return category != null ? category!.name : "No Category";
+    });
+
+    return groupedPaymentList;
   }
 }

@@ -61,10 +61,10 @@ class PaymentRepoImpl implements PaymentRepo {
   }
 
   @override
-  Future<Either<List<PaymentEntity>, Failure>>
-      getAllPaymentsFromDataSource() async {
+  Future<Either<Map<String, List<PaymentEntity>>, Failure>>
+      getGroupedPaymentsFromDataSource() async {
     try {
-      return left(await paymentDataSource.getAllPaymentsFromDataSource());
+      return left(await paymentDataSource.getGroupedPaymentsFromDataSource());
     } on ServerException catch (_) {
       return right(ServerFailure(error: "Fail to retrieve payment data"));
     } catch (e) {

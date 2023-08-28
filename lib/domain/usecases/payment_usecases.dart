@@ -13,8 +13,9 @@ import '../entities/category_entity.dart';
 class PaymentUseCases {
   final PaymentRepoImpl paymentRepoFirestore = PaymentRepoImpl();
 
-  Future<Either<List<PaymentEntity>, Failure>> getAllPayments() {
-    return paymentRepoFirestore.getAllPaymentsFromDataSource();
+  Future<Either<Map<String, List<PaymentEntity>>, Failure>>
+      getGroupedPayments() {
+    return paymentRepoFirestore.getGroupedPaymentsFromDataSource();
   }
 
   Future<Either<List<PaymentEntity>, Failure>> getUpcomingPayments() {
