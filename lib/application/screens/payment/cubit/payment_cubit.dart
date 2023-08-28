@@ -135,7 +135,7 @@ class PaymentCubit extends Cubit<PaymentState> {
     emit(PaymentStateLoadingData());
     final receiverOrFailure = await paymentUseCases.getReceiver(receiverId);
 
-    ReceiverModel receiver = ReceiverModel(
+    var receiver = ReceiverModel(
       id: "",
       name: "",
       bank_id: "",

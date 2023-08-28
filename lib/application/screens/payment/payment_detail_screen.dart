@@ -46,38 +46,28 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
   var receiverNameController = TextEditingController();
   var receiverBankAccountController = TextEditingController();
 
-  void getBankList() async {
-    var bankListFromDatabase =
-        await BlocProvider.of<PaymentCubit>(context).getBankList();
+  void loadData() async {
+    var paymentCubit = BlocProvider.of<PaymentCubit>(context);
 
-    setState(() {
-      bankList = bankListFromDatabase;
-    });
-  }
-
-  void getSelectedCategory() async {
-    var categoryListFromDatabase =
-        await BlocProvider.of<PaymentCubit>(context).getCategoryList();
+    var bankListFromDatabase = await paymentCubit.getBankList();
+    var categoryListFromDatabase = await paymentCubit.getCategoryList();
+    var receiverFromDatabase =
+        await paymentCubit.getReceiver(widget.payment.receiver_id);
 
     // use trim to avoid any whitespace
     final selectedCategory = categoryListFromDatabase.firstWhere(
         (category) => category.id.trim() == widget.payment.category_id.trim());
 
+    final bank = bankListFromDatabase.firstWhereOrNull(
+        (bank) => bank.id.trim() == receiverFromDatabase.bank_id.trim());
+
     setState(() {
+      bankList = bankListFromDatabase;
       categoryList = categoryListFromDatabase;
       categoryController.text = selectedCategory.name;
-    });
-  }
-
-  void getReceiver() async {
-    var receiverFromDatabase = await BlocProvider.of<PaymentCubit>(context)
-        .getReceiver(widget.payment.receiver_id);
-
-    setState(() {
       receiver = receiverFromDatabase;
       receiverNameController.text = receiverFromDatabase.name;
-      selectedBank =
-          bankList.firstWhereOrNull((bank) => bank.id == receiver.bank_id);
+      selectedBank = bank;
       receiverBankAccountController.text = receiverFromDatabase.bank_account_no;
     });
   }
@@ -122,9 +112,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
   @override
   void initState() {
     super.initState();
-    getBankList();
-    getSelectedCategory();
-    getReceiver();
+    loadData();
     setState(() {
       paymentDateController.text =
           DateTimeFormatter.formatPaymentDate(widget.payment.payment_date);

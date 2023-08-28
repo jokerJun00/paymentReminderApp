@@ -133,12 +133,18 @@ class PaymentDataSourceImpl implements PaymentDataSource {
   @override
   Future<void> editPaymentFromDataSource(
       PaymentModel editedPaymentInfo, ReceiverModel editedReceiverInfo) async {
-    ReceiverModel receiverInfoInDatabase = await _firestore
+    final receiverInfoData = await _firestore
         .collection('Receivers')
         .doc(editedReceiverInfo.id)
         .get()
-        .then((value) => ReceiverModel.fromFirestore(value))
         .catchError((_) => throw ServerException());
+
+    if (receiverInfoData.data() == null) {
+      throw ServerException();
+    }
+
+    ReceiverModel receiverInfoInDatabase =
+        ReceiverModel.fromFirestore(receiverInfoData);
 
     // check if receiver info has any changes
     if (receiverInfoInDatabase.name != editedReceiverInfo.name ||
@@ -279,12 +285,18 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
   @override
   Future<ReceiverModel> getReceiver(String receiverId) async {
-    return await _firestore
+    final receiverData = await _firestore
         .collection('Receivers')
         .doc(receiverId.trim())
         .get()
-        .then((value) => ReceiverModel.fromFirestore(value))
         .catchError((_) => throw ServerException());
+
+    if (receiverData.data() != null) {
+      ReceiverModel receiver = ReceiverModel.fromFirestore(receiverData);
+      return receiver;
+    }
+
+    throw ServerException;
   }
 
   @override
