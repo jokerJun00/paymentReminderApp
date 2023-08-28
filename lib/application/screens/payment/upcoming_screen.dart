@@ -73,7 +73,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          width > 350
+                          width > 400
                               ? Row(
                                   children: [
                                     Text(

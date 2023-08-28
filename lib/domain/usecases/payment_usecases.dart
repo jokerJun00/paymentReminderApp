@@ -57,19 +57,25 @@ class PaymentUseCases {
   }
 
   Future<Either<void, Failure>> markPaymentAsPaid(PaymentModel payment) {
-    return paymentRepoFirestore.markPaymentAsPaid(payment);
+    return paymentRepoFirestore.markPaymentAsPaidFromDatasource(payment);
   }
 
   Future<Either<void, Failure>> payViaApp(PaymentModel payment) {
-    return paymentRepoFirestore.payViaApp(payment);
+    return paymentRepoFirestore.payViaAppFromDatasource(payment);
   }
 
   Future<Either<List<PaidPaymentModel>, Failure>> getPaidPaymentList(
       DateTime date) {
-    return paymentRepoFirestore.getPaidPaymentList(date);
+    return paymentRepoFirestore.getPaidPaymentListFromDatasource(date);
   }
 
   Future<Either<Map<int, double>, Failure>> getMonthlyPaidAmount() {
-    return paymentRepoFirestore.getMonthlyPaidAmount();
+    return paymentRepoFirestore.getMonthlyPaidAmountFromDatasource();
+  }
+
+  Future<Either<Map<String, double>, Failure>> getMonthlySummaryGroupByCategory(
+      DateTime date) {
+    return paymentRepoFirestore
+        .getMonthlySummaryGroupByCategoryFromDatasource(date);
   }
 }

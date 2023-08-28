@@ -211,4 +211,24 @@ class PaymentCubit extends Cubit<PaymentState> {
 
     return monthlySummary;
   }
+
+  Future<Map<String, double>> getMonthlySummaryGroupByCategory(
+      DateTime date) async {
+    emit(PaymentStateLoadingData());
+
+    Map<String, double> categorySummary = {};
+
+    final categorySummaryOrFailure =
+        await paymentUseCases.getMonthlySummaryGroupByCategory(date);
+
+    categorySummaryOrFailure.fold(
+      (categorySummaryFromDatabase) {
+        categorySummary = categorySummaryFromDatabase;
+        emit(PaymentStateLoaded());
+      },
+      (failure) => emit(PaymentStateError(message: failure.getError)),
+    );
+
+    return categorySummary;
+  }
 }

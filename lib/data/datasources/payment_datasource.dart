@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:payment_reminder_app/application/core/services/date_time_formatter.dart';
 import 'package:payment_reminder_app/data/exceptions/exceptions.dart';
 import 'package:payment_reminder_app/data/models/paid_payment.dart';
 import 'package:payment_reminder_app/data/models/receiver_model.dart';
@@ -53,6 +52,9 @@ abstract class PaymentDataSource {
       DateTime date);
 
   Future<Map<int, double>> getMonthlyPaidAmountFromSource();
+
+  Future<Map<String, double>> getMonthlySummaryGroupByCategoryFromDatasource(
+      DateTime date);
 }
 
 class PaymentDataSourceImpl implements PaymentDataSource {
@@ -62,7 +64,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
   @override
   Future<void> addPaymentFromDataSource(
       PaymentModel newPayment, ReceiverModel receiverInfo) async {
-    final user_id = await _firebaseAuth.currentUser!.uid;
+    final user_id = _firebaseAuth.currentUser!.uid;
 
     receiverInfo.user_id = user_id;
     newPayment.user_id = user_id;
@@ -169,7 +171,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
   @override
   Future<List<PaymentModel>> getAllPaymentsFromDataSource() async {
-    final user_id = await _firebaseAuth.currentUser!.uid;
+    final user_id = _firebaseAuth.currentUser!.uid;
 
     List<PaymentModel> paymentList = [];
 
@@ -189,7 +191,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
   @override
   Future<List<CategoryModel>> getAllCategoriesFromDataSource() async {
-    final user_id = await _firebaseAuth.currentUser!.uid;
+    final user_id = _firebaseAuth.currentUser!.uid;
     List<CategoryModel> categoryList = [];
 
     // get all default category
@@ -221,7 +223,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
   @override
   Future<void> addCategory(String categoryName) async {
-    final user_id = await _firebaseAuth.currentUser!.uid;
+    final user_id = _firebaseAuth.currentUser!.uid;
 
     final newCategoryData = {
       'name': categoryName,
@@ -254,7 +256,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
   @override
   Future<List<CategoryModel>> getCategoryList() async {
-    final user_id = await _firebaseAuth.currentUser!.uid;
+    final user_id = _firebaseAuth.currentUser!.uid;
     List<CategoryModel> categoryList = [];
 
     // get all default category
@@ -296,7 +298,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
   @override
   Future<List<PaymentModel>> getUpcomingPaymentsFromDataSource() async {
-    final user_id = await _firebaseAuth.currentUser!.uid;
+    final user_id = _firebaseAuth.currentUser!.uid;
     List<PaymentModel> upcomingPaymentList = [];
     List<PaidPaymentModel> paidPaymentList =
         await getPaidPaymentListFromDataSource(DateTime.now());
@@ -441,7 +443,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
   @override
   Future<void> markPaymentAsPaidFromDataSource(PaymentModel payment) async {
-    final user_id = await _firebaseAuth.currentUser!.uid;
+    final user_id = _firebaseAuth.currentUser!.uid;
     ReceiverModel receiver = await getReceiver(payment.receiver_id);
 
     PaidPaymentModel paidPaymentRecord = PaidPaymentModel(
@@ -469,7 +471,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
   @override
   Future<List<PaidPaymentModel>> getPaidPaymentListFromDataSource(
       DateTime date) async {
-    final user_id = await _firebaseAuth.currentUser!.uid;
+    final user_id = _firebaseAuth.currentUser!.uid;
 
     List<PaidPaymentModel> paidPaymentList = [];
 
@@ -491,7 +493,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
   @override
   Future<Map<int, double>> getMonthlyPaidAmountFromSource() async {
-    final user_id = await _firebaseAuth.currentUser!.uid;
+    final user_id = _firebaseAuth.currentUser!.uid;
     List<PaidPaymentModel> paidPaymentList = [];
     Map<int, double> monthlySummary = {};
 
@@ -582,5 +584,52 @@ class PaymentDataSourceImpl implements PaymentDataSource {
     }
 
     return monthlySummary;
+  }
+
+  @override
+  Future<Map<String, double>> getMonthlySummaryGroupByCategoryFromDatasource(
+      DateTime date) async {
+    final user_id = _firebaseAuth.currentUser!.uid;
+    List<PaidPaymentModel> paidPaymentList = [];
+    final categoryList = await getCategoryList();
+    final paymentList = await getAllPaymentsFromDataSource();
+    Map<String, double> categorySummary = {};
+
+    final paidPaymentListData = await _firestore
+        .collection('PaidPayments')
+        .where('user_id', isEqualTo: user_id)
+        .get()
+        .catchError((_) => throw ServerException());
+
+    paidPaymentListData.docs.forEach((data) {
+      PaidPaymentModel paidPayment = PaidPaymentModel.fromFirestore(data);
+      if (paidPayment.date.month == date.month &&
+          paidPayment.date.year == date.year) {
+        paidPaymentList.add(paidPayment);
+      }
+    });
+
+    var groupPaidPaymentList =
+        groupBy(paidPaymentList, (PaidPaymentModel paidPayment) {
+      PaymentModel? payment = paymentList.firstWhereOrNull(
+        (payment) => payment.id.trim() == paidPayment.payment_id.trim(),
+      );
+      CategoryModel? category = categoryList.firstWhereOrNull(
+        (category) =>
+            category.id.toString().trim() == payment!.category_id.trim(),
+      );
+
+      if (payment != null && category != null) {
+        return category.name;
+      }
+    });
+
+    groupPaidPaymentList.forEach((categoryName, paidPaymentList) {
+      double sum = 0;
+      paidPaymentList.forEach((paidPayment) => sum += paidPayment.amount_paid);
+      categorySummary[categoryName!] = sum;
+    });
+
+    return categorySummary;
   }
 }

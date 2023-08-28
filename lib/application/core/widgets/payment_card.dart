@@ -73,7 +73,7 @@ class PaymentCard extends StatelessWidget {
                             "Notify Period: ${payment.notification_period} days"),
                       ],
                     ),
-                    deviceWidth > 350
+                    deviceWidth > 400
                         ? Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [

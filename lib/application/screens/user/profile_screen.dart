@@ -62,7 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      width > 350
+                      width > 400
                           ? Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [

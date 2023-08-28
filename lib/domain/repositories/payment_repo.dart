@@ -25,9 +25,13 @@ abstract class PaymentRepo {
   Future<Either<List<BankModel>, Failure>> getBankList();
   Future<Either<List<CategoryModel>, Failure>> getCategoryList();
   Future<Either<ReceiverModel, Failure>> getReceiver(String receiverId);
-  Future<Either<void, Failure>> markPaymentAsPaid(PaymentModel payment);
-  Future<Either<void, Failure>> payViaApp(PaymentModel payment);
-  Future<Either<List<PaidPaymentModel>, Failure>> getPaidPaymentList(
-      DateTime date);
-  Future<Either<Map<int, double>, Failure>> getMonthlyPaidAmount();
+  Future<Either<void, Failure>> markPaymentAsPaidFromDatasource(
+      PaymentModel payment);
+  Future<Either<void, Failure>> payViaAppFromDatasource(PaymentModel payment);
+  Future<Either<List<PaidPaymentModel>, Failure>>
+      getPaidPaymentListFromDatasource(DateTime date);
+  Future<Either<Map<int, double>, Failure>>
+      getMonthlyPaidAmountFromDatasource();
+  Future<Either<Map<String, double>, Failure>>
+      getMonthlySummaryGroupByCategoryFromDatasource(DateTime date);
 }

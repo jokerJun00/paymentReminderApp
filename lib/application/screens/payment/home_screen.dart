@@ -17,7 +17,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // List<Payment> _monthlyPaymentsData = List<Payment>.empty(growable: true);
   List<PaymentModel> upcomingPaymentList = [];
   List<BarChartGroupData> monthlySummary = [];
   double max = 0;
@@ -119,7 +118,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 builder: (_) =>
                                     BlocProvider<PaymentCubit>.value(
                                   value: context.read<PaymentCubit>(),
-                                  child: const MonthlySummaryScreen(),
+                                  child: MonthlySummaryScreen(
+                                    date: DateTime.now(),
+                                  ),
                                 ),
                               ),
                             ),
@@ -132,7 +133,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 border: Border.all(width: 2),
                                 borderRadius: BorderRadius.circular(15),
                               ),
-                              padding: const EdgeInsets.symmetric(vertical: 40),
+                              padding: EdgeInsets.symmetric(
+                                vertical: width > 400 ? 40 : 35,
+                              ),
                               child: BarChart(
                                 BarChartData(
                                   maxY: max,
@@ -170,7 +173,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Center(
                               child: upcomingPaymentList.isEmpty
                                   ? const Text(
-                                      "You do not have any upcoming payment now")
+                                      "You do not have any upcoming payment now",
+                                    )
                                   : ListView.builder(
                                       itemCount: upcomingPaymentList.length > 3
                                           ? 3

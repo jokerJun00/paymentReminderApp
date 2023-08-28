@@ -141,7 +141,8 @@ class PaymentRepoImpl implements PaymentRepo {
   }
 
   @override
-  Future<Either<void, Failure>> markPaymentAsPaid(PaymentModel payment) async {
+  Future<Either<void, Failure>> markPaymentAsPaidFromDatasource(
+      PaymentModel payment) async {
     try {
       return left(
           await paymentDataSource.markPaymentAsPaidFromDataSource(payment));
@@ -153,7 +154,8 @@ class PaymentRepoImpl implements PaymentRepo {
   }
 
   @override
-  Future<Either<void, Failure>> payViaApp(PaymentModel payment) async {
+  Future<Either<void, Failure>> payViaAppFromDatasource(
+      PaymentModel payment) async {
     try {
       return left(await paymentDataSource.payViaAppFromDataSource(payment));
     } on ServerException catch (_) {
@@ -166,8 +168,8 @@ class PaymentRepoImpl implements PaymentRepo {
   }
 
   @override
-  Future<Either<List<PaidPaymentModel>, Failure>> getPaidPaymentList(
-      DateTime date) async {
+  Future<Either<List<PaidPaymentModel>, Failure>>
+      getPaidPaymentListFromDatasource(DateTime date) async {
     try {
       return left(
           await paymentDataSource.getPaidPaymentListFromDataSource(date));
@@ -179,9 +181,24 @@ class PaymentRepoImpl implements PaymentRepo {
   }
 
   @override
-  Future<Either<Map<int, double>, Failure>> getMonthlyPaidAmount() async {
+  Future<Either<Map<int, double>, Failure>>
+      getMonthlyPaidAmountFromDatasource() async {
     try {
       return left(await paymentDataSource.getMonthlyPaidAmountFromSource());
+    } on ServerException catch (_) {
+      return right(ServerFailure(
+          error: "Fail to retrieve monthly summary for dashboard"));
+    } catch (e) {
+      return right(GeneralFailure(error: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Map<String, double>, Failure>>
+      getMonthlySummaryGroupByCategoryFromDatasource(DateTime date) async {
+    try {
+      return left(await paymentDataSource
+          .getMonthlySummaryGroupByCategoryFromDatasource(date));
     } on ServerException catch (_) {
       return right(ServerFailure(
           error: "Fail to retrieve monthly summary for dashboard"));

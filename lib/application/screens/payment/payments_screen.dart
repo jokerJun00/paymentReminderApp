@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:group_list_view/group_list_view.dart';
 import 'package:payment_reminder_app/application/screens/payment/add_payment_screen.dart';
 
 import '../../../data/models/payment_model.dart';
@@ -18,6 +19,7 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   List<PaymentModel> paymentList = [];
+  // Map<String, PaymentModel> groupedPaymentList = {};
 
   final _firebaseAuth = FirebaseAuth.instance;
   var _userId = "";
@@ -52,7 +54,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return BlocConsumer<PaymentCubit, PaymentState>(
       listener: (context, state) {
         if (state is PaymentStateInitial) {
-          paymentList = state.paymentList as List<PaymentModel>;
+          List<PaymentModel> paymentList =
+              state.paymentList as List<PaymentModel>;
         } else if (state is PaymentStateError) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
