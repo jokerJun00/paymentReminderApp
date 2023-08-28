@@ -133,40 +133,31 @@ class PaymentDataSourceImpl implements PaymentDataSource {
   @override
   Future<void> editPaymentFromDataSource(
       PaymentModel editedPaymentInfo, ReceiverModel editedReceiverInfo) async {
-    // check if receiver info updated
-    final receiverInfoInDatabase = await _firestore
+    ReceiverModel receiverInfoInDatabase = await _firestore
         .collection('Receivers')
-        .doc(editedPaymentInfo.id.trim())
+        .doc(editedReceiverInfo.id)
         .get()
         .then((value) => ReceiverModel.fromFirestore(value))
         .catchError((_) => throw ServerException());
 
-    print("Testing testing 321");
+    // check if receiver info has any changes
+    if (receiverInfoInDatabase.name != editedReceiverInfo.name ||
+        receiverInfoInDatabase.bank_id != editedReceiverInfo.bank_id ||
+        receiverInfoInDatabase.bank_account_no !=
+            editedReceiverInfo.bank_account_no ||
+        receiverInfoInDatabase.user_id != editedReceiverInfo.user_id) {
+      await _firestore
+          .collection('Receivers')
+          .doc(editedPaymentInfo.id.trim())
+          .set(editedReceiverInfo.toJson())
+          .catchError((_) => throw ServerException());
+    }
 
-    // if (receiverInfoInDatabase.name != editedReceiverInfo.name ||
-    //     receiverInfoInDatabase.bank_id != editedReceiverInfo.bank_id ||
-    //     receiverInfoInDatabase.bank_account_no !=
-    //         editedReceiverInfo.bank_account_no ||
-    //     receiverInfoInDatabase.user_id != editedReceiverInfo.user_id) {
-    //   print("Both are different");
-    //   await _firestore
-    //       .collection('Receivers')
-    //       .doc(editedPaymentInfo.id.trim())
-    //       .set(editedReceiverInfo.toJson())
-    //       .catchError((_) => throw ServerException());
-    // } else {
-    //   print("Both are same");
-    // }
-
-    print("Testing testing 123");
-
-    throw ServerException();
-
-    // final editedPaymentInfoJson = editedPaymentInfo.toJson();
-    // await _firestore
-    //     .collection('Payments')
-    //     .doc(editedPaymentInfo.id.trim())
-    //     .set(editedPaymentInfoJson).catchError((_) => throw ServerException());
+    await _firestore
+        .collection('Payments')
+        .doc(editedPaymentInfo.id)
+        .set(editedPaymentInfo.toJson())
+        .catchError((_) => throw ServerException());
   }
 
   @override
