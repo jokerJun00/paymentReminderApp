@@ -194,9 +194,9 @@ class PaymentCubit extends Cubit<PaymentState> {
     return paidPaymentList;
   }
 
-  Future<List<double>> getMonthlyPaidAmount() async {
+  Future<Map<String, double>> getMonthlyPaidAmount() async {
     emit(PaymentStateLoadingData());
-    List<double> monthlySummary = [];
+    Map<String, double> monthlySummary = {};
 
     final monthlySummaryOrFailure =
         await paymentUseCases.getMonthlyPaidAmount();

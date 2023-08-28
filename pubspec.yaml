@@ -55,6 +55,7 @@ dependencies:
   flutter_local_notifications: ^15.1.1
   firebase_analytics: ^10.4.5
   page_transition: ^2.0.9
+  group_list_view: ^1.1.1
 
 dev_dependencies:
   flutter_test:

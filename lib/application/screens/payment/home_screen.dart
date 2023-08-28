@@ -16,14 +16,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // List<Payment> _monthlyPaymentsData = List<Payment>.empty(growable: true);
   List<PaymentModel> upcomingPaymentList = [];
-  List<double> monthlySummary = [];
+  Map<String, double> monthlySummary = {};
 
   void getMonthlySummary() async {
-    final monthlysummaryFromDatabase =
+    final monthlySummaryFromDatabase =
         await BlocProvider.of<PaymentCubit>(context).getMonthlyPaidAmount();
 
     setState(() {
-      monthlySummary = monthlysummaryFromDatabase;
+      monthlySummary = monthlySummaryFromDatabase;
     });
   }
 

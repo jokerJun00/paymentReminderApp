@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:payment_reminder_app/application/core/services/date_time_formatter.dart';
 import 'package:payment_reminder_app/data/exceptions/exceptions.dart';
 import 'package:payment_reminder_app/data/models/paid_payment.dart';
 import 'package:payment_reminder_app/data/models/receiver_model.dart';
@@ -51,7 +52,7 @@ abstract class PaymentDataSource {
   Future<List<PaidPaymentModel>> getPaidPaymentListFromDataSource(
       DateTime date);
 
-  Future<List<double>> getMonthlyPaidAmountFromSource();
+  Future<Map<String, double>> getMonthlyPaidAmountFromSource();
 }
 
 class PaymentDataSourceImpl implements PaymentDataSource {
@@ -489,10 +490,10 @@ class PaymentDataSourceImpl implements PaymentDataSource {
   }
 
   @override
-  Future<List<double>> getMonthlyPaidAmountFromSource() async {
+  Future<Map<String, double>> getMonthlyPaidAmountFromSource() async {
     final user_id = await _firebaseAuth.currentUser!.uid;
     List<PaidPaymentModel> paidPaymentList = [];
-    List<double> monthlyPaidPayment = [0, 0, 0, 0, 0, 0];
+    Map<String, double> monthlySummary = {};
 
     final paidPaymentListData = await _firestore
         .collection('PaidPayments')
@@ -502,48 +503,92 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
     paidPaymentListData.docs.forEach((data) {
       PaidPaymentModel paidPayment = PaidPaymentModel.fromFirestore(data);
-
       paidPaymentList.add(paidPayment);
-
-      // final currentDate = DateTime.now();
-      // final paymentDate = paidPayment.date;
-      // final difference = paymentDate.difference(currentDate).inDays;
-
-      // if (difference < 30) {
-      //   monthlyPaidPayment[5] += paidPayment.amount_paid;
-      // } else if (difference < 60) {
-      //   monthlyPaidPayment[4] += paidPayment.amount_paid;
-      // } else if (difference < 90) {
-      //   monthlyPaidPayment[3] += paidPayment.amount_paid;
-      // } else if (difference < 120) {
-      //   monthlyPaidPayment[2] += paidPayment.amount_paid;
-      // } else if (difference < 150) {
-      //   monthlyPaidPayment[1] += paidPayment.amount_paid;
-      // } else if (difference < 180) {
-      //   monthlyPaidPayment[0] += paidPayment.amount_paid;
-      // }
     });
 
-    // final currentDate = DateTime.now();
-    // final groupedPayments = Map<String, List<PaidPaymentModel>>();
+    // database has record
+    if (paidPaymentList.isNotEmpty) {
+      // sort records by latest date to oldest date (descending order)
+      paidPaymentList.sort((a, b) => b.date.compareTo(a.date));
 
-    // for (var i = 0; i < 6; i++) {
-    //   final targetDate = DateTime(currentDate.year, currentDate.month - i, 1);
-    //   final month = '${targetDate.year}-${targetDate.month}';
+      // group records into years of records
+      var yearGroupPaidPaymentList = groupBy(
+        paidPaymentList,
+        (PaidPaymentModel paidPayment) => paidPayment.date.year,
+      );
 
-    //   final startDate = targetDate;
-    //   final endDate = DateTime(targetDate.year, targetDate.month + 1, 0);
+      List<int> yearKeyList = yearGroupPaidPaymentList.keys.toList();
+      // loop through each year
+      for (int i = 0; i < yearGroupPaidPaymentList.length; i++) {
+        int currentYear = yearKeyList[i];
+        List<PaidPaymentModel>? yearPaidPaymentList =
+            yearGroupPaidPaymentList[currentYear];
 
-    //   final monthlyPayments = payments.where((payment) =>
-    //       payment.paymentDate.isAfter(startDate) && payment.paymentDate.isBefore(endDate));
+        // if this year has record
+        if (paidPaymentList.isNotEmpty) {
+          // group records into months of records
+          var groupPaidPaymentList = groupBy(
+            yearPaidPaymentList!,
+            (PaidPaymentModel paidPayment) => paidPayment.date.month,
+          );
 
-    //   groupedPayments[month] = monthlyPayments.toList();
-    // }
+          List<int> month = groupPaidPaymentList.keys.toList();
+          int index = 0; // to point the current paid payment list
+          int currentMonth = month[index];
 
-    // return groupedPayments;
+          // while the loop still in current year and monthlySummary don't have 6 records
+          while (currentMonth > 0 && monthlySummary.length < 6) {
+            // if still got records
+            if (index < month.length) {
+              currentMonth = month[index];
+            } else {
+              currentMonth -= 1;
+            }
 
-    print("Monthly paid payment =====> $monthlyPaidPayment");
+            String currentMonthString = DateTimeFormatter.formatMonth(
+              DateTime(
+                DateTime.now().year,
+                currentMonth,
+              ),
+            );
+            double sum = 0;
 
-    return monthlyPaidPayment;
+            // paidPaymentList will be null if the currentMonth is not present in the list
+            List<PaidPaymentModel>? paidPaymentList =
+                groupPaidPaymentList[currentMonth];
+
+            // if paidPaymentList has records sum up amount paid, else sum = 0
+            if (paidPaymentList != null) {
+              for (var i = 0; i < paidPaymentList.length; i++) {
+                sum += paidPaymentList[i].amount_paid;
+              }
+            }
+
+            // add sum record to monthly summary
+            monthlySummary[currentMonthString] = sum;
+
+            // if currentMonth has record move to next index
+            if (sum != 0 && index < month.length) {
+              index++;
+            }
+          }
+        }
+
+        if (monthlySummary.length >= 6) {
+          break;
+        }
+      }
+    } else {
+      DateTime currentMonth = DateTime.now();
+      while (monthlySummary.length < 6) {
+        String currentMonthString = DateTimeFormatter.formatMonth(currentMonth);
+
+        monthlySummary[currentMonthString] = 0;
+
+        currentMonth.subtract(const Duration(days: 30));
+      }
+    }
+
+    return monthlySummary;
   }
 }

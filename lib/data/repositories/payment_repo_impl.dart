@@ -179,7 +179,7 @@ class PaymentRepoImpl implements PaymentRepo {
   }
 
   @override
-  Future<Either<List<double>, Failure>> getMonthlyPaidAmount() async {
+  Future<Either<Map<String, double>, Failure>> getMonthlyPaidAmount() async {
     try {
       return left(await paymentDataSource.getMonthlyPaidAmountFromSource());
     } on ServerException catch (_) {

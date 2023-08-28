@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:payment_reminder_app/application/screens/payment/pay_payment_screen.dart';
 import 'package:payment_reminder_app/data/models/payment_model.dart';
 
-import '../../screens/payment/cubit/payment_cubit.dart';
 import '../services/date_time_formatter.dart';
 
 class UpcomingPaymentCard extends StatelessWidget {
