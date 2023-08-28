@@ -68,4 +68,8 @@ class PaymentUseCases {
       DateTime date) {
     return paymentRepoFirestore.getPaidPaymentList(date);
   }
+
+  Future<Either<List<double>, Failure>> getMonthlyPaidAmount() {
+    return paymentRepoFirestore.getMonthlyPaidAmount();
+  }
 }

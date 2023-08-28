@@ -50,6 +50,8 @@ abstract class PaymentDataSource {
 
   Future<List<PaidPaymentModel>> getPaidPaymentListFromDataSource(
       DateTime date);
+
+  Future<List<double>> getMonthlyPaidAmountFromSource();
 }
 
 class PaymentDataSourceImpl implements PaymentDataSource {
@@ -295,6 +297,8 @@ class PaymentDataSourceImpl implements PaymentDataSource {
   Future<List<PaymentModel>> getUpcomingPaymentsFromDataSource() async {
     final user_id = await _firebaseAuth.currentUser!.uid;
     List<PaymentModel> upcomingPaymentList = [];
+    List<PaidPaymentModel> paidPaymentList =
+        await getPaidPaymentListFromDataSource(DateTime.now());
 
     final upcomingPaymentData = await _firestore
         .collection('Payments')
@@ -336,7 +340,15 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
         if (upcomingPaymentDate != null) {
           payment.payment_date = upcomingPaymentDate;
-          upcomingPaymentList.add(payment);
+
+          // check if the payment already paid, if not paid then only add into list
+          final paid = paidPaymentList.firstWhereOrNull((paidPayment) =>
+              paidPayment.payment_name == payment.name &&
+              payment.payment_date.difference(paidPayment.date).inDays < 7);
+
+          if (paid == null) {
+            upcomingPaymentList.add(payment);
+          }
         }
       }
     });
@@ -474,5 +486,64 @@ class PaymentDataSourceImpl implements PaymentDataSource {
     });
 
     return paidPaymentList;
+  }
+
+  @override
+  Future<List<double>> getMonthlyPaidAmountFromSource() async {
+    final user_id = await _firebaseAuth.currentUser!.uid;
+    List<PaidPaymentModel> paidPaymentList = [];
+    List<double> monthlyPaidPayment = [0, 0, 0, 0, 0, 0];
+
+    final paidPaymentListData = await _firestore
+        .collection('PaidPayments')
+        .where('user_id', isEqualTo: user_id)
+        .get()
+        .catchError((_) => throw ServerException());
+
+    paidPaymentListData.docs.forEach((data) {
+      PaidPaymentModel paidPayment = PaidPaymentModel.fromFirestore(data);
+
+      paidPaymentList.add(paidPayment);
+
+      // final currentDate = DateTime.now();
+      // final paymentDate = paidPayment.date;
+      // final difference = paymentDate.difference(currentDate).inDays;
+
+      // if (difference < 30) {
+      //   monthlyPaidPayment[5] += paidPayment.amount_paid;
+      // } else if (difference < 60) {
+      //   monthlyPaidPayment[4] += paidPayment.amount_paid;
+      // } else if (difference < 90) {
+      //   monthlyPaidPayment[3] += paidPayment.amount_paid;
+      // } else if (difference < 120) {
+      //   monthlyPaidPayment[2] += paidPayment.amount_paid;
+      // } else if (difference < 150) {
+      //   monthlyPaidPayment[1] += paidPayment.amount_paid;
+      // } else if (difference < 180) {
+      //   monthlyPaidPayment[0] += paidPayment.amount_paid;
+      // }
+    });
+
+    // final currentDate = DateTime.now();
+    // final groupedPayments = Map<String, List<PaidPaymentModel>>();
+
+    // for (var i = 0; i < 6; i++) {
+    //   final targetDate = DateTime(currentDate.year, currentDate.month - i, 1);
+    //   final month = '${targetDate.year}-${targetDate.month}';
+
+    //   final startDate = targetDate;
+    //   final endDate = DateTime(targetDate.year, targetDate.month + 1, 0);
+
+    //   final monthlyPayments = payments.where((payment) =>
+    //       payment.paymentDate.isAfter(startDate) && payment.paymentDate.isBefore(endDate));
+
+    //   groupedPayments[month] = monthlyPayments.toList();
+    // }
+
+    // return groupedPayments;
+
+    print("Monthly paid payment =====> $monthlyPaidPayment");
+
+    return monthlyPaidPayment;
   }
 }

@@ -16,6 +16,16 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // List<Payment> _monthlyPaymentsData = List<Payment>.empty(growable: true);
   List<PaymentModel> upcomingPaymentList = [];
+  List<double> monthlySummary = [];
+
+  void getMonthlySummary() async {
+    final monthlysummaryFromDatabase =
+        await BlocProvider.of<PaymentCubit>(context).getMonthlyPaidAmount();
+
+    setState(() {
+      monthlySummary = monthlysummaryFromDatabase;
+    });
+  }
 
   void getUpcomingPayment() async {
     final upcomingPaymentFromDatabase =
@@ -26,10 +36,21 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void markAsPaid(PaymentModel payment) async {
+    await BlocProvider.of<PaymentCubit>(context)
+        .markPaymentAsPaid(payment)
+        .then((_) {
+      setState(() {
+        upcomingPaymentList.remove(payment);
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     getUpcomingPayment();
+    getMonthlySummary();
   }
 
   @override
@@ -82,10 +103,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ? const Text(
                                       "You do not have any upcoming payment now")
                                   : ListView.builder(
-                                      itemCount: 3,
+                                      itemCount: upcomingPaymentList.length > 3
+                                          ? 3
+                                          : upcomingPaymentList.length,
                                       itemBuilder: (context, index) =>
                                           UpcomingPaymentCard(
                                         payment: upcomingPaymentList[index],
+                                        markAsPaid: () => markAsPaid(
+                                          upcomingPaymentList[index],
+                                        ),
                                       ),
                                     ),
                             ),

@@ -177,4 +177,16 @@ class PaymentRepoImpl implements PaymentRepo {
       return right(GeneralFailure(error: e.toString()));
     }
   }
+
+  @override
+  Future<Either<List<double>, Failure>> getMonthlyPaidAmount() async {
+    try {
+      return left(await paymentDataSource.getMonthlyPaidAmountFromSource());
+    } on ServerException catch (_) {
+      return right(ServerFailure(
+          error: "Fail to retrieve monthly summary for dashboard"));
+    } catch (e) {
+      return right(GeneralFailure(error: e.toString()));
+    }
+  }
 }

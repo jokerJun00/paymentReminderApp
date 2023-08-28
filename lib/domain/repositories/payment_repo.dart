@@ -29,4 +29,5 @@ abstract class PaymentRepo {
   Future<Either<void, Failure>> payViaApp(PaymentModel payment);
   Future<Either<List<PaidPaymentModel>, Failure>> getPaidPaymentList(
       DateTime date);
+  Future<Either<List<double>, Failure>> getMonthlyPaidAmount();
 }

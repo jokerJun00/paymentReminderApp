@@ -186,11 +186,29 @@ class PaymentCubit extends Cubit<PaymentState> {
     paidPaymentListOrFailure.fold(
       (paidPaymentListFromDatabase) {
         paidPaymentList = paidPaymentListFromDatabase;
-        emit(PaymentStateEditSuccess());
+        emit(PaymentStateLoaded());
       },
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
 
     return paidPaymentList;
+  }
+
+  Future<List<double>> getMonthlyPaidAmount() async {
+    emit(PaymentStateLoadingData());
+    List<double> monthlySummary = [];
+
+    final monthlySummaryOrFailure =
+        await paymentUseCases.getMonthlyPaidAmount();
+
+    monthlySummaryOrFailure.fold(
+      (monthlySummaryFromDatabase) {
+        monthlySummary = monthlySummaryFromDatabase;
+        emit(PaymentStateLoaded());
+      },
+      (failure) => emit(PaymentStateError(message: failure.getError)),
+    );
+
+    return monthlySummary;
   }
 }

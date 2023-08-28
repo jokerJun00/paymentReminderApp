@@ -8,16 +8,14 @@ import '../../screens/payment/cubit/payment_cubit.dart';
 import '../services/date_time_formatter.dart';
 
 class UpcomingPaymentCard extends StatelessWidget {
-  const UpcomingPaymentCard({super.key, required this.payment});
+  const UpcomingPaymentCard(
+      {super.key, required this.payment, required this.markAsPaid});
 
   final PaymentModel payment;
+  final Function markAsPaid;
 
   @override
   Widget build(BuildContext context) {
-    void markAsPaid() {
-      BlocProvider.of<PaymentCubit>(context).markPaymentAsPaid(payment);
-    }
-
     return SizedBox(
       width: double.infinity,
       child: Card(

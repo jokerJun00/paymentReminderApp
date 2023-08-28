@@ -25,6 +25,16 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
     });
   }
 
+  void markAsPaid(PaymentModel payment) async {
+    await BlocProvider.of<PaymentCubit>(context)
+        .markPaymentAsPaid(payment)
+        .then((_) {
+      setState(() {
+        upcomingPaymentList.remove(payment);
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -150,6 +160,9 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                                       itemBuilder: (context, index) =>
                                           UpcomingPaymentCard(
                                         payment: upcomingPaymentList[index],
+                                        markAsPaid: () => markAsPaid(
+                                          upcomingPaymentList[index],
+                                        ),
                                       ),
                                     ),
                             ),
