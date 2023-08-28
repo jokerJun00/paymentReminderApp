@@ -1,7 +1,10 @@
 // import 'package:fl_chart/fl_chart.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:payment_reminder_app/application/core/widgets/upcoming_payment_card.dart';
+import 'package:payment_reminder_app/application/screens/payment/monthly_summary_screen.dart';
 
 import '../../../data/models/payment_model.dart';
 import 'cubit/payment_cubit.dart';
@@ -16,14 +19,47 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // List<Payment> _monthlyPaymentsData = List<Payment>.empty(growable: true);
   List<PaymentModel> upcomingPaymentList = [];
-  Map<String, double> monthlySummary = {};
+  List<BarChartGroupData> monthlySummary = [];
+  double max = 0;
 
   void getMonthlySummary() async {
     final monthlySummaryFromDatabase =
         await BlocProvider.of<PaymentCubit>(context).getMonthlyPaidAmount();
 
+    double maxFromMonthlySummary = 0;
+    List<BarChartGroupData> barChartGroupData = [];
+
+    monthlySummaryFromDatabase.forEach(
+      (key, value) {
+        if (value > maxFromMonthlySummary) {
+          maxFromMonthlySummary = value;
+        }
+      },
+    );
+
+    monthlySummaryFromDatabase.forEach((key, value) {
+      barChartGroupData.add(
+        BarChartGroupData(
+          x: key,
+          barRods: [
+            BarChartRodData(
+              toY: value,
+              color: const Color.fromARGB(255, 242, 223, 58),
+              width: 20,
+              backDrawRodData: BackgroundBarChartRodData(
+                show: true,
+                color: Colors.white,
+                toY: maxFromMonthlySummary,
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+
     setState(() {
-      monthlySummary = monthlySummaryFromDatabase;
+      monthlySummary = barChartGroupData.reversed.toList();
+      max = maxFromMonthlySummary;
     });
   }
 
@@ -77,21 +113,54 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                           const SizedBox(height: 15),
-                          Container(
-                            height: 200,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(1, 255, 120, 140),
-                              border: Border.all(width: 2),
-                              borderRadius: BorderRadius.circular(15),
+                          GestureDetector(
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    BlocProvider<PaymentCubit>.value(
+                                  value: context.read<PaymentCubit>(),
+                                  child: const MonthlySummaryScreen(),
+                                ),
+                              ),
                             ),
-                            child: const Center(
-                              child: Text('Coming soon...'),
+                            child: Container(
+                              height: 200,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(1, 255, 120, 240)
+                                    .withAlpha(255),
+                                border: Border.all(width: 2),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 40),
+                              child: BarChart(
+                                BarChartData(
+                                  maxY: max,
+                                  minY: 0,
+                                  gridData: const FlGridData(show: false),
+                                  borderData: FlBorderData(show: false),
+                                  titlesData: const FlTitlesData(
+                                    leftTitles: AxisTitles(
+                                      sideTitles: SideTitles(showTitles: false),
+                                    ),
+                                    rightTitles: AxisTitles(
+                                      sideTitles: SideTitles(showTitles: false),
+                                    ),
+                                    topTitles: AxisTitles(
+                                      sideTitles: SideTitles(showTitles: false),
+                                    ),
+                                    bottomTitles: AxisTitles(
+                                      sideTitles: SideTitles(
+                                        showTitles: true,
+                                        getTitlesWidget: getBottomTitles,
+                                      ),
+                                    ),
+                                  ),
+                                  barGroups: monthlySummary,
+                                ),
+                              ),
                             ),
                           ),
-                          // BarChart(
-                          //   BarChartData(barTouchData: , titlesData: , )
-                          // ),
                           const SizedBox(height: 50),
                           Text(
                             'Upcoming Payments',
@@ -125,4 +194,56 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
+}
+
+Widget getBottomTitles(double value, TitleMeta meta) {
+  var style = GoogleFonts.inter(
+    fontSize: 12,
+    fontWeight: FontWeight.bold,
+  );
+
+  Widget text;
+  switch (value.toInt()) {
+    case 1:
+      text = Text('Jan', style: style);
+      break;
+    case 2:
+      text = Text('Feb', style: style);
+      break;
+    case 3:
+      text = Text('Mar', style: style);
+      break;
+    case 4:
+      text = Text('Apr', style: style);
+      break;
+    case 5:
+      text = Text('May', style: style);
+      break;
+    case 6:
+      text = Text('Jun', style: style);
+      break;
+    case 7:
+      text = Text('Jul', style: style);
+      break;
+    case 8:
+      text = Text('Aug', style: style);
+      break;
+    case 9:
+      text = Text('Sep', style: style);
+      break;
+    case 10:
+      text = Text('Oct', style: style);
+      break;
+    case 11:
+      text = Text('Nov', style: style);
+      break;
+    case 12:
+      text = Text('Dec', style: style);
+      break;
+    default:
+      text = Text('Err', style: style);
+      break;
+  }
+
+  return SideTitleWidget(child: text, axisSide: meta.axisSide);
 }

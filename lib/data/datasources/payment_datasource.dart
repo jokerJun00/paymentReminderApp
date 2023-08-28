@@ -52,7 +52,7 @@ abstract class PaymentDataSource {
   Future<List<PaidPaymentModel>> getPaidPaymentListFromDataSource(
       DateTime date);
 
-  Future<Map<String, double>> getMonthlyPaidAmountFromSource();
+  Future<Map<int, double>> getMonthlyPaidAmountFromSource();
 }
 
 class PaymentDataSourceImpl implements PaymentDataSource {
@@ -490,10 +490,10 @@ class PaymentDataSourceImpl implements PaymentDataSource {
   }
 
   @override
-  Future<Map<String, double>> getMonthlyPaidAmountFromSource() async {
+  Future<Map<int, double>> getMonthlyPaidAmountFromSource() async {
     final user_id = await _firebaseAuth.currentUser!.uid;
     List<PaidPaymentModel> paidPaymentList = [];
-    Map<String, double> monthlySummary = {};
+    Map<int, double> monthlySummary = {};
 
     final paidPaymentListData = await _firestore
         .collection('PaidPayments')
@@ -545,12 +545,6 @@ class PaymentDataSourceImpl implements PaymentDataSource {
               currentMonth -= 1;
             }
 
-            String currentMonthString = DateTimeFormatter.formatMonth(
-              DateTime(
-                DateTime.now().year,
-                currentMonth,
-              ),
-            );
             double sum = 0;
 
             // paidPaymentList will be null if the currentMonth is not present in the list
@@ -565,7 +559,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
             }
 
             // add sum record to monthly summary
-            monthlySummary[currentMonthString] = sum;
+            monthlySummary[currentMonth] = sum;
 
             // if currentMonth has record move to next index
             if (sum != 0 && index < month.length) {
@@ -581,9 +575,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
     } else {
       DateTime currentMonth = DateTime.now();
       while (monthlySummary.length < 6) {
-        String currentMonthString = DateTimeFormatter.formatMonth(currentMonth);
-
-        monthlySummary[currentMonthString] = 0;
+        monthlySummary[currentMonth.month] = 0;
 
         currentMonth.subtract(const Duration(days: 30));
       }

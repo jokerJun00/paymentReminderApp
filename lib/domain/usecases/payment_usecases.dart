@@ -69,7 +69,7 @@ class PaymentUseCases {
     return paymentRepoFirestore.getPaidPaymentList(date);
   }
 
-  Future<Either<Map<String, double>, Failure>> getMonthlyPaidAmount() {
+  Future<Either<Map<int, double>, Failure>> getMonthlyPaidAmount() {
     return paymentRepoFirestore.getMonthlyPaidAmount();
   }
 }
