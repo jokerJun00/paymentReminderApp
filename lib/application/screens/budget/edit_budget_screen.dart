@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,10 +6,19 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:payment_reminder_app/application/screens/budget/cubit/budget_cubit.dart';
 
+import '../../../data/models/budget_model.dart';
+import '../../../data/models/budgeting_plan_model.dart';
 import '../../../data/models/category_model.dart';
 
 class EditBudgetScreen extends StatefulWidget {
-  const EditBudgetScreen({super.key});
+  const EditBudgetScreen({
+    super.key,
+    required this.budgetingPlan,
+    required this.budgetList,
+  });
+
+  final BudgetingPlanModel budgetingPlan;
+  final List<BudgetModel> budgetList;
 
   @override
   State<EditBudgetScreen> createState() => _EditBudgetScreenState();
@@ -23,14 +33,28 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
   TextEditingController targetAmountController = TextEditingController();
   List<TextEditingController> categoryBudgetController = [];
 
-  void getCategoryList() async {
+  void loadData() async {
     List<CategoryModel> categoryListFromDatabase =
         await BlocProvider.of<BudgetCubit>(context).getCategoryList()
             as List<CategoryModel>;
     setState(() {
+      startAmountController.text =
+          widget.budgetingPlan.starting_amount.toString();
+      targetAmountController.text =
+          widget.budgetingPlan.target_amount.toString();
       categoryList = categoryListFromDatabase;
-      categoryList.forEach((category) =>
-          categoryBudgetController.add(TextEditingController(text: "0.0")));
+      categoryList.forEach((category) {
+        final categoryBudget = widget.budgetList
+            .firstWhereOrNull((budget) => budget.category_id == category.id);
+
+        categoryBudgetController.add(
+          TextEditingController(
+            text: categoryBudget != null
+                ? categoryBudget.budget_amount.toString()
+                : "0.0",
+          ),
+        );
+      });
     });
   }
 
@@ -46,21 +70,13 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
 
       categoryBudgetController.forEach((controller) =>
           categoryBudgetAmountList.add(double.parse(controller.text)));
-
-      // update user profile using firestore
-      // await BlocProvider.of<BudgetCubit>(context).addBudgetingPlan(
-      //   startAmount,
-      //   targetAmount,
-      //   categoryBudgetAmountList,
-      //   categoryList,
-      // );
     }
   }
 
   @override
   void initState() {
     super.initState();
-    getCategoryList();
+    loadData();
   }
 
   @override

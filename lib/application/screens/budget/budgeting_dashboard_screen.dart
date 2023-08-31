@@ -154,7 +154,10 @@ class _BudgetingDashboardScreenState extends State<BudgetingDashboardScreen> {
                                               value:
                                                   BlocProvider.of<BudgetCubit>(
                                                       context),
-                                              child: const EditBudgetScreen(),
+                                              child: EditBudgetScreen(
+                                                budgetingPlan: budgetingPlan!,
+                                                budgetList: budgetList,
+                                              ),
                                             ),
                                           ),
                                         ),
