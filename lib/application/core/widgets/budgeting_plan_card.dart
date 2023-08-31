@@ -29,7 +29,7 @@ class BudgetingPlanCard extends StatelessWidget {
           const SizedBox(height: 20),
           Text("Current Spending", style: GoogleFonts.inter(fontSize: 24)),
           Text(
-            "RM ${budgetingPlan.starting_amount.toStringAsFixed(2)}",
+            "RM ${budgetingPlan.spend_amount.toStringAsFixed(2)}",
             style: GoogleFonts.inter(fontSize: 35, fontWeight: FontWeight.bold),
           ),
         ],

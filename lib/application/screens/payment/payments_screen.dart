@@ -94,8 +94,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           Expanded(
                             child: Center(
                               child: groupedPaymentList.isEmpty
-                                  ? const Text(
-                                      "You do not have any payment yet")
+                                  ? Text(
+                                      "You do not have any payment",
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge!
+                                          .copyWith(
+                                            overflow: TextOverflow.clip,
+                                          ),
+                                    )
                                   : GroupListView(
                                       sectionsCount: groupedPaymentList.keys
                                           .toList()

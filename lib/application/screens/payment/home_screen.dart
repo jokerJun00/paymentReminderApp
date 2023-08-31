@@ -172,8 +172,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           Expanded(
                             child: Center(
                               child: upcomingPaymentList.isEmpty
-                                  ? const Text(
+                                  ? Text(
                                       "You do not have any upcoming payment now",
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge!
+                                          .copyWith(
+                                            overflow: TextOverflow.clip,
+                                          ),
                                     )
                                   : ListView.builder(
                                       itemCount: upcomingPaymentList.length > 3

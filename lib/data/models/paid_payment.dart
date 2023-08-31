@@ -11,6 +11,7 @@ class PaidPaymentModel extends PaidPaymentEntity with EquatableMixin {
     required super.receiver_name,
     required super.user_id,
     required super.payment_id,
+    required super.category_id,
   });
 
   factory PaidPaymentModel.fromFirestore(
@@ -21,13 +22,15 @@ class PaidPaymentModel extends PaidPaymentEntity with EquatableMixin {
     DateTime date = payment["date"].toDate();
 
     return PaidPaymentModel(
-        id: paymentData.id,
-        date: date,
-        amount_paid: amount_paid,
-        payment_name: payment["payment_name"],
-        receiver_name: payment["receiver_name"],
-        user_id: payment["user_id"],
-        payment_id: payment["payment_id"]);
+      id: paymentData.id,
+      date: date,
+      amount_paid: amount_paid,
+      payment_name: payment["payment_name"],
+      receiver_name: payment["receiver_name"],
+      user_id: payment["user_id"],
+      payment_id: payment["payment_id"],
+      category_id: payment["category_id"],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -38,6 +41,7 @@ class PaidPaymentModel extends PaidPaymentEntity with EquatableMixin {
       'receiver_name': receiver_name,
       'user_id': user_id,
       'payment_id': payment_id,
+      'category_id': category_id,
     };
   }
 }

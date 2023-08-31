@@ -451,6 +451,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
       receiver_name: receiver.name,
       user_id: user_id,
       payment_id: payment.id,
+      category_id: payment.category_id,
     );
 
     await _firestore
@@ -608,15 +609,12 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
     var groupPaidPaymentList =
         groupBy(paidPaymentList, (PaidPaymentModel paidPayment) {
-      PaymentModel? payment = paymentList.firstWhereOrNull(
-        (payment) => payment.id.trim() == paidPayment.payment_id.trim(),
-      );
       CategoryModel? category = categoryList.firstWhereOrNull(
         (category) =>
-            category.id.toString().trim() == payment!.category_id.trim(),
+            category.id.toString().trim() == paidPayment.category_id.trim(),
       );
 
-      if (payment != null && category != null) {
+      if (category != null) {
         return category.name;
       }
     });

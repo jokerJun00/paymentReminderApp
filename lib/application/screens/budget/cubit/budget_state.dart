@@ -8,16 +8,10 @@ abstract class BudgetState extends Equatable {
 }
 
 class BudgetStateInitial extends BudgetState {
-  const BudgetStateInitial({
-    required this.budgetingPlan,
-    required this.budgetList,
-  });
-
-  final BudgetingPlanEntity budgetingPlan;
-  final List<BudgetEntity> budgetList;
+  const BudgetStateInitial();
 
   @override
-  List<Object> get props => [budgetingPlan, budgetList];
+  List<Object> get props => [];
 }
 
 class BudgetStateLoadingData extends BudgetState {}

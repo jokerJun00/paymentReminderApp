@@ -7,12 +7,10 @@ import '../../../data/models/budget_model.dart';
 class BudgetProgressCard extends StatelessWidget {
   const BudgetProgressCard({
     super.key,
-    required this.categoryName,
     required this.budget,
     required this.currentAmount,
   });
 
-  final String categoryName;
   final BudgetModel budget;
   final double currentAmount;
 
@@ -30,22 +28,22 @@ class BudgetProgressCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            categoryName,
-            style: Theme.of(context)
-                .textTheme
-                .bodyLarge!
-                .copyWith(fontWeight: FontWeight.bold),
+            budget.category_name,
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  overflow: TextOverflow.clip,
+                ),
           ),
           const SizedBox(height: 10),
           Text(
-            "${((currentAmount / budget.budgeting_amount) * 100).toStringAsFixed(0)}%",
+            "${((currentAmount / budget.budget_amount) * 100).toStringAsFixed(0)}%",
             style: GoogleFonts.inter(fontSize: 55, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
           LinearPercentIndicator(
             width: 130,
             lineHeight: 20,
-            percent: currentAmount / budget.budgeting_amount,
+            percent: currentAmount / budget.budget_amount,
             progressColor: const Color.fromARGB(255, 242, 223, 58),
             backgroundColor: Colors.grey.shade300,
             animation: true,
