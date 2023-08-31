@@ -28,4 +28,11 @@ class BudgetStateEditingData extends BudgetState {}
 
 class BudgetStateEditSuccess extends BudgetState {}
 
-class BudgetStateError extends BudgetState {}
+class BudgetStateError extends BudgetState {
+  const BudgetStateError({required this.message});
+
+  final String message;
+
+  @override
+  List<Object> get props => [message];
+}

@@ -15,7 +15,7 @@ import 'cubit/payment_cubit.dart';
 // the bank drop down cannot display selected bank
 // should find a way to update value of the drop down button
 
-enum BillingCycle { weekly, biweekly, monthly, yearly }
+enum BillingCycle { weekly, monthly, yearly }
 
 class PaymentDetailScreen extends StatefulWidget {
   PaymentDetailScreen({super.key, required this.payment});
@@ -97,8 +97,6 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
     switch (billingCycleString) {
       case "weekly":
         return BillingCycle.weekly;
-      case "biweekly":
-        return BillingCycle.biweekly;
       case "monthly":
         return BillingCycle.monthly;
       case "yearly":

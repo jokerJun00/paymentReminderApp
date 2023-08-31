@@ -11,7 +11,7 @@ import '../../../data/models/category_model.dart';
 import '../../../data/models/payment_model.dart';
 import 'category_list_screen.dart';
 
-enum BillingCycle { weekly, biweekly, monthly, yearly }
+enum BillingCycle { weekly, monthly, yearly }
 
 class AddPaymentScreen extends StatefulWidget {
   const AddPaymentScreen({

@@ -327,8 +327,6 @@ class PaymentDataSourceImpl implements PaymentDataSource {
           upcomingPaymentDate = paymentDate;
         } else if (payment.billing_cycle == 'weekly' && difference <= 14) {
           upcomingPaymentDate = paymentDate.add(const Duration(days: 7));
-        } else if (payment.billing_cycle == 'biweekly' && difference <= 14) {
-          upcomingPaymentDate = paymentDate.add(const Duration(days: 14));
         } else if (payment.billing_cycle == 'monthly' &&
             currentDate.day <= paymentDate.day &&
             difference <= 30) {
@@ -394,11 +392,6 @@ class PaymentDataSourceImpl implements PaymentDataSource {
         .subtract(Duration(days: payment.notification_period));
 
     if (payment.billing_cycle == 'weekly') {
-      _scheduleNotification(
-        notificationDate,
-        DateTimeComponents.dayOfWeekAndTime,
-      );
-    } else if (payment.billing_cycle == 'biweekly') {
       _scheduleNotification(
         notificationDate,
         DateTimeComponents.dayOfWeekAndTime,

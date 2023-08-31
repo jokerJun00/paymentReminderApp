@@ -87,7 +87,14 @@ class _BudgetingDashboardScreenState extends State<BudgetingDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<BudgetCubit, BudgetState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is BudgetStateError) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        }
+      },
       builder: (context, state) {
         if (state is BudgetStateLoadingData) {
           return const Scaffold(
