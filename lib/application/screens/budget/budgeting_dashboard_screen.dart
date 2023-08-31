@@ -180,11 +180,10 @@ class _BudgetingDashboardScreenState extends State<BudgetingDashboardScreen> {
                                         crossAxisSpacing: 30,
                                         mainAxisSpacing: 25,
                                       ),
-                                      itemCount: budgetList!.length,
+                                      itemCount: budgetList.length,
                                       itemBuilder: (_, index) {
                                         return BudgetProgressCard(
-                                          budget: budgetList![index],
-                                          currentAmount: 750,
+                                          budget: budgetList[index],
                                         );
                                       },
                                     ),

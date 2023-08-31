@@ -8,11 +8,9 @@ class BudgetProgressCard extends StatelessWidget {
   const BudgetProgressCard({
     super.key,
     required this.budget,
-    required this.currentAmount,
   });
 
   final BudgetModel budget;
-  final double currentAmount;
 
   @override
   Widget build(BuildContext context) {
@@ -35,21 +33,23 @@ class BudgetProgressCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            currentAmount / budget.budget_amount > 1.0
+            budget.current_amount / budget.budget_amount > 1.0
                 ? ">100%"
-                : "${((currentAmount / budget.budget_amount) * 100).toStringAsFixed(0)}%",
+                : "${((budget.current_amount / budget.budget_amount) * 100).toStringAsFixed(0)}%",
             style: GoogleFonts.inter(
-                fontSize: currentAmount / budget.budget_amount > 1.0 ? 32 : 40,
+                fontSize: budget.current_amount / budget.budget_amount > 1.0
+                    ? 32
+                    : 40,
                 fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
           LinearPercentIndicator(
             width: 130,
             lineHeight: 20,
-            percent: currentAmount / budget.budget_amount > 1.0
+            percent: budget.current_amount / budget.budget_amount > 1.0
                 ? 1.0
-                : currentAmount / budget.budget_amount,
-            progressColor: currentAmount / budget.budget_amount > 1.0
+                : budget.current_amount / budget.budget_amount,
+            progressColor: budget.current_amount / budget.budget_amount > 1.0
                 ? Colors.red.shade400
                 : const Color.fromARGB(255, 242, 223, 58),
             backgroundColor: Colors.grey.shade300,

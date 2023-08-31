@@ -1,15 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:payment_reminder_app/application/core/widgets/paid_payment_card.dart';
 import 'package:payment_reminder_app/data/datasources/payment_datasource.dart';
 import 'package:payment_reminder_app/data/exceptions/exceptions.dart';
 import 'package:payment_reminder_app/data/models/budget_model.dart';
 import 'package:payment_reminder_app/data/models/budgeting_plan_model.dart';
 import 'package:payment_reminder_app/data/models/category_model.dart';
-import 'package:payment_reminder_app/data/models/paid_payment.dart';
-
-import '../../domain/failures/failures.dart';
 
 abstract class BudgetDataSource {
   Future<BudgetingPlanModel?> getBudgetingPlanFromDataSource();
@@ -59,20 +55,14 @@ class BudgetDataSourceImpl implements BudgetDataSource {
       CategoryModel? category = categoryList.firstWhereOrNull(
           (category) => category.id.trim() == budget.category_id.trim());
 
-      print("Category =====> $category");
-
       if (category != null) {
+        budget.category_name = category.name;
         double? currentAmount = paidPaymentList[category.name];
-        print("Current Amount =====> $currentAmount");
-        if (currentAmount != null) {
-          budget.category_name = category.name;
-          budget.current_amount = paidPaymentList[category.name]!;
-          budgetList.add(budget);
-        }
+        budget.current_amount = currentAmount ?? 0.0;
+
+        budgetList.add(budget);
       }
     });
-
-    print("budgetList ======> $budgetList");
 
     return budgetList;
   }
