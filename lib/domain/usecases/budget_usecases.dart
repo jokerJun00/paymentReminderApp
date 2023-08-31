@@ -3,6 +3,7 @@ import 'package:payment_reminder_app/data/repositories/budget_repo_impl.dart';
 import 'package:payment_reminder_app/domain/entities/budget_entity.dart';
 import 'package:payment_reminder_app/domain/entities/budgeting_plan_entity.dart';
 
+import '../../data/models/category_model.dart';
 import '../entities/category_entity.dart';
 import '../failures/failures.dart';
 
@@ -18,8 +19,18 @@ class BudgetUseCases {
     return budgetRepoFirestore.getBudgetListFromDataSource(budgetingPlanId);
   }
 
-  Future<Either<void, Failure>> addBudgetingPlan() async {
-    return budgetRepoFirestore.addBudgetingPlanFromDataSource();
+  Future<Either<void, Failure>> addBudgetingPlan(
+    double startAmount,
+    double targetAmount,
+    List<double> categoryBudgetAmountList,
+    List<CategoryModel> categoryList,
+  ) async {
+    return budgetRepoFirestore.addBudgetingPlanFromDataSource(
+      startAmount,
+      targetAmount,
+      categoryBudgetAmountList,
+      categoryList,
+    );
   }
 
   Future<Either<void, Failure>> editBudgetList() async {

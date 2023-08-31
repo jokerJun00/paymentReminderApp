@@ -12,7 +12,12 @@ abstract class BudgetDataSource {
 
   Future<List<BudgetModel>> getBudgetListFromDataSource(String budgetingPlanId);
 
-  Future<void> editBudgetingPlanFromDataSource();
+  Future<void> addBudgetingPlanFromDataSource(
+    double startAmount,
+    double targetAmount,
+    List<double> categoryBudgetAmountList,
+    List<CategoryModel> categoryList,
+  );
 
   Future<void> editBudgetListFromDataSource();
 
@@ -31,9 +36,65 @@ class BudgetDataSourceImpl implements BudgetDataSource {
   }
 
   @override
-  Future<void> editBudgetingPlanFromDataSource() {
-    // TODO: implement editBudgetingPlanFromDataSource
-    throw UnimplementedError();
+  Future<void> addBudgetingPlanFromDataSource(
+    double startAmount,
+    double targetAmount,
+    List<double> categoryBudgetAmountList,
+    List<CategoryModel> categoryList,
+  ) async {
+    final userExistingBudgetPlan = await _firestore
+        .collection('BudgetingPlans')
+        .where('user_id', isEqualTo: user_id)
+        .get();
+
+    // check if user already have dashboard
+    if (userExistingBudgetPlan.docs.isNotEmpty) {
+      final id = userExistingBudgetPlan.docs.first.id;
+      // delete budgeting plan
+      await _firestore
+          .collection('BudgetingPlans')
+          .doc(id.trim())
+          .delete()
+          .catchError((_) => throw ServerException());
+
+      // delete all related budgets
+      await _firestore
+          .collection('Budgets')
+          .where('budgeting_plan_id', isEqualTo: id)
+          .get()
+          .then((value) => value.docs.forEach((document) =>
+              _firestore.collection('Budgets').doc(document.id).delete()));
+    }
+
+    final budgetingPlanJson = {
+      'target_amount': targetAmount.toString(),
+      'starting_amount': startAmount.toString(),
+      'user_id': user_id,
+    };
+
+    // create new budgeting plan
+    final budgetingPlanId = await _firestore
+        .collection('BudgetingPlans')
+        .add(budgetingPlanJson)
+        .catchError((_) => throw ServerException());
+
+    // create all category budget
+    for (int i = 0; i < categoryList.length; i++) {
+      if (categoryBudgetAmountList[i] <= 0) {
+        return;
+      }
+
+      final categoryBudgetJson = {
+        'budget_amount': categoryBudgetAmountList[i].toString(),
+        'budgeting_plan_id': budgetingPlanId.id,
+        'category_id': categoryList[i].id,
+      };
+
+      await _firestore
+          .collection('Budgets')
+          .add(categoryBudgetJson)
+          .catchError((_) => throw ServerException());
+    }
   }
 
   @override
@@ -99,7 +160,6 @@ class BudgetDataSourceImpl implements BudgetDataSource {
   @override
   Future<List<CategoryModel>> getCategoryListFromDataSource() async {
     List<CategoryModel> categoryList = [];
-    print("HEre is Datasource");
     final defaultCategoryListData = await _firestore
         .collection('Categories')
         .where('user_id', isEqualTo: '')
@@ -120,8 +180,6 @@ class BudgetDataSourceImpl implements BudgetDataSource {
       CategoryModel category = CategoryModel.fromFirestore(categoryData);
       categoryList.add(category);
     });
-
-    print("CategoryListInDataSource =====> $categoryList");
 
     return categoryList;
   }

@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:payment_reminder_app/domain/usecases/budget_usecases.dart';
 
+import '../../../../data/models/category_model.dart';
 import '../../../../domain/entities/budget_entity.dart';
 import '../../../../domain/entities/budgeting_plan_entity.dart';
 import '../../../../domain/entities/category_entity.dart';
@@ -48,10 +49,16 @@ class BudgetCubit extends Cubit<BudgetState> {
     return budgetList;
   }
 
-  Future<void> addBudgetingPlan() async {
+  Future<void> addBudgetingPlan(
+    double startAmount,
+    double targetAmount,
+    List<double> categoryBudgetAmountList,
+    List<CategoryModel> categoryList,
+  ) async {
     emit(BudgetStateEditingData());
 
-    final successOrFailure = await budgetUseCases.addBudgetingPlan();
+    final successOrFailure = await budgetUseCases.addBudgetingPlan(
+        startAmount, targetAmount, categoryBudgetAmountList, categoryList);
 
     successOrFailure.fold(
       (success) => emit(BudgetStateEditSuccess()),

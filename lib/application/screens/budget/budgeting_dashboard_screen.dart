@@ -93,8 +93,9 @@ class _BudgetingDashboardScreenState extends State<BudgetingDashboardScreen> {
                                           value: BlocProvider.of<BudgetCubit>(
                                             context,
                                           ),
-                                          child:
-                                              const AddBudgetingDashboardScreen(),
+                                          child: AddBudgetingDashboardScreen(
+                                            refresh: getData,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -117,8 +118,9 @@ class _BudgetingDashboardScreenState extends State<BudgetingDashboardScreen> {
                                         builder: (_) => BlocProvider.value(
                                           value: BlocProvider.of<BudgetCubit>(
                                               context),
-                                          child:
-                                              const AddBudgetingDashboardScreen(),
+                                          child: AddBudgetingDashboardScreen(
+                                            refresh: getData,
+                                          ),
                                         ),
                                       ),
                                     ),

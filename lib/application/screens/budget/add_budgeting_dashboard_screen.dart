@@ -8,7 +8,9 @@ import 'package:payment_reminder_app/application/screens/budget/cubit/budget_cub
 import '../../../data/models/category_model.dart';
 
 class AddBudgetingDashboardScreen extends StatefulWidget {
-  const AddBudgetingDashboardScreen({super.key});
+  const AddBudgetingDashboardScreen({super.key, required this.refresh});
+
+  final Function refresh;
 
   @override
   State<AddBudgetingDashboardScreen> createState() =>
@@ -31,13 +33,32 @@ class _AddBudgetingDashboardScreenState
             as List<CategoryModel>;
     setState(() {
       categoryList = categoryListFromDatabase;
-      categoryList.forEach(
-          (category) => categoryBudgetController.add(TextEditingController()));
+      categoryList.forEach((category) =>
+          categoryBudgetController.add(TextEditingController(text: "0.0")));
     });
   }
 
   void addBugdetingPlan() async {
-    await BlocProvider.of<BudgetCubit>(context).addBudgetingPlan();
+    final isValid = _addBudgetingPlanForm.currentState!.validate();
+
+    if (isValid) {
+      double startAmount = double.parse(startAmountController.text);
+      double targetAmount = double.parse(targetAmountController.text);
+      _addBudgetingPlanForm.currentState!.save();
+
+      List<double> categoryBudgetAmountList = [];
+
+      categoryBudgetController.forEach((controller) =>
+          categoryBudgetAmountList.add(double.parse(controller.text)));
+
+      // update user profile using firestore
+      await BlocProvider.of<BudgetCubit>(context).addBudgetingPlan(
+        startAmount,
+        targetAmount,
+        categoryBudgetAmountList,
+        categoryList,
+      );
+    }
   }
 
   @override
@@ -124,7 +145,10 @@ class _AddBudgetingDashboardScreenState
                           if (value == null || value.trim().isEmpty) {
                             return 'Please enter a starting amount';
                           }
-                          return null;
+                          double? valueDouble = double.tryParse(value);
+                          return valueDouble == null
+                              ? 'Please enter a valid number'
+                              : null;
                         },
                         onSaved: (value) {
                           startAmountController.text = value!;
@@ -145,7 +169,11 @@ class _AddBudgetingDashboardScreenState
                           if (value == null || value.trim().isEmpty) {
                             return 'Please enter a target amount';
                           }
-                          return null;
+
+                          double? valueDouble = double.tryParse(value);
+                          return valueDouble == null
+                              ? 'Please enter a valid number'
+                              : null;
                         },
                         onSaved: (value) {
                           targetAmountController.text = value!;
@@ -167,6 +195,16 @@ class _AddBudgetingDashboardScreenState
                               decoration: InputDecoration(
                                   labelText: categoryList[index].name),
                               keyboardType: TextInputType.number,
+                              validator: (value) {
+                                if (value != null && value.trim().isNotEmpty) {
+                                  // check if input is string
+                                  final doubleValue = double.tryParse(value);
+                                  return doubleValue == null
+                                      ? 'Please enter a valid'
+                                      : null;
+                                }
+                                return null;
+                              },
                               onSaved: (value) {
                                 categoryBudgetController[index].text = value!;
                               },

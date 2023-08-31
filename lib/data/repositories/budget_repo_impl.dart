@@ -10,6 +10,7 @@ import 'package:payment_reminder_app/domain/failures/failures.dart';
 
 import '../../domain/repositories/budget_repo.dart';
 import '../exceptions/exceptions.dart';
+import '../models/category_model.dart';
 
 class BudgetRepoImpl implements BudgetRepo {
   final BudgetDataSource budgetDataSource = BudgetDataSourceImpl();
@@ -27,9 +28,19 @@ class BudgetRepoImpl implements BudgetRepo {
   }
 
   @override
-  Future<Either<void, Failure>> addBudgetingPlanFromDataSource() async {
+  Future<Either<void, Failure>> addBudgetingPlanFromDataSource(
+    double startAmount,
+    double targetAmount,
+    List<double> categoryBudgetAmountList,
+    List<CategoryModel> categoryList,
+  ) async {
     try {
-      return left(await budgetDataSource.editBudgetingPlanFromDataSource());
+      return left(await budgetDataSource.addBudgetingPlanFromDataSource(
+        startAmount,
+        targetAmount,
+        categoryBudgetAmountList,
+        categoryList,
+      ));
     } on ServerException catch (_) {
       return right(ServerFailure(
           error: "Add Budgeting Plan failed. Please check your input"));
