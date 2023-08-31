@@ -175,7 +175,8 @@ class _BudgetingDashboardScreenState extends State<BudgetingDashboardScreen> {
                                     child: GridView.builder(
                                       gridDelegate:
                                           const SliverGridDelegateWithMaxCrossAxisExtent(
-                                        maxCrossAxisExtent: 160,
+                                        childAspectRatio: 1 / 1,
+                                        maxCrossAxisExtent: 200,
                                         crossAxisSpacing: 30,
                                         mainAxisSpacing: 25,
                                       ),

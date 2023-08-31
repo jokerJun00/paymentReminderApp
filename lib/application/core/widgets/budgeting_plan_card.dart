@@ -23,13 +23,13 @@ class BudgetingPlanCard extends StatelessWidget {
         children: [
           Text("Budget", style: GoogleFonts.inter(fontSize: 24)),
           Text(
-            "RM ${budgetingPlan.target_amount.toStringAsFixed(2)}",
+            "RM ${(budgetingPlan.target_amount - budgetingPlan.starting_amount).toStringAsFixed(2)}",
             style: GoogleFonts.inter(fontSize: 35, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
           Text("Current Spending", style: GoogleFonts.inter(fontSize: 24)),
           Text(
-            "RM ${budgetingPlan.spend_amount.toStringAsFixed(2)}",
+            "RM ${budgetingPlan.current_spending_amount.toStringAsFixed(2)}",
             style: GoogleFonts.inter(fontSize: 35, fontWeight: FontWeight.bold),
           ),
         ],

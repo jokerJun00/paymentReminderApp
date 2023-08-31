@@ -49,10 +49,8 @@ class BudgetDataSourceImpl implements BudgetDataSource {
     List<CategoryModel> categoryList =
         await paymentDataSource.getCategoryList();
 
-    Map<String, double> paidPaymentList =
-        await paymentDataSource.getMonthlySummaryGroupByCategoryFromDatasource(
-            DateTime.now().subtract(const Duration(days: 30)));
-    print("Paid Payment List ====> $paidPaymentList");
+    Map<String, double> paidPaymentList = await paymentDataSource
+        .getMonthlySummaryGroupByCategoryFromDatasource(DateTime.now());
 
     List<BudgetModel> budgetList = [];
 
@@ -60,6 +58,8 @@ class BudgetDataSourceImpl implements BudgetDataSource {
       BudgetModel budget = BudgetModel.fromFirestore(budgetData);
       CategoryModel? category = categoryList.firstWhereOrNull(
           (category) => category.id.trim() == budget.category_id.trim());
+
+      print("Category =====> $category");
 
       if (category != null) {
         double? currentAmount = paidPaymentList[category.name];
@@ -84,11 +84,19 @@ class BudgetDataSourceImpl implements BudgetDataSource {
         .where('user_id', isEqualTo: user_id)
         .get()
         .catchError((_) => throw ServerException());
+    Map<String, double> paidPaymentList = await paymentDataSource
+        .getMonthlySummaryGroupByCategoryFromDatasource(DateTime.now());
+    double currentSpendingAmount = 0.0;
+
+    paidPaymentList.forEach(
+        (_, spendingOnCategory) => currentSpendingAmount += spendingOnCategory);
 
     // if user already created a budgeting plan
     if (budgetingPlanData.docs.isNotEmpty) {
-      BudgetingPlanModel budgetingPlan =
-          BudgetingPlanModel.fromFirestore(budgetingPlanData.docs.first);
+      BudgetingPlanModel budgetingPlan = BudgetingPlanModel.fromFirestore(
+        budgetingPlanData.docs.first,
+        currentSpendingAmount,
+      );
 
       return budgetingPlan;
     }

@@ -17,7 +17,6 @@ class BudgetProgressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // width: double.infinity,
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -36,15 +35,23 @@ class BudgetProgressCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            "${((currentAmount / budget.budget_amount) * 100).toStringAsFixed(0)}%",
-            style: GoogleFonts.inter(fontSize: 55, fontWeight: FontWeight.bold),
+            currentAmount / budget.budget_amount > 1.0
+                ? ">100%"
+                : "${((currentAmount / budget.budget_amount) * 100).toStringAsFixed(0)}%",
+            style: GoogleFonts.inter(
+                fontSize: currentAmount / budget.budget_amount > 1.0 ? 32 : 40,
+                fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
           LinearPercentIndicator(
             width: 130,
             lineHeight: 20,
-            percent: currentAmount / budget.budget_amount,
-            progressColor: const Color.fromARGB(255, 242, 223, 58),
+            percent: currentAmount / budget.budget_amount > 1.0
+                ? 1.0
+                : currentAmount / budget.budget_amount,
+            progressColor: currentAmount / budget.budget_amount > 1.0
+                ? Colors.red.shade400
+                : const Color.fromARGB(255, 242, 223, 58),
             backgroundColor: Colors.grey.shade300,
             animation: true,
             animationDuration: 1000,
