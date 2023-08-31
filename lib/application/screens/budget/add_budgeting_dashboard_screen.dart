@@ -8,9 +8,7 @@ import 'package:payment_reminder_app/application/screens/budget/cubit/budget_cub
 import '../../../data/models/category_model.dart';
 
 class AddBudgetingDashboardScreen extends StatefulWidget {
-  const AddBudgetingDashboardScreen({super.key, required this.refresh});
-
-  final Function refresh;
+  const AddBudgetingDashboardScreen({super.key});
 
   @override
   State<AddBudgetingDashboardScreen> createState() =>

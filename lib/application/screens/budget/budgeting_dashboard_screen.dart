@@ -48,7 +48,9 @@ class _BudgetingDashboardScreenState extends State<BudgetingDashboardScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<BudgetCubit, BudgetState>(
       listener: (context, state) {
-        if (state is BudgetStateError) {
+        if (state is BudgetStateEditSuccess) {
+          getData();
+        } else if (state is BudgetStateError) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),
@@ -93,9 +95,8 @@ class _BudgetingDashboardScreenState extends State<BudgetingDashboardScreen> {
                                           value: BlocProvider.of<BudgetCubit>(
                                             context,
                                           ),
-                                          child: AddBudgetingDashboardScreen(
-                                            refresh: getData,
-                                          ),
+                                          child:
+                                              const AddBudgetingDashboardScreen(),
                                         ),
                                       ),
                                     ),
@@ -118,9 +119,8 @@ class _BudgetingDashboardScreenState extends State<BudgetingDashboardScreen> {
                                         builder: (_) => BlocProvider.value(
                                           value: BlocProvider.of<BudgetCubit>(
                                               context),
-                                          child: AddBudgetingDashboardScreen(
-                                            refresh: getData,
-                                          ),
+                                          child:
+                                              const AddBudgetingDashboardScreen(),
                                         ),
                                       ),
                                     ),
