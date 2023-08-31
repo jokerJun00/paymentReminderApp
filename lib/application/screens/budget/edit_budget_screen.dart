@@ -70,6 +70,15 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
 
       categoryBudgetController.forEach((controller) =>
           categoryBudgetAmountList.add(double.parse(controller.text)));
+
+      // edit budgeting plan using firestore
+      await BlocProvider.of<BudgetCubit>(context).editBudgetingPlan(
+        widget.budgetingPlan.id,
+        startAmount,
+        targetAmount,
+        categoryBudgetAmountList,
+        categoryList,
+      );
     }
   }
 

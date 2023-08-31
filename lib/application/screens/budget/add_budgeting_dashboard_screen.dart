@@ -49,7 +49,7 @@ class _AddBudgetingDashboardScreenState
       categoryBudgetController.forEach((controller) =>
           categoryBudgetAmountList.add(double.parse(controller.text)));
 
-      // update user profile using firestore
+      // add budgeting plan using firestore
       await BlocProvider.of<BudgetCubit>(context).addBudgetingPlan(
         startAmount,
         targetAmount,

@@ -66,10 +66,22 @@ class BudgetCubit extends Cubit<BudgetState> {
     );
   }
 
-  Future<void> editBudgetList() async {
+  Future<void> editBudgetingPlan(
+    String budgetingPlanId,
+    double startAmount,
+    double targetAmount,
+    List<double> categoryBudgetAmountList,
+    List<CategoryModel> categoryList,
+  ) async {
     emit(BudgetStateEditingData());
 
-    final successOrFailure = await budgetUseCases.editBudgetList();
+    final successOrFailure = await budgetUseCases.editBudgetingPlan(
+      budgetingPlanId,
+      startAmount,
+      targetAmount,
+      categoryBudgetAmountList,
+      categoryList,
+    );
 
     successOrFailure.fold(
       (success) => emit(BudgetStateEditSuccess()),

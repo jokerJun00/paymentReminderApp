@@ -20,7 +20,13 @@ abstract class BudgetRepo {
     List<CategoryModel> categoryList,
   );
 
-  Future<Either<void, Failure>> editBudgetListFromDataSource();
+  Future<Either<void, Failure>> editBudgetingPlanFromDataSource(
+    String budgetingPlanId,
+    double startAmount,
+    double targetAmount,
+    List<double> categoryBudgetAmountList,
+    List<CategoryModel> categoryList,
+  );
 
   Future<Either<List<CategoryEntity>, Failure>> getCategoryListFromDataSource();
 }

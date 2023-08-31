@@ -19,7 +19,13 @@ abstract class BudgetDataSource {
     List<CategoryModel> categoryList,
   );
 
-  Future<void> editBudgetListFromDataSource();
+  Future<void> editBudgetingPlanFromDataSource(
+    String budgetingPlanId,
+    double startAmount,
+    double targetAmount,
+    List<double> categoryBudgetAmountList,
+    List<CategoryModel> categoryList,
+  );
 
   Future<List<CategoryModel>> getCategoryListFromDataSource();
 }
@@ -30,9 +36,68 @@ class BudgetDataSourceImpl implements BudgetDataSource {
   final PaymentDataSource paymentDataSource = PaymentDataSourceImpl();
 
   @override
-  Future<void> editBudgetListFromDataSource() {
-    // TODO: implement editBudgetListFromDataSource
-    throw UnimplementedError();
+  Future<void> editBudgetingPlanFromDataSource(
+    String budgetingPlanId,
+    double startAmount,
+    double targetAmount,
+    List<double> categoryBudgetAmountList,
+    List<CategoryModel> categoryList,
+  ) async {
+    // set Budgeting Plan
+    final budgetingPlanJson = {
+      'target_amount': targetAmount.toString(),
+      'starting_amount': startAmount.toString(),
+      'user_id': user_id,
+    };
+    await _firestore
+        .collection('BudgetingPlans')
+        .doc(budgetingPlanId)
+        .set(budgetingPlanJson)
+        .catchError((_) => throw ServerException());
+
+    // set all budget
+    for (int i = 0; i < categoryList.length; i++) {
+      final budgetData = await _firestore
+          .collection('Budgets')
+          .where('budgeting_plan_id', isEqualTo: budgetingPlanId)
+          .where('category_id', isEqualTo: categoryList[i].id)
+          .get()
+          .catchError((_) => throw ServerException());
+
+      final categoryBudgetJson = {
+        'budget_amount': categoryBudgetAmountList[i].toString(),
+        'budgeting_plan_id': budgetingPlanId,
+        'category_id': categoryList[i].id,
+      };
+
+      // check if budget has record in Satabase
+      if (budgetData.docs.isNotEmpty) {
+        // if (has record && budget amount > 0) => update
+        await _firestore
+            .collection('Budgets')
+            .doc(budgetData.docs.first.id)
+            .set(categoryBudgetJson)
+            .catchError((_) => throw ServerException());
+        if (categoryBudgetAmountList[i] > 0) {
+        } else {
+          // if (has record && budget amount < 0) => delete
+          await _firestore
+              .collection('Budgets')
+              .doc(budgetData.docs.first.id)
+              .delete()
+              .catchError((_) => throw ServerException());
+        }
+      } else {
+        // if (not record && budget amount > 0) => add new record
+        if (categoryBudgetAmountList[i] > 0) {
+          await _firestore
+              .collection('Budgets')
+              .add(categoryBudgetJson)
+              .catchError((_) => throw ServerException());
+        }
+        // if (no record && budget amount < 0) => do nothing
+      }
+    }
   }
 
   @override
@@ -80,20 +145,18 @@ class BudgetDataSourceImpl implements BudgetDataSource {
 
     // create all category budget
     for (int i = 0; i < categoryList.length; i++) {
-      if (categoryBudgetAmountList[i] <= 0) {
-        return;
+      if (categoryBudgetAmountList[i] > 0) {
+        final categoryBudgetJson = {
+          'budget_amount': categoryBudgetAmountList[i].toString(),
+          'budgeting_plan_id': budgetingPlanId.id,
+          'category_id': categoryList[i].id,
+        };
+
+        await _firestore
+            .collection('Budgets')
+            .add(categoryBudgetJson)
+            .catchError((_) => throw ServerException());
       }
-
-      final categoryBudgetJson = {
-        'budget_amount': categoryBudgetAmountList[i].toString(),
-        'budgeting_plan_id': budgetingPlanId.id,
-        'category_id': categoryList[i].id,
-      };
-
-      await _firestore
-          .collection('Budgets')
-          .add(categoryBudgetJson)
-          .catchError((_) => throw ServerException());
     }
   }
 

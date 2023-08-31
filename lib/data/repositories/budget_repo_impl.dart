@@ -16,9 +16,21 @@ class BudgetRepoImpl implements BudgetRepo {
   final BudgetDataSource budgetDataSource = BudgetDataSourceImpl();
 
   @override
-  Future<Either<void, Failure>> editBudgetListFromDataSource() async {
+  Future<Either<void, Failure>> editBudgetingPlanFromDataSource(
+    String budgetingPlanId,
+    double startAmount,
+    double targetAmount,
+    List<double> categoryBudgetAmountList,
+    List<CategoryModel> categoryList,
+  ) async {
     try {
-      return left(await budgetDataSource.editBudgetListFromDataSource());
+      return left(await budgetDataSource.editBudgetingPlanFromDataSource(
+        budgetingPlanId,
+        startAmount,
+        targetAmount,
+        categoryBudgetAmountList,
+        categoryList,
+      ));
     } on ServerException catch (_) {
       return right(
           ServerFailure(error: "Edit budget failed. Please check your input"));

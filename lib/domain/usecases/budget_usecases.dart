@@ -33,8 +33,20 @@ class BudgetUseCases {
     );
   }
 
-  Future<Either<void, Failure>> editBudgetList() async {
-    return budgetRepoFirestore.editBudgetListFromDataSource();
+  Future<Either<void, Failure>> editBudgetingPlan(
+    String budgetingPlanId,
+    double startAmount,
+    double targetAmount,
+    List<double> categoryBudgetAmountList,
+    List<CategoryModel> categoryList,
+  ) async {
+    return budgetRepoFirestore.editBudgetingPlanFromDataSource(
+      budgetingPlanId,
+      startAmount,
+      targetAmount,
+      categoryBudgetAmountList,
+      categoryList,
+    );
   }
 
   Future<Either<List<CategoryEntity>, Failure>> getCategoryList() async {
