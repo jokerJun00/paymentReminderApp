@@ -16,7 +16,7 @@ import 'package:payment_reminder_app/application/screens/payment/payments_screen
 import 'package:payment_reminder_app/application/screens/auth/login_screen.dart';
 import 'package:payment_reminder_app/application/screens/auth/signup_screen.dart';
 import 'package:payment_reminder_app/application/screens/navigation_screen.dart';
-import 'package:payment_reminder_app/application/screens/budgets_screen.dart';
+import 'package:payment_reminder_app/application/screens/budget/budgeting_dashboard_screen.dart';
 import 'package:payment_reminder_app/application/screens/user/profile_screen.dart';
 import 'package:payment_reminder_app/application/screens/payment/upcoming_screen.dart';
 import 'package:payment_reminder_app/application/screens/user/add_card_screen.dart';
@@ -204,7 +204,7 @@ class _MyPaymentReminderAppState extends State<MyPaymentReminderApp> {
           '/login': (context) => const LogInScreen(),
           '/signup': (context) => const SignUpScreen(),
           '/navigation': (context) => const NavigationScreen(),
-          '/budgets': (context) => const BudgetsScreen(),
+          '/budgets': (context) => const BudgetingDashboardScreen(),
           '/profile': (context) => const ProfileScreen(),
           '/payments': (context) => const PaymentScreen(),
           '/upcomingScreen': (context) => const UpcomingScreen(),

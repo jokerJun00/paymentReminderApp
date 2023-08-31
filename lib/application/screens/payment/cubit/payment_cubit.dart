@@ -16,17 +16,6 @@ class PaymentCubit extends Cubit<PaymentState> {
 
   final PaymentUseCases paymentUseCases = PaymentUseCases();
 
-  // void getAllPayments() async {
-  //   emit(PaymentStateLoadingData());
-
-  //   final paymentsOrFailure = await paymentUseCases.getAllPayments();
-
-  //   paymentsOrFailure.fold(
-  //     (groupedPaymentList) => emit(PaymentStateInitial(groupedPaymentList: groupedPaymentList)),
-  //     (failure) => emit(PaymentStateError(message: failure.getError)),
-  //   );
-  // }
-
   void getGroupedPayments() async {
     emit(PaymentStateLoadingData());
 

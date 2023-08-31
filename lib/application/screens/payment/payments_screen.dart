@@ -25,18 +25,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   var _userId = "";
 
   void deletePayment(PaymentModel payment) async {
-    await BlocProvider.of<PaymentCubit>(context)
-        .deletePayments(payment)
-        .then((value) {
-      // remove payment and update state
-      final removedPayment = paymentList
-          .firstWhere((element) => element.id.trim() == payment.id.trim());
-      final index = paymentList.indexOf(removedPayment);
-
-      setState(() {
-        paymentList.removeAt(index);
-      });
-    });
+    await BlocProvider.of<PaymentCubit>(context).deletePayments(payment);
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:payment_reminder_app/application/screens/budget/cubit/budget_cubit.dart';
 
 // screen
 import 'package:payment_reminder_app/application/screens/payment/payments_screen.dart';
@@ -7,7 +8,7 @@ import 'package:payment_reminder_app/application/screens/payment/home_screen.dar
 import 'package:payment_reminder_app/application/screens/user/cubit/user_cubit.dart';
 import 'package:payment_reminder_app/application/screens/user/profile_screen.dart';
 import 'package:payment_reminder_app/application/screens/payment/upcoming_screen.dart';
-import 'package:payment_reminder_app/application/screens/budgets_screen.dart';
+import 'package:payment_reminder_app/application/screens/budget/budgeting_dashboard_screen.dart';
 
 // cubit
 import 'package:payment_reminder_app/application/screens/auth/cubit/auth_cubit.dart';
@@ -33,6 +34,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   @override
   Widget build(BuildContext context) {
     PaymentCubit paymentCubit = PaymentCubit();
+    BudgetCubit budgetCubit = BudgetCubit();
     Widget activeScreen = HomeScreen();
 
     switch (_selectedScreenIndex) {
@@ -62,7 +64,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
         break;
       case 3:
         {
-          activeScreen = const BudgetsScreen();
+          activeScreen = BlocProvider.value(
+            value: budgetCubit,
+            child: const BudgetingDashboardScreen(),
+          );
         }
         break;
       case 4:

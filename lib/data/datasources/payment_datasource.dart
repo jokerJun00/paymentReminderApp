@@ -399,10 +399,10 @@ class PaymentDataSourceImpl implements PaymentDataSource {
         DateTimeComponents.dayOfWeekAndTime,
       );
     } else if (payment.billing_cycle == 'biweekly') {
-      // _scheduleNotification(
-      //   notificationDate,
-      //   DateTimeComponents.dayOfWeekAndTime,
-      // );
+      _scheduleNotification(
+        notificationDate,
+        DateTimeComponents.dayOfWeekAndTime,
+      );
     } else if (payment.billing_cycle == 'monthly') {
       _scheduleNotification(
         notificationDate,

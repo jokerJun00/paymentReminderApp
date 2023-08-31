@@ -56,6 +56,7 @@ dependencies:
   firebase_analytics: ^10.4.5
   page_transition: ^2.0.9
   group_list_view: ^1.1.1
+  percent_indicator: ^4.2.3
 
 dev_dependencies:
   flutter_test:

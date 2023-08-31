@@ -79,7 +79,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
 
         return Scaffold(
           body: Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,6 +158,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 30),
               ],
             ),
           ),
