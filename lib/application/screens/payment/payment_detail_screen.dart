@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,9 +13,6 @@ import '../../../data/models/receiver_model.dart';
 import '../../core/services/date_time_formatter.dart';
 import 'category_list_screen.dart';
 import 'cubit/payment_cubit.dart';
-
-// the bank drop down cannot display selected bank
-// should find a way to update value of the drop down button
 
 enum BillingCycle { weekly, monthly, yearly }
 

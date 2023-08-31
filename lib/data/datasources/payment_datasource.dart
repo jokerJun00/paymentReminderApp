@@ -590,7 +590,6 @@ class PaymentDataSourceImpl implements PaymentDataSource {
     final user_id = _firebaseAuth.currentUser!.uid;
     List<PaidPaymentModel> paidPaymentList = [];
     final categoryList = await getCategoryList();
-    final paymentList = await getAllPaymentsFromDataSource();
     Map<String, double> categorySummary = {};
 
     final paidPaymentListData = await _firestore
@@ -651,7 +650,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
       CategoryModel? category = categoryList.firstWhereOrNull(
           (category) => category.id.trim() == payment.category_id.trim());
 
-      return category != null ? category!.name : "No Category";
+      return category != null ? category.name : "No Category";
     });
 
     return groupedPaymentList;

@@ -91,7 +91,8 @@ class _BudgetingDashboardScreenState extends State<BudgetingDashboardScreen> {
                                       MaterialPageRoute(
                                         builder: (_) => BlocProvider.value(
                                           value: BlocProvider.of<BudgetCubit>(
-                                              context),
+                                            context,
+                                          ),
                                           child:
                                               const AddBudgetingDashboardScreen(),
                                         ),

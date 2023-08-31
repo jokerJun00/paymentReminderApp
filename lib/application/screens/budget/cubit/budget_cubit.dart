@@ -4,6 +4,7 @@ import 'package:payment_reminder_app/domain/usecases/budget_usecases.dart';
 
 import '../../../../domain/entities/budget_entity.dart';
 import '../../../../domain/entities/budgeting_plan_entity.dart';
+import '../../../../domain/entities/category_entity.dart';
 
 part 'budget_state.dart';
 
@@ -67,5 +68,22 @@ class BudgetCubit extends Cubit<BudgetState> {
       (success) => emit(BudgetStateEditSuccess()),
       (failure) => emit(BudgetStateError(message: failure.getError)),
     );
+  }
+
+  Future<List<CategoryEntity>> getCategoryList() async {
+    emit(BudgetStateLoadingData());
+
+    final categoryListOrFailure = await budgetUseCases.getCategoryList();
+    List<CategoryEntity> categoryList = [];
+
+    categoryListOrFailure.fold(
+      (categoryListFromDatabase) {
+        emit(BudgetStateLoaded());
+        categoryList = categoryListFromDatabase;
+      },
+      (failure) => emit(BudgetStateError(message: failure.getError)),
+    );
+
+    return categoryList;
   }
 }

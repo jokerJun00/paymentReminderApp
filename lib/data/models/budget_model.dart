@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:payment_reminder_app/domain/entities/budget_entity.dart';
 
+// ignore: must_be_immutable
 class BudgetModel extends BudgetEntity with EquatableMixin {
   BudgetModel({
     required super.id,

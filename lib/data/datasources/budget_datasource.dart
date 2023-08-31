@@ -15,6 +15,8 @@ abstract class BudgetDataSource {
   Future<void> editBudgetingPlanFromDataSource();
 
   Future<void> editBudgetListFromDataSource();
+
+  Future<List<CategoryModel>> getCategoryListFromDataSource();
 }
 
 class BudgetDataSourceImpl implements BudgetDataSource {
@@ -92,5 +94,35 @@ class BudgetDataSourceImpl implements BudgetDataSource {
     }
 
     return null;
+  }
+
+  @override
+  Future<List<CategoryModel>> getCategoryListFromDataSource() async {
+    List<CategoryModel> categoryList = [];
+    print("HEre is Datasource");
+    final defaultCategoryListData = await _firestore
+        .collection('Categories')
+        .where('user_id', isEqualTo: '')
+        .get()
+        .catchError((_) => throw ServerException());
+    final userCategoryListData = await _firestore
+        .collection('Categories')
+        .where('user_id', isEqualTo: user_id)
+        .get()
+        .catchError((_) => throw ServerException());
+
+    defaultCategoryListData.docs.forEach((categoryData) {
+      CategoryModel category = CategoryModel.fromFirestore(categoryData);
+      categoryList.add(category);
+    });
+
+    userCategoryListData.docs.forEach((categoryData) {
+      CategoryModel category = CategoryModel.fromFirestore(categoryData);
+      categoryList.add(category);
+    });
+
+    print("CategoryListInDataSource =====> $categoryList");
+
+    return categoryList;
   }
 }

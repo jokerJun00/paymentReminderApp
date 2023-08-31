@@ -3,6 +3,7 @@ import 'package:payment_reminder_app/data/repositories/budget_repo_impl.dart';
 import 'package:payment_reminder_app/domain/entities/budget_entity.dart';
 import 'package:payment_reminder_app/domain/entities/budgeting_plan_entity.dart';
 
+import '../entities/category_entity.dart';
 import '../failures/failures.dart';
 
 class BudgetUseCases {
@@ -23,5 +24,9 @@ class BudgetUseCases {
 
   Future<Either<void, Failure>> editBudgetList() async {
     return budgetRepoFirestore.editBudgetListFromDataSource();
+  }
+
+  Future<Either<List<CategoryEntity>, Failure>> getCategoryList() async {
+    return budgetRepoFirestore.getCategoryListFromDataSource();
   }
 }
