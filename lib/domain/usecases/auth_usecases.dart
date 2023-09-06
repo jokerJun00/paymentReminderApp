@@ -1,25 +1,27 @@
 import 'package:dartz/dartz.dart';
-import 'package:payment_reminder_app/data/repositories/auth_repo_impl.dart';
 import 'package:payment_reminder_app/domain/entities/user_entitiy.dart';
 import 'package:payment_reminder_app/domain/failures/failures.dart';
 
+import '../repositories/auth_repo.dart';
+
 class AuthUseCases {
-  final AuthRepoImpl authRepoFirestore = AuthRepoImpl();
+  AuthUseCases({required this.authRepo});
+  final AuthRepo authRepo;
 
   Future<Either<UserEntity, Failure>> logIn(String email, String password) {
-    return authRepoFirestore.logInFromDataSource(email, password);
+    return authRepo.logInFromDataSource(email, password);
   }
 
   Future<Either<UserEntity, Failure>> signUp(
       String username, String email, String contactNo, String password) {
-    authRepoFirestore.signUpFromDataSource(
+    authRepo.signUpFromDataSource(
       username,
       email,
       contactNo,
       password,
     );
 
-    return authRepoFirestore.signUpFromDataSource(
+    return authRepo.signUpFromDataSource(
       username,
       email,
       contactNo,
@@ -28,6 +30,6 @@ class AuthUseCases {
   }
 
   Future<Either<bool, Failure>> logOut() {
-    return authRepoFirestore.logOutFromDataSource();
+    return authRepo.logOutFromDataSource();
   }
 }

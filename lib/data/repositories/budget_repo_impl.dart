@@ -13,7 +13,8 @@ import '../exceptions/exceptions.dart';
 import '../models/category_model.dart';
 
 class BudgetRepoImpl implements BudgetRepo {
-  final BudgetDataSource budgetDataSource = BudgetDataSourceImpl();
+  BudgetRepoImpl({required this.budgetDataSource});
+  final BudgetDataSource budgetDataSource;
 
   @override
   Future<Either<void, Failure>> editBudgetingPlanFromDataSource(

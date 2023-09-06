@@ -15,7 +15,8 @@ import '../models/payment_model.dart';
 import '../models/receiver_model.dart';
 
 class PaymentRepoImpl implements PaymentRepo {
-  final PaymentDataSource paymentDataSource = PaymentDataSourceImpl();
+  PaymentRepoImpl({required this.paymentDataSource});
+  final PaymentDataSource paymentDataSource;
 
   @override
   Future<Either<void, Failure>> addPaymentFromDataSource(

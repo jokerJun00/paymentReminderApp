@@ -60,19 +60,20 @@ abstract class PaymentDataSource {
 }
 
 class PaymentDataSourceImpl implements PaymentDataSource {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  PaymentDataSourceImpl({required this.firebaseAuth, required this.firestore});
+  final FirebaseAuth firebaseAuth;
+  final FirebaseFirestore firestore;
 
   @override
   Future<void> addPaymentFromDataSource(
       PaymentModel newPayment, ReceiverModel receiverInfo) async {
-    final user_id = _firebaseAuth.currentUser!.uid;
+    final user_id = firebaseAuth.currentUser!.uid;
 
     receiverInfo.user_id = user_id;
     newPayment.user_id = user_id;
 
     // check if the receiver already created
-    final receiverData = await _firestore
+    final receiverData = await firestore
         .collection('Receivers')
         .where('user_id', isEqualTo: user_id)
         .where('name', isEqualTo: receiverInfo.name)
@@ -87,7 +88,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
       newPayment.receiver_id = receiver.id;
     } else {
       // store new receiver data into database and set new payment receiver_id
-      await _firestore
+      await firestore
           .collection('Receivers')
           .add(receiverInfo.toJson())
           .then((DocumentReference doc) => newPayment.receiver_id = doc.id)
@@ -95,7 +96,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
     }
 
     // store new payment to Firestore
-    await _firestore
+    await firestore
         .collection('Payments')
         .add(newPayment.toJson())
         .then((value) {
@@ -110,13 +111,13 @@ class PaymentDataSourceImpl implements PaymentDataSource {
   Future<void> deletePaymentFromDataSource(PaymentModel payment) async {
     print("Operating database, received payment info : $payment");
     // delete payment from Firestore
-    await _firestore
+    await firestore
         .collection('Payments')
         .doc(payment.id.trim())
         .delete()
         .catchError((_) => throw ServerException());
 
-    final paymentsWithSameReceiverId = await _firestore
+    final paymentsWithSameReceiverId = await firestore
         .collection('Payments')
         .where('receiver_id', isEqualTo: payment.receiver_id.trim())
         .get()
@@ -124,7 +125,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
     // if receiver is not in use, delete receiver
     if (paymentsWithSameReceiverId.size == 0) {
-      await _firestore
+      await firestore
           .collection('Receivers')
           .doc(payment.receiver_id.trim())
           .delete()
@@ -135,7 +136,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
   @override
   Future<void> editPaymentFromDataSource(
       PaymentModel editedPaymentInfo, ReceiverModel editedReceiverInfo) async {
-    final receiverInfoData = await _firestore
+    final receiverInfoData = await firestore
         .collection('Receivers')
         .doc(editedReceiverInfo.id)
         .get()
@@ -153,27 +154,42 @@ class PaymentDataSourceImpl implements PaymentDataSource {
         receiverInfoInDatabase.bank_id != editedReceiverInfo.bank_id ||
         receiverInfoInDatabase.bank_account_no !=
             editedReceiverInfo.bank_account_no) {
-      await _firestore
+      await firestore
           .collection('Receivers')
           .doc(editedPaymentInfo.id)
           .set(editedReceiverInfo.toJson())
           .catchError((_) => throw ServerException());
     }
 
-    await _firestore
+    await firestore
         .collection('Payments')
         .doc(editedPaymentInfo.id)
         .set(editedPaymentInfo.toJson())
         .catchError((_) => throw ServerException());
+
+    final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+
+    showAddNewPaymentNotification(editedPaymentInfo);
+    final List<PendingNotificationRequest> pendingNotificationRequests =
+        await _flutterLocalNotificationsPlugin.pendingNotificationRequests();
+    for (var _pendingRequest in pendingNotificationRequests) {
+      // _flutterLocalNotificationsPlugin.cancel(_pendingRequest.id);
+      print("Body: ${_pendingRequest.body}");
+      print("Body: ${_pendingRequest.title}");
+      print("Body: ${_pendingRequest.payload}");
+      print("Body: ${_pendingRequest.id}");
+    }
+    setPaymentReminder(editedPaymentInfo);
   }
 
   @override
   Future<List<PaymentModel>> getAllPaymentsFromDataSource() async {
-    final user_id = _firebaseAuth.currentUser!.uid;
+    final user_id = firebaseAuth.currentUser!.uid;
 
     List<PaymentModel> paymentList = [];
 
-    final paymentsData = await _firestore
+    final paymentsData = await firestore
         .collection('Payments')
         .where('user_id', isEqualTo: user_id)
         .get()
@@ -189,11 +205,11 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
   @override
   Future<List<CategoryModel>> getAllCategoriesFromDataSource() async {
-    final user_id = _firebaseAuth.currentUser!.uid;
+    final user_id = firebaseAuth.currentUser!.uid;
     List<CategoryModel> categoryList = [];
 
     // get all default category
-    final defaultCategoriesData = await _firestore
+    final defaultCategoriesData = await firestore
         .collection('Categories')
         .where('user_id', isEqualTo: "")
         .get()
@@ -205,7 +221,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
     });
 
     // get all user setting category
-    final userCategoriesData = await _firestore
+    final userCategoriesData = await firestore
         .collection('Categories')
         .where('user_id', isEqualTo: user_id)
         .get()
@@ -221,14 +237,14 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
   @override
   Future<void> addCategory(String categoryName) async {
-    final user_id = _firebaseAuth.currentUser!.uid;
+    final user_id = firebaseAuth.currentUser!.uid;
 
     final newCategoryData = {
       'name': categoryName,
       'user_id': user_id,
     };
 
-    await _firestore
+    await firestore
         .collection('Categories')
         .add(newCategoryData)
         .catchError((e) {
@@ -239,7 +255,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
   @override
   Future<List<BankModel>> getBankList() async {
     List<BankModel> bankList = [];
-    final bankListData = await _firestore
+    final bankListData = await firestore
         .collection('Banks')
         .get()
         .catchError((_) => throw ServerException());
@@ -254,11 +270,11 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
   @override
   Future<List<CategoryModel>> getCategoryList() async {
-    final user_id = _firebaseAuth.currentUser!.uid;
+    final user_id = firebaseAuth.currentUser!.uid;
     List<CategoryModel> categoryList = [];
 
     // get all default category
-    final defaultCategoriesData = await _firestore
+    final defaultCategoriesData = await firestore
         .collection('Categories')
         .where('user_id', isEqualTo: "")
         .get()
@@ -270,7 +286,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
     });
 
     // get all user setting category
-    final userCategoriesData = await _firestore
+    final userCategoriesData = await firestore
         .collection('Categories')
         .where('user_id', isEqualTo: user_id)
         .get()
@@ -286,7 +302,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
   @override
   Future<ReceiverModel> getReceiver(String receiverId) async {
-    final receiverData = await _firestore
+    final receiverData = await firestore
         .collection('Receivers')
         .doc(receiverId.trim())
         .get()
@@ -302,12 +318,12 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
   @override
   Future<List<PaymentModel>> getUpcomingPaymentsFromDataSource() async {
-    final user_id = _firebaseAuth.currentUser!.uid;
+    final user_id = firebaseAuth.currentUser!.uid;
     List<PaymentModel> upcomingPaymentList = [];
     List<PaidPaymentModel> paidPaymentList =
         await getPaidPaymentListFromDataSource(DateTime.now());
 
-    final upcomingPaymentData = await _firestore
+    final upcomingPaymentData = await firestore
         .collection('Payments')
         .where('user_id', isEqualTo: user_id)
         .get()
@@ -415,7 +431,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
         FlutterLocalNotificationsPlugin();
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      '123',
+      '2',
       'Payment Reminder',
       channelDescription: 'Payment Reminder Notification',
       importance: Importance.max,
@@ -440,7 +456,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
   @override
   Future<void> markPaymentAsPaidFromDataSource(PaymentModel payment) async {
-    final user_id = _firebaseAuth.currentUser!.uid;
+    final user_id = firebaseAuth.currentUser!.uid;
     ReceiverModel receiver = await getReceiver(payment.receiver_id);
 
     PaidPaymentModel paidPaymentRecord = PaidPaymentModel(
@@ -454,7 +470,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
       category_id: payment.category_id,
     );
 
-    await _firestore
+    await firestore
         .collection('PaidPayments')
         .add(paidPaymentRecord.toJson())
         .catchError((_) => throw ServerException());
@@ -469,11 +485,11 @@ class PaymentDataSourceImpl implements PaymentDataSource {
   @override
   Future<List<PaidPaymentModel>> getPaidPaymentListFromDataSource(
       DateTime date) async {
-    final user_id = _firebaseAuth.currentUser!.uid;
+    final user_id = firebaseAuth.currentUser!.uid;
 
     List<PaidPaymentModel> paidPaymentList = [];
 
-    final paidPaymentListData = await _firestore
+    final paidPaymentListData = await firestore
         .collection('PaidPayments')
         .where('user_id', isEqualTo: user_id)
         .get()
@@ -491,11 +507,11 @@ class PaymentDataSourceImpl implements PaymentDataSource {
 
   @override
   Future<Map<int, double>> getMonthlyPaidAmountFromSource() async {
-    final user_id = _firebaseAuth.currentUser!.uid;
+    final user_id = firebaseAuth.currentUser!.uid;
     List<PaidPaymentModel> paidPaymentList = [];
     Map<int, double> monthlySummary = {};
 
-    final paidPaymentListData = await _firestore
+    final paidPaymentListData = await firestore
         .collection('PaidPayments')
         .where('user_id', isEqualTo: user_id)
         .get()
@@ -587,12 +603,12 @@ class PaymentDataSourceImpl implements PaymentDataSource {
   @override
   Future<Map<String, double>> getMonthlySummaryGroupByCategoryFromDatasource(
       DateTime date) async {
-    final user_id = _firebaseAuth.currentUser!.uid;
+    final user_id = firebaseAuth.currentUser!.uid;
     List<PaidPaymentModel> paidPaymentList = [];
     final categoryList = await getCategoryList();
     Map<String, double> categorySummary = {};
 
-    final paidPaymentListData = await _firestore
+    final paidPaymentListData = await firestore
         .collection('PaidPayments')
         .where('user_id', isEqualTo: user_id)
         .get()
@@ -630,11 +646,11 @@ class PaymentDataSourceImpl implements PaymentDataSource {
   @override
   Future<Map<String, List<PaymentModel>>>
       getGroupedPaymentsFromDataSource() async {
-    final user_id = _firebaseAuth.currentUser!.uid;
+    final user_id = firebaseAuth.currentUser!.uid;
     final categoryList = await getCategoryList();
     List<PaymentModel> paymentList = [];
 
-    final paymentsData = await _firestore
+    final paymentsData = await firestore
         .collection('Payments')
         .where('user_id', isEqualTo: user_id)
         .get()

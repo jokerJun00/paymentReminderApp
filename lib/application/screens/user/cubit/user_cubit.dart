@@ -8,11 +8,11 @@ import '../../../../domain/entities/user_entitiy.dart';
 part 'user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
-  UserCubit()
+  UserCubit({required this.userUseCases})
       : super(UserStateInitial(
             user: UserModel(id: "", name: "", email: "", contactNo: "")));
 
-  final UserUseCases userUseCases = UserUseCases();
+  final UserUseCases userUseCases;
 
   void getUser() async {
     emit(UserStateLoadingData());

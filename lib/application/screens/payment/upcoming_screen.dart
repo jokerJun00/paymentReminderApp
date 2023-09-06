@@ -88,7 +88,9 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                                           Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (_) => BlocProvider.value(
-                                            value: context.read<PaymentCubit>(),
+                                            value:
+                                                BlocProvider.of<PaymentCubit>(
+                                                    context),
                                             child: PaymentHistoryScreen(
                                               date: DateTime.now(),
                                             ),
@@ -127,9 +129,11 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                                             MaterialPageRoute(
                                               builder: (_) =>
                                                   BlocProvider.value(
-                                                value: context
-                                                    .read<PaymentCubit>(),
-                                                // child: ,
+                                                value: BlocProvider.of<
+                                                    PaymentCubit>(context),
+                                                child: PaymentHistoryScreen(
+                                                  date: DateTime.now(),
+                                                ),
                                               ),
                                             ),
                                           ),

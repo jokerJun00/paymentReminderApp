@@ -24,59 +24,60 @@ abstract class AuthDataSource {
 }
 
 class AuthDataSourceImpl implements AuthDataSource {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  AuthDataSourceImpl({required this.firebaseAuth, required this.firestore});
+  final FirebaseAuth firebaseAuth;
+  final FirebaseFirestore firestore;
 
   @override
   Future<UserModel> logInFromDataSource(String email, String password) async {
-    await _firebaseAuth.signInWithEmailAndPassword(
+    await firebaseAuth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
 
     String contactNo = "";
 
-    if (_firebaseAuth.currentUser == null) {
+    if (firebaseAuth.currentUser == null) {
       throw ServerException();
     } else {
-      await _firestore
+      await firestore
           .collection('Users')
-          .doc(_firebaseAuth.currentUser!.uid)
+          .doc(firebaseAuth.currentUser!.uid)
           .get()
           .then((userData) => {contactNo = userData.data()!["contactNo"]})
           .catchError((e) => throw GeneralFailure(error: e));
 
-      return UserModel.fromFirebaseAuth(_firebaseAuth.currentUser!, contactNo);
+      return UserModel.fromFirebaseAuth(firebaseAuth.currentUser!, contactNo);
     }
   }
 
   @override
   Future<UserModel> signUpFromDataSource(
       String username, String email, String contactNo, String password) async {
-    await _firebaseAuth.createUserWithEmailAndPassword(
+    await firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
 
-    if (_firebaseAuth.currentUser == null) {
+    if (firebaseAuth.currentUser == null) {
       throw ServerException();
     } else {
-      await _firebaseAuth.currentUser!.updateDisplayName(username);
-      await _firestore
+      await firebaseAuth.currentUser!.updateDisplayName(username);
+      await firestore
           .collection('Users')
-          .doc(_firebaseAuth.currentUser!.uid)
+          .doc(firebaseAuth.currentUser!.uid)
           .set({
         'name': username,
         'email': email,
         'contactNo': contactNo,
       });
-      return UserModel.fromFirebaseAuth(_firebaseAuth.currentUser!, contactNo);
+      return UserModel.fromFirebaseAuth(firebaseAuth.currentUser!, contactNo);
     }
   }
 
   @override
   Future<bool> logOutFromDataSource() async {
-    await _firebaseAuth.signOut();
+    await firebaseAuth.signOut();
 
     return true;
   }

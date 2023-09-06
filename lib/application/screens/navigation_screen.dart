@@ -14,6 +14,8 @@ import 'package:payment_reminder_app/application/screens/budget/budgeting_dashbo
 import 'package:payment_reminder_app/application/screens/auth/cubit/auth_cubit.dart';
 import 'package:payment_reminder_app/application/screens/payment/cubit/payment_cubit.dart';
 
+import '../../injection.dart';
+
 class NavigationScreen extends StatefulWidget {
   const NavigationScreen({Key? key}) : super(key: key);
 
@@ -33,9 +35,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    PaymentCubit paymentCubit = PaymentCubit();
-    BudgetCubit budgetCubit = BudgetCubit();
-    Widget activeScreen = HomeScreen();
+    PaymentCubit paymentCubit = sl<PaymentCubit>();
+    BudgetCubit budgetCubit = sl<BudgetCubit>();
+    Widget activeScreen = const HomeScreen();
 
     switch (_selectedScreenIndex) {
       case 0:
@@ -73,7 +75,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
       case 4:
         {
           activeScreen = BlocProvider(
-            create: (context) => UserCubit(),
+            create: (context) => sl<UserCubit>(),
             child: const ProfileScreen(),
           );
         }

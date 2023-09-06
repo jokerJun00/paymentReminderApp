@@ -24,8 +24,9 @@ abstract class UserDataSource {
 }
 
 class UserDataSourceImpl implements UserDataSource {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  UserDataSourceImpl({required this.firebaseAuth, required this.firestore});
+  final FirebaseAuth firebaseAuth;
+  final FirebaseFirestore firestore;
 
   @override
   Future<void> editPasswordFromDataSource(
@@ -34,7 +35,7 @@ class UserDataSourceImpl implements UserDataSource {
 
     var credential =
         EmailAuthProvider.credential(email: email, password: oldPassword);
-    await _firebaseAuth.currentUser!
+    await firebaseAuth.currentUser!
         .reauthenticateWithCredential(credential)
         .catchError((e) {
       throw ServerException();
@@ -42,7 +43,7 @@ class UserDataSourceImpl implements UserDataSource {
 
     if (oldPassword != newPassword) {
       // update firebase auth password
-      await _firebaseAuth.currentUser!.updatePassword(newPassword);
+      await firebaseAuth.currentUser!.updatePassword(newPassword);
     } else {
       throw ServerException();
     }
@@ -54,23 +55,23 @@ class UserDataSourceImpl implements UserDataSource {
     // sign in again to update firebase auth registered email
     var credential =
         EmailAuthProvider.credential(email: oldEmail, password: password);
-    await _firebaseAuth.currentUser!
+    await firebaseAuth.currentUser!
         .reauthenticateWithCredential(credential)
         .catchError((e) {
       throw ServerException();
     });
 
     // update firebase auth registered email
-    await _firebaseAuth.currentUser!.updateEmail(email);
+    await firebaseAuth.currentUser!.updateEmail(email);
 
     // update firebase firestore Users collection
-    await _firestore.collection('Users').doc(id).update({
+    await firestore.collection('Users').doc(id).update({
       'name': username,
       'email': email,
       'contactNo': contactNo,
     }).catchError((e) => throw ServerException());
 
-    final newUserData = await _firestore
+    final newUserData = await firestore
         .collection('Users')
         .doc(id)
         .get()
@@ -86,8 +87,8 @@ class UserDataSourceImpl implements UserDataSource {
 
   @override
   Future<UserModel> getUserFromDataSource() async {
-    final currentUserId = _firebaseAuth.currentUser!.uid;
-    final userData = await _firestore
+    final currentUserId = firebaseAuth.currentUser!.uid;
+    final userData = await firestore
         .collection('Users')
         .doc(currentUserId)
         .get()

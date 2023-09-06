@@ -6,9 +6,9 @@ import 'package:payment_reminder_app/domain/usecases/auth_usecases.dart';
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit() : super(AuthInitial());
+  AuthCubit({required this.authUseCases}) : super(AuthInitial());
 
-  final AuthUseCases authUseCases = AuthUseCases();
+  final AuthUseCases authUseCases;
 
   void logIn(String email, String password) async {
     emit(AuthStateLoading());

@@ -7,7 +7,8 @@ import 'package:payment_reminder_app/domain/failures/failures.dart';
 import 'package:payment_reminder_app/domain/repositories/user_repo.dart';
 
 class UserRepoImpl implements UserRepo {
-  final UserDataSource userDataSource = UserDataSourceImpl();
+  UserRepoImpl({required this.userDataSource});
+  final UserDataSource userDataSource;
 
   @override
   Future<Either<void, Failure>> editPasswordFromDataSource(

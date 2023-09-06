@@ -10,9 +10,10 @@ import '../../../../domain/entities/category_entity.dart';
 part 'budget_state.dart';
 
 class BudgetCubit extends Cubit<BudgetState> {
-  BudgetCubit() : super(const BudgetStateInitial());
+  BudgetCubit({required this.budgetUseCases})
+      : super(const BudgetStateInitial());
 
-  final BudgetUseCases budgetUseCases = BudgetUseCases();
+  final BudgetUseCases budgetUseCases;
 
   Future<BudgetingPlanEntity?> getBudgetingPlan() async {
     emit(BudgetStateLoadingData());

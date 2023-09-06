@@ -7,76 +7,76 @@ import 'package:payment_reminder_app/domain/failures/failures.dart';
 import '../../data/models/bank_model.dart';
 import '../../data/models/category_model.dart';
 import '../../data/models/payment_model.dart';
-import '../../data/repositories/payment_repo_impl.dart';
 import '../entities/category_entity.dart';
+import '../repositories/payment_repo.dart';
 
 class PaymentUseCases {
-  final PaymentRepoImpl paymentRepoFirestore = PaymentRepoImpl();
+  PaymentUseCases({required this.paymentRepo});
+  final PaymentRepo paymentRepo;
 
   Future<Either<Map<String, List<PaymentEntity>>, Failure>>
       getGroupedPayments() {
-    return paymentRepoFirestore.getGroupedPaymentsFromDataSource();
+    return paymentRepo.getGroupedPaymentsFromDataSource();
   }
 
   Future<Either<List<PaymentEntity>, Failure>> getUpcomingPayments() {
-    return paymentRepoFirestore.getUpcomingPaymentsFromDataSource();
+    return paymentRepo.getUpcomingPaymentsFromDataSource();
   }
 
   Future<Either<List<CategoryEntity>, Failure>> getAllCategories() {
-    return paymentRepoFirestore.getAllCategoriesFromDataSource();
+    return paymentRepo.getAllCategoriesFromDataSource();
   }
 
   Future<Either<void, Failure>> addPayment(
       PaymentModel payment, ReceiverModel receiver) {
-    return paymentRepoFirestore.addPaymentFromDataSource(payment, receiver);
+    return paymentRepo.addPaymentFromDataSource(payment, receiver);
   }
 
   Future<Either<void, Failure>> editPayment(
       PaymentModel editedPaymentInfo, ReceiverModel editedReceiverInfo) {
-    return paymentRepoFirestore.editPaymentFromDataSource(
+    return paymentRepo.editPaymentFromDataSource(
         editedPaymentInfo, editedReceiverInfo);
   }
 
   Future<Either<void, Failure>> deletePayment(PaymentModel payment) {
-    return paymentRepoFirestore.deletePaymentFromDataSource(payment);
+    return paymentRepo.deletePaymentFromDataSource(payment);
   }
 
   Future<Either<void, Failure>> addCategory(String categoryName) {
-    return paymentRepoFirestore.addCategory(categoryName);
+    return paymentRepo.addCategory(categoryName);
   }
 
   Future<Either<List<BankModel>, Failure>> getBankList() {
-    return paymentRepoFirestore.getBankList();
+    return paymentRepo.getBankList();
   }
 
   Future<Either<List<CategoryModel>, Failure>> getCategoryList() {
-    return paymentRepoFirestore.getCategoryList();
+    return paymentRepo.getCategoryList();
   }
 
   Future<Either<ReceiverModel, Failure>> getReceiver(String receiverId) {
-    return paymentRepoFirestore.getReceiver(receiverId);
+    return paymentRepo.getReceiver(receiverId);
   }
 
   Future<Either<void, Failure>> markPaymentAsPaid(PaymentModel payment) {
-    return paymentRepoFirestore.markPaymentAsPaidFromDatasource(payment);
+    return paymentRepo.markPaymentAsPaidFromDatasource(payment);
   }
 
   Future<Either<void, Failure>> payViaApp(PaymentModel payment) {
-    return paymentRepoFirestore.payViaAppFromDatasource(payment);
+    return paymentRepo.payViaAppFromDatasource(payment);
   }
 
   Future<Either<List<PaidPaymentModel>, Failure>> getPaidPaymentList(
       DateTime date) {
-    return paymentRepoFirestore.getPaidPaymentListFromDatasource(date);
+    return paymentRepo.getPaidPaymentListFromDatasource(date);
   }
 
   Future<Either<Map<int, double>, Failure>> getMonthlyPaidAmount() {
-    return paymentRepoFirestore.getMonthlyPaidAmountFromDatasource();
+    return paymentRepo.getMonthlyPaidAmountFromDatasource();
   }
 
   Future<Either<Map<String, double>, Failure>> getMonthlySummaryGroupByCategory(
       DateTime date) {
-    return paymentRepoFirestore
-        .getMonthlySummaryGroupByCategoryFromDatasource(date);
+    return paymentRepo.getMonthlySummaryGroupByCategoryFromDatasource(date);
   }
 }

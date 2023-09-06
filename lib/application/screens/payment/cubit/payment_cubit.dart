@@ -12,9 +12,10 @@ import '../../../../domain/usecases/payment_usecases.dart';
 part 'payment_state.dart';
 
 class PaymentCubit extends Cubit<PaymentState> {
-  PaymentCubit() : super(const PaymentStateInitial(groupedPaymentList: {}));
+  PaymentCubit({required this.paymentUseCases})
+      : super(const PaymentStateInitial(groupedPaymentList: {}));
 
-  final PaymentUseCases paymentUseCases = PaymentUseCases();
+  final PaymentUseCases paymentUseCases;
 
   void getGroupedPayments() async {
     emit(PaymentStateLoadingData());

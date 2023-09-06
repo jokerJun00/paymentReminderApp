@@ -121,7 +121,7 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
               ),
               const SizedBox(height: 10),
               Text(
-                "Payment History",
+                "Monthly Payment",
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 10),

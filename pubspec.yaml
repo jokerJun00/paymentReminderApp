@@ -57,10 +57,14 @@ dependencies:
   page_transition: ^2.0.9
   group_list_view: ^1.1.1
   percent_indicator: ^4.2.3
-
-dev_dependencies:
+  test: ^1.24.1
+  mockito: ^5.4.2
+  build_runner: ^2.4.6
   flutter_test:
     sdk: flutter
+  get_it: ^7.6.4
+
+dev_dependencies:
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

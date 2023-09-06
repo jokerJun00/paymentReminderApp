@@ -6,7 +6,8 @@ import 'package:payment_reminder_app/domain/failures/failures.dart';
 import 'package:payment_reminder_app/domain/repositories/auth_repo.dart';
 
 class AuthRepoImpl implements AuthRepo {
-  final AuthDataSource authDataSource = AuthDataSourceImpl();
+  AuthRepoImpl({required this.authDataSource});
+  final AuthDataSource authDataSource;
 
   @override
   Future<Either<UserEntity, Failure>> logInFromDataSource(

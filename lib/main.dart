@@ -10,6 +10,7 @@ import 'firebase_options.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import '.env';
+import 'injection.dart' as di; // dependency injection
 
 // screen
 import 'package:payment_reminder_app/application/screens/payment/payments_screen.dart';
@@ -35,6 +36,9 @@ var hightlightColor = const Color.fromARGB(255, 242, 223, 58);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // cubit setup with dependency injection
+  await di.init();
 
   // stripe setup
   Stripe.publishableKey = stripePublishableKey;
@@ -72,7 +76,7 @@ class MyPaymentReminderApp extends StatefulWidget {
 }
 
 class _MyPaymentReminderAppState extends State<MyPaymentReminderApp> {
-  final AuthCubit _authCubit = AuthCubit();
+  final AuthCubit _authCubit = di.sl<AuthCubit>();
 
   @override
   void dispose() {
@@ -82,8 +86,8 @@ class _MyPaymentReminderAppState extends State<MyPaymentReminderApp> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AuthCubit(),
+    return BlocProvider.value(
+      value: _authCubit,
       child: MaterialApp(
         title: 'MyPayment Reminder',
         // app theme setting
