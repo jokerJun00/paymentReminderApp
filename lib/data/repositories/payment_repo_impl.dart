@@ -26,7 +26,7 @@ class PaymentRepoImpl implements PaymentRepo {
           newPayment, receiver));
     } on ServerException catch (_) {
       return right(
-          ServerFailure(error: "Edit payment failed. Please check your input"));
+          ServerFailure(error: "Add payment failed. Please check your input"));
     } catch (e) {
       return right(GeneralFailure(error: e.toString()));
     }
@@ -38,8 +38,8 @@ class PaymentRepoImpl implements PaymentRepo {
     try {
       return left(await paymentDataSource.deletePaymentFromDataSource(payment));
     } on ServerException catch (_) {
-      return right(
-          ServerFailure(error: "Edit payment failed. Please check your input"));
+      return right(ServerFailure(
+          error: "Delete payment failed. Please check your input"));
     } catch (e) {
       return right(GeneralFailure(error: e.toString()));
     }
