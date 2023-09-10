@@ -14,13 +14,6 @@ class AuthUseCases {
 
   Future<Either<UserEntity, Failure>> signUp(
       String username, String email, String contactNo, String password) {
-    authRepo.signUpFromDataSource(
-      username,
-      email,
-      contactNo,
-      password,
-    );
-
     return authRepo.signUpFromDataSource(
       username,
       email,

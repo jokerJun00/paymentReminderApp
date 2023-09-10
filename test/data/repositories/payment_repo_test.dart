@@ -78,7 +78,6 @@ void main() {
     CategoryModel(id: "4", name: "investment", user_id: ""),
     CategoryModel(id: "5", name: "membership", user_id: ""),
   ];
-  final category = CategoryModel(id: "6", name: "test", user_id: "1");
   final bankList = <BankModel>[
     BankModel(id: "1", name: "Public Bank"),
     BankModel(id: "2", name: "CIMB Bank"),
