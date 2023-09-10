@@ -14,13 +14,21 @@ class BudgetStateInitial extends BudgetState {
   List<Object> get props => [];
 }
 
-class BudgetStateLoadingData extends BudgetState {}
+class BudgetStateLoadingData extends BudgetState {
+  const BudgetStateLoadingData();
+}
 
-class BudgetStateLoaded extends BudgetState {}
+class BudgetStateLoaded extends BudgetState {
+  const BudgetStateLoaded();
+}
 
-class BudgetStateEditingData extends BudgetState {}
+class BudgetStateEditingData extends BudgetState {
+  const BudgetStateEditingData();
+}
 
-class BudgetStateEditSuccess extends BudgetState {}
+class BudgetStateEditSuccess extends BudgetState {
+  const BudgetStateEditSuccess();
+}
 
 class BudgetStateError extends BudgetState {
   const BudgetStateError({required this.message});

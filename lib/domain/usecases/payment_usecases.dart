@@ -1,7 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:payment_reminder_app/data/models/paid_payment.dart';
 import 'package:payment_reminder_app/data/models/receiver_model.dart';
+import 'package:payment_reminder_app/domain/entities/bank_entity.dart';
+import 'package:payment_reminder_app/domain/entities/paid_payment_entity.dart';
 import 'package:payment_reminder_app/domain/entities/payment_entity.dart';
+import 'package:payment_reminder_app/domain/entities/receiver_entity.dart';
 import 'package:payment_reminder_app/domain/failures/failures.dart';
 
 import '../../data/models/bank_model.dart';
@@ -46,15 +49,15 @@ class PaymentUseCases {
     return paymentRepo.addCategory(categoryName);
   }
 
-  Future<Either<List<BankModel>, Failure>> getBankList() {
+  Future<Either<List<BankEntity>, Failure>> getBankList() {
     return paymentRepo.getBankList();
   }
 
-  Future<Either<List<CategoryModel>, Failure>> getCategoryList() {
+  Future<Either<List<CategoryEntity>, Failure>> getCategoryList() {
     return paymentRepo.getCategoryList();
   }
 
-  Future<Either<ReceiverModel, Failure>> getReceiver(String receiverId) {
+  Future<Either<ReceiverEntity, Failure>> getReceiver(String receiverId) {
     return paymentRepo.getReceiver(receiverId);
   }
 
@@ -66,7 +69,7 @@ class PaymentUseCases {
     return paymentRepo.payViaAppFromDatasource(payment);
   }
 
-  Future<Either<List<PaidPaymentModel>, Failure>> getPaidPaymentList(
+  Future<Either<List<PaidPaymentEntity>, Failure>> getPaidPaymentList(
       DateTime date) {
     return paymentRepo.getPaidPaymentListFromDatasource(date);
   }

@@ -15,7 +15,7 @@ class UserCubit extends Cubit<UserState> {
   final UserUseCases userUseCases;
 
   void getUser() async {
-    emit(UserStateLoadingData());
+    emit(const UserStateLoadingData());
 
     final userOrFailure = await userUseCases.getUser();
     return userOrFailure.fold(
@@ -26,7 +26,7 @@ class UserCubit extends Cubit<UserState> {
 
   void editUserProfile(String id, String username, String email,
       String contactNo, String oldEmail, String password) async {
-    emit(UserStateEditingData());
+    emit(const UserStateEditingData());
 
     final userOrFailure = await userUseCases.editUser(
       id,
@@ -38,7 +38,7 @@ class UserCubit extends Cubit<UserState> {
     );
     userOrFailure.fold(
       (user) {
-        emit(UserStateEditSuccess());
+        emit(const UserStateEditSuccess());
         emit(UserStateInitial(user: user));
       },
       (failure) => emit(UserStateError(message: failure.getError)),
@@ -47,13 +47,13 @@ class UserCubit extends Cubit<UserState> {
 
   void editPassword(UserModel user, String email, String oldPassword,
       String newPassword) async {
-    emit(UserStateEditingData());
+    emit(const UserStateEditingData());
 
     final voidOrFailure =
         await userUseCases.editPassword(email, oldPassword, newPassword);
 
     voidOrFailure.fold((value) {
-      emit(UserStateEditSuccess());
+      emit(const UserStateEditSuccess());
       emit(UserStateInitial(user: user));
     }, (failure) => emit(UserStateError(message: failure.getError)));
   }

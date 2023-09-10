@@ -18,7 +18,7 @@ class PaymentCubit extends Cubit<PaymentState> {
   final PaymentUseCases paymentUseCases;
 
   void getGroupedPayments() async {
-    emit(PaymentStateLoadingData());
+    emit(const PaymentStateLoadingData());
 
     final paymentsOrFailure = await paymentUseCases.getGroupedPayments();
 
@@ -30,7 +30,7 @@ class PaymentCubit extends Cubit<PaymentState> {
   }
 
   Future<List<PaymentModel>> getUpcomingPayment() async {
-    emit(PaymentStateLoadingData());
+    emit(const PaymentStateLoadingData());
     List<PaymentModel> upcomingPaymentList = <PaymentModel>[];
 
     final paymentsOrFailure = await paymentUseCases.getUpcomingPayments();
@@ -39,7 +39,7 @@ class PaymentCubit extends Cubit<PaymentState> {
       (upcomingPaymentListFromDatabase) {
         upcomingPaymentList =
             upcomingPaymentListFromDatabase as List<PaymentModel>;
-        emit(PaymentStateLoaded());
+        emit(const PaymentStateLoaded());
       },
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
@@ -48,13 +48,13 @@ class PaymentCubit extends Cubit<PaymentState> {
   }
 
   void addPayments(PaymentModel payment, ReceiverModel receiver) async {
-    emit(PaymentStateEditingData());
+    emit(const PaymentStateEditingData());
 
     final paymentOrFailure =
         await paymentUseCases.addPayment(payment, receiver);
 
     paymentOrFailure.fold(
-      (payments) => emit(PaymentStateEditSuccess()),
+      (payments) => emit(const PaymentStateEditSuccess()),
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
 
@@ -63,13 +63,13 @@ class PaymentCubit extends Cubit<PaymentState> {
 
   void editPayments(
       PaymentModel editedPaymentInfo, ReceiverModel editedReceiverInfo) async {
-    emit(PaymentStateEditingData());
+    emit(const PaymentStateEditingData());
 
     final paymentOrFailure = await paymentUseCases.editPayment(
         editedPaymentInfo, editedReceiverInfo);
 
     paymentOrFailure.fold(
-      (payments) => emit(PaymentStateEditSuccess()),
+      (payments) => emit(const PaymentStateEditSuccess()),
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
 
@@ -77,12 +77,12 @@ class PaymentCubit extends Cubit<PaymentState> {
   }
 
   Future<void> deletePayments(PaymentModel payment) async {
-    emit(PaymentStateEditingData());
+    emit(const PaymentStateEditingData());
 
     final paymentOrFailure = await paymentUseCases.deletePayment(payment);
 
     paymentOrFailure.fold(
-      (payments) => emit(PaymentStateEditSuccess()),
+      (payments) => emit(const PaymentStateEditSuccess()),
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
 
@@ -90,11 +90,11 @@ class PaymentCubit extends Cubit<PaymentState> {
   }
 
   void addCategory(String categoryName) async {
-    emit(PaymentStateEditingData());
+    emit(const PaymentStateEditingData());
     final categoryOrFailure = await paymentUseCases.addCategory(categoryName);
 
     categoryOrFailure.fold(
-      (payments) => emit(PaymentStateEditSuccess()),
+      (payments) => emit(const PaymentStateEditSuccess()),
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
 
@@ -102,14 +102,14 @@ class PaymentCubit extends Cubit<PaymentState> {
   }
 
   Future<List<BankModel>> getBankList() async {
-    emit(PaymentStateLoadingData());
+    emit(const PaymentStateLoadingData());
     final bankListOrFailure = await paymentUseCases.getBankList();
     List<BankModel> bankList = <BankModel>[];
 
     bankListOrFailure.fold(
       (bankListFromDatabase) {
-        bankList = bankListFromDatabase;
-        emit(PaymentStateLoaded());
+        bankList = bankListFromDatabase as List<BankModel>;
+        emit(const PaymentStateLoaded());
       },
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
@@ -118,14 +118,14 @@ class PaymentCubit extends Cubit<PaymentState> {
   }
 
   Future<List<CategoryModel>> getCategoryList() async {
-    emit(PaymentStateLoadingData());
+    emit(const PaymentStateLoadingData());
     final categoryListOrFailure = await paymentUseCases.getCategoryList();
     List<CategoryModel> categoryList = <CategoryModel>[];
 
     categoryListOrFailure.fold(
       (categoryListFromDatabase) {
-        categoryList = categoryListFromDatabase;
-        emit(PaymentStateLoaded());
+        categoryList = categoryListFromDatabase as List<CategoryModel>;
+        emit(const PaymentStateLoaded());
       },
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
@@ -134,7 +134,7 @@ class PaymentCubit extends Cubit<PaymentState> {
   }
 
   Future<ReceiverModel> getReceiver(String receiverId) async {
-    emit(PaymentStateLoadingData());
+    emit(const PaymentStateLoadingData());
     final receiverOrFailure = await paymentUseCases.getReceiver(receiverId);
 
     var receiver = ReceiverModel(
@@ -147,8 +147,8 @@ class PaymentCubit extends Cubit<PaymentState> {
 
     receiverOrFailure.fold(
       (receiverFromDatabase) {
-        receiver = receiverFromDatabase;
-        emit(PaymentStateLoaded());
+        receiver = receiverFromDatabase as ReceiverModel;
+        emit(const PaymentStateLoaded());
       },
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
@@ -157,29 +157,29 @@ class PaymentCubit extends Cubit<PaymentState> {
   }
 
   Future<void> markPaymentAsPaid(PaymentModel payment) async {
-    emit(PaymentStateEditingData());
+    emit(const PaymentStateEditingData());
 
     final paidOrFailure = await paymentUseCases.markPaymentAsPaid(payment);
 
     paidOrFailure.fold(
-      (paid) => emit(PaymentStateEditSuccess()),
+      (paid) => emit(const PaymentStateEditSuccess()),
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
   }
 
   Future<void> payViaApp(PaymentModel payment) async {
-    emit(PaymentStateEditingData());
+    emit(const PaymentStateEditingData());
 
     final paidOrFailure = await paymentUseCases.payViaApp(payment);
 
     paidOrFailure.fold(
-      (paid) => emit(PaymentStateEditSuccess()),
+      (paid) => emit(const PaymentStateEditSuccess()),
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
   }
 
   Future<List<PaidPaymentModel>> getPaidPaymentList(DateTime date) async {
-    emit(PaymentStateLoadingData());
+    emit(const PaymentStateLoadingData());
     List<PaidPaymentModel> paidPaymentList = [];
 
     final paidPaymentListOrFailure =
@@ -187,8 +187,8 @@ class PaymentCubit extends Cubit<PaymentState> {
 
     paidPaymentListOrFailure.fold(
       (paidPaymentListFromDatabase) {
-        paidPaymentList = paidPaymentListFromDatabase;
-        emit(PaymentStateLoaded());
+        paidPaymentList = paidPaymentListFromDatabase as List<PaidPaymentModel>;
+        emit(const PaymentStateLoaded());
       },
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
@@ -197,7 +197,7 @@ class PaymentCubit extends Cubit<PaymentState> {
   }
 
   Future<Map<int, double>> getMonthlyPaidAmount() async {
-    emit(PaymentStateLoadingData());
+    emit(const PaymentStateLoadingData());
     Map<int, double> monthlySummary = {};
 
     final monthlySummaryOrFailure =
@@ -206,7 +206,7 @@ class PaymentCubit extends Cubit<PaymentState> {
     monthlySummaryOrFailure.fold(
       (monthlySummaryFromDatabase) {
         monthlySummary = monthlySummaryFromDatabase;
-        emit(PaymentStateLoaded());
+        emit(const PaymentStateLoaded());
       },
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );
@@ -216,7 +216,7 @@ class PaymentCubit extends Cubit<PaymentState> {
 
   Future<Map<String, double>> getMonthlySummaryGroupByCategory(
       DateTime date) async {
-    emit(PaymentStateLoadingData());
+    emit(const PaymentStateLoadingData());
 
     Map<String, double> categorySummary = {};
 
@@ -226,7 +226,7 @@ class PaymentCubit extends Cubit<PaymentState> {
     categorySummaryOrFailure.fold(
       (categorySummaryFromDatabase) {
         categorySummary = categorySummaryFromDatabase;
-        emit(PaymentStateLoaded());
+        emit(const PaymentStateLoaded());
       },
       (failure) => emit(PaymentStateError(message: failure.getError)),
     );

@@ -13,15 +13,20 @@ class UserStateInitial extends UserState {
   final UserEntity user;
 
   @override
-  // TODO: implement props
   List<Object> get props => [user];
 }
 
-class UserStateLoadingData extends UserState {}
+class UserStateLoadingData extends UserState {
+  const UserStateLoadingData();
+}
 
-class UserStateEditingData extends UserState {}
+class UserStateEditingData extends UserState {
+  const UserStateEditingData();
+}
 
-class UserStateEditSuccess extends UserState {}
+class UserStateEditSuccess extends UserState {
+  const UserStateEditSuccess();
+}
 
 class UserStateError extends UserState {
   const UserStateError({required this.message});

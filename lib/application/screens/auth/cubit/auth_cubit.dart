@@ -6,12 +6,12 @@ import 'package:payment_reminder_app/domain/usecases/auth_usecases.dart';
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit({required this.authUseCases}) : super(AuthInitial());
+  AuthCubit({required this.authUseCases}) : super(const AuthInitial());
 
   final AuthUseCases authUseCases;
 
   void logIn(String email, String password) async {
-    emit(AuthStateLoading());
+    emit(const AuthStateLoading());
 
     // firebase login authentication
     final userOrFailure = await authUseCases.logIn(email, password);
@@ -23,7 +23,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   void signUp(
       String username, String email, String contactNo, String password) async {
-    emit(AuthStateLoading());
+    emit(const AuthStateLoading());
 
     // firebase signup authentication
     final userOrFailure = await authUseCases.signUp(
@@ -40,15 +40,13 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void logOut() async {
-    emit(AuthStateLoading());
+    emit(const AuthStateLoading());
 
     // logout process
     final loggedOutOrFailure = await authUseCases.logOut();
     loggedOutOrFailure.fold(
-      (loggedOut) => emit(AuthStateLogOut()),
+      (loggedOut) => emit(const AuthStateLogOut()),
       (failure) => emit(AuthStateError(message: failure.getError)),
     );
   }
-
-  void get UserData async {}
 }

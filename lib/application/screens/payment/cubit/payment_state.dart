@@ -16,13 +16,21 @@ class PaymentStateInitial extends PaymentState {
   List<Object> get props => [groupedPaymentList];
 }
 
-class PaymentStateLoadingData extends PaymentState {}
+class PaymentStateLoadingData extends PaymentState {
+  const PaymentStateLoadingData();
+}
 
-class PaymentStateLoaded extends PaymentState {}
+class PaymentStateLoaded extends PaymentState {
+  const PaymentStateLoaded();
+}
 
-class PaymentStateEditingData extends PaymentState {}
+class PaymentStateEditingData extends PaymentState {
+  const PaymentStateEditingData();
+}
 
-class PaymentStateEditSuccess extends PaymentState {}
+class PaymentStateEditSuccess extends PaymentState {
+  const PaymentStateEditSuccess();
+}
 
 class PaymentStateError extends PaymentState {
   const PaymentStateError({required this.message});

@@ -16,14 +16,14 @@ class BudgetCubit extends Cubit<BudgetState> {
   final BudgetUseCases budgetUseCases;
 
   Future<BudgetingPlanEntity?> getBudgetingPlan() async {
-    emit(BudgetStateLoadingData());
+    emit(const BudgetStateLoadingData());
 
     final budgetingPlanOrFailure = await budgetUseCases.getBudgetingPlan();
     BudgetingPlanEntity? budgetingPlan;
 
     budgetingPlanOrFailure.fold(
       (budgetingPlanFromSource) {
-        emit(BudgetStateLoaded());
+        emit(const BudgetStateLoaded());
         budgetingPlan = budgetingPlanFromSource;
       },
       (failure) => emit(BudgetStateError(message: failure.getError)),
@@ -33,7 +33,7 @@ class BudgetCubit extends Cubit<BudgetState> {
   }
 
   Future<List<BudgetEntity>> getBudgetList(String budgetingPlanId) async {
-    emit(BudgetStateLoadingData());
+    emit(const BudgetStateLoadingData());
 
     final budgetListOrFailure =
         await budgetUseCases.getBudgetList(budgetingPlanId);
@@ -41,7 +41,7 @@ class BudgetCubit extends Cubit<BudgetState> {
 
     budgetListOrFailure.fold(
       (budgetListFromSource) {
-        emit(BudgetStateLoaded());
+        emit(const BudgetStateLoaded());
         budgetList = budgetListFromSource;
       },
       (failure) => emit(BudgetStateError(message: failure.getError)),
@@ -56,13 +56,13 @@ class BudgetCubit extends Cubit<BudgetState> {
     List<double> categoryBudgetAmountList,
     List<CategoryModel> categoryList,
   ) async {
-    emit(BudgetStateEditingData());
+    emit(const BudgetStateEditingData());
 
     final successOrFailure = await budgetUseCases.addBudgetingPlan(
         startAmount, targetAmount, categoryBudgetAmountList, categoryList);
 
     successOrFailure.fold(
-      (success) => emit(BudgetStateEditSuccess()),
+      (success) => emit(const BudgetStateEditSuccess()),
       (failure) => emit(BudgetStateError(message: failure.getError)),
     );
   }
@@ -74,7 +74,7 @@ class BudgetCubit extends Cubit<BudgetState> {
     List<double> categoryBudgetAmountList,
     List<CategoryModel> categoryList,
   ) async {
-    emit(BudgetStateEditingData());
+    emit(const BudgetStateEditingData());
 
     final successOrFailure = await budgetUseCases.editBudgetingPlan(
       budgetingPlanId,
@@ -85,20 +85,20 @@ class BudgetCubit extends Cubit<BudgetState> {
     );
 
     successOrFailure.fold(
-      (success) => emit(BudgetStateEditSuccess()),
+      (success) => emit(const BudgetStateEditSuccess()),
       (failure) => emit(BudgetStateError(message: failure.getError)),
     );
   }
 
   Future<List<CategoryEntity>> getCategoryList() async {
-    emit(BudgetStateLoadingData());
+    emit(const BudgetStateLoadingData());
 
     final categoryListOrFailure = await budgetUseCases.getCategoryList();
     List<CategoryEntity> categoryList = [];
 
     categoryListOrFailure.fold(
       (categoryListFromDatabase) {
-        emit(BudgetStateLoaded());
+        emit(const BudgetStateLoaded());
         categoryList = categoryListFromDatabase;
       },
       (failure) => emit(BudgetStateError(message: failure.getError)),
