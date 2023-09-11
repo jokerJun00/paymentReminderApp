@@ -385,32 +385,6 @@ class MockPaymentRepoImpl extends _i1.Mock implements _i4.PaymentRepoImpl {
         )),
       ) as _i5.Future<_i3.Either<void, _i6.Failure>>);
   @override
-  _i5.Future<_i3.Either<void, _i6.Failure>> payViaAppFromDatasource(
-          _i7.PaymentModel? payment) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #payViaAppFromDatasource,
-          [payment],
-        ),
-        returnValue: _i5.Future<_i3.Either<void, _i6.Failure>>.value(
-            _FakeEither_1<void, _i6.Failure>(
-          this,
-          Invocation.method(
-            #payViaAppFromDatasource,
-            [payment],
-          ),
-        )),
-        returnValueForMissingStub:
-            _i5.Future<_i3.Either<void, _i6.Failure>>.value(
-                _FakeEither_1<void, _i6.Failure>(
-          this,
-          Invocation.method(
-            #payViaAppFromDatasource,
-            [payment],
-          ),
-        )),
-      ) as _i5.Future<_i3.Either<void, _i6.Failure>>);
-  @override
   _i5.Future<
       _i3.Either<List<_i13.PaidPaymentModel>,
           _i6.Failure>> getPaidPaymentListFromDatasource(DateTime? date) =>

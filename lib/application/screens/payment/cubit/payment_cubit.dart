@@ -167,17 +167,6 @@ class PaymentCubit extends Cubit<PaymentState> {
     );
   }
 
-  Future<void> payViaApp(PaymentModel payment) async {
-    emit(const PaymentStateEditingData());
-
-    final paidOrFailure = await paymentUseCases.payViaApp(payment);
-
-    paidOrFailure.fold(
-      (paid) => emit(const PaymentStateEditSuccess()),
-      (failure) => emit(PaymentStateError(message: failure.getError)),
-    );
-  }
-
   Future<List<PaidPaymentModel>> getPaidPaymentList(DateTime date) async {
     emit(const PaymentStateLoadingData());
     List<PaidPaymentModel> paidPaymentList = [];

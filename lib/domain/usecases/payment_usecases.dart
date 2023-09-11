@@ -65,10 +65,6 @@ class PaymentUseCases {
     return paymentRepo.markPaymentAsPaidFromDatasource(payment);
   }
 
-  Future<Either<void, Failure>> payViaApp(PaymentModel payment) {
-    return paymentRepo.payViaAppFromDatasource(payment);
-  }
-
   Future<Either<List<PaidPaymentEntity>, Failure>> getPaidPaymentList(
       DateTime date) {
     return paymentRepo.getPaidPaymentListFromDatasource(date);

@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import '.env';
 import 'injection.dart' as di; // dependency injection
 
 // screen
@@ -20,7 +18,6 @@ import 'package:payment_reminder_app/application/screens/navigation_screen.dart'
 import 'package:payment_reminder_app/application/screens/budget/budgeting_dashboard_screen.dart';
 import 'package:payment_reminder_app/application/screens/user/profile_screen.dart';
 import 'package:payment_reminder_app/application/screens/payment/upcoming_screen.dart';
-import 'package:payment_reminder_app/application/screens/user/add_card_screen.dart';
 import 'package:payment_reminder_app/application/screens/splash_screen.dart';
 
 // cubit
@@ -39,10 +36,6 @@ void main() async {
 
   // cubit setup with dependency injection
   await di.init();
-
-  // stripe setup
-  Stripe.publishableKey = stripePublishableKey;
-  await Stripe.instance.applySettings();
 
   // firebase setup
   await Firebase.initializeApp(
@@ -212,7 +205,6 @@ class _MyPaymentReminderAppState extends State<MyPaymentReminderApp> {
           '/profile': (context) => const ProfileScreen(),
           '/payments': (context) => const PaymentScreen(),
           '/upcomingScreen': (context) => const UpcomingScreen(),
-          '/addCard': (context) => const AddCardScreen(),
         },
         initialRoute: FirebaseAuth.instance.currentUser == null
             ? '/splash'

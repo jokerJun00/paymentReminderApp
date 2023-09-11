@@ -246,16 +246,6 @@ class MockPaymentDataSourceImpl extends _i1.Mock
         returnValueForMissingStub: _i6.Future<void>.value(),
       ) as _i6.Future<void>);
   @override
-  _i6.Future<void> payViaAppFromDataSource(_i7.PaymentModel? payment) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #payViaAppFromDataSource,
-          [payment],
-        ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-  @override
   _i6.Future<List<_i10.PaidPaymentModel>> getPaidPaymentListFromDataSource(
           DateTime? date) =>
       (super.noSuchMethod(

@@ -155,20 +155,6 @@ class PaymentRepoImpl implements PaymentRepo {
   }
 
   @override
-  Future<Either<void, Failure>> payViaAppFromDatasource(
-      PaymentModel payment) async {
-    try {
-      return left(await paymentDataSource.payViaAppFromDataSource(payment));
-    } on ServerException catch (_) {
-      return right(ServerFailure(
-          error:
-              "Transaction fail, please check if your information provided is correct"));
-    } catch (e) {
-      return right(GeneralFailure(error: e.toString()));
-    }
-  }
-
-  @override
   Future<Either<List<PaidPaymentModel>, Failure>>
       getPaidPaymentListFromDatasource(DateTime date) async {
     try {

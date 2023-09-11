@@ -48,8 +48,6 @@ abstract class PaymentDataSource {
 
   Future<void> markPaymentAsPaidFromDataSource(PaymentModel payment);
 
-  Future<void> payViaAppFromDataSource(PaymentModel payment);
-
   Future<List<PaidPaymentModel>> getPaidPaymentListFromDataSource(
       DateTime date);
 
@@ -474,12 +472,6 @@ class PaymentDataSourceImpl implements PaymentDataSource {
         .collection('PaidPayments')
         .add(paidPaymentRecord.toJson())
         .catchError((_) => throw ServerException());
-  }
-
-  @override
-  Future<void> payViaAppFromDataSource(PaymentModel payment) async {
-    print("You have reach the datasource ");
-    print("Payment Info =======> $payment");
   }
 
   @override

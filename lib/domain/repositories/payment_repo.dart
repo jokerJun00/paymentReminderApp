@@ -28,7 +28,6 @@ abstract class PaymentRepo {
   Future<Either<ReceiverModel, Failure>> getReceiver(String receiverId);
   Future<Either<void, Failure>> markPaymentAsPaidFromDatasource(
       PaymentModel payment);
-  Future<Either<void, Failure>> payViaAppFromDatasource(PaymentModel payment);
   Future<Either<List<PaidPaymentModel>, Failure>>
       getPaidPaymentListFromDatasource(DateTime date);
   Future<Either<Map<int, double>, Failure>>
