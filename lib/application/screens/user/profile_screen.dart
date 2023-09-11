@@ -181,45 +181,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 15),
                       OutlinedButton(
-                          onPressed: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => BlocProvider.value(
-                                    value: BlocProvider.of<UserCubit>(context),
-                                    child: EditPasswordScreen(
-                                      user: UserModel(
-                                        id: _id,
-                                        name: _username,
-                                        email: _email,
-                                        contactNo: _contactNo,
-                                      ),
-                                    ),
-                                  ),
+                        onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => BlocProvider.value(
+                              value: BlocProvider.of<UserCubit>(context),
+                              child: EditPasswordScreen(
+                                user: UserModel(
+                                  id: _id,
+                                  name: _username,
+                                  email: _email,
+                                  contactNo: _contactNo,
                                 ),
                               ),
-                          child: const Text('Edit Password')),
-                      const SizedBox(height: 60),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'Main Card',
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          const Spacer(),
-                          InkWell(
-                            onTap: () {},
-                            child: Text(
-                              'view all',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(
-                                    color: Colors.white,
-                                    decoration: TextDecoration.underline,
-                                  ),
                             ),
                           ),
-                        ],
+                        ),
+                        child: const Text('Edit Password'),
                       ),
                     ],
                   ),

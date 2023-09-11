@@ -68,14 +68,24 @@ class UpcomingPaymentCard extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
-            'Select Pay Payment Options',
-            style: Theme.of(context).textTheme.labelMedium,
+            'Mark your payment as paid',
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           content: Text(
-            "Pay your payment via this app or just mark your payment as paid",
+            "This payment will mark as paid and store your payment history",
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
             TextButton(
               style: TextButton.styleFrom(
                 textStyle: Theme.of(context).textTheme.labelLarge,
@@ -85,17 +95,6 @@ class UpcomingPaymentCard extends StatelessWidget {
                 markAsPaid();
                 Navigator.of(context).pop();
               },
-            ),
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
-              ),
-              child: const Text('Pay via app'),
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => PayPaymentScreen(payment: payment),
-                ),
-              ),
             ),
           ],
         );
