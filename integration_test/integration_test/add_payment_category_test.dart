@@ -95,6 +95,7 @@ void main() {
 
       // verify category added
       expect(find.textContaining(categoryName), findsOneWidget);
+      sleep(const Duration(seconds: 3));
     });
   });
 }

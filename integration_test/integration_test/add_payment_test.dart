@@ -17,7 +17,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group("Add Payment Test Case", () {
-    testWidgets("add payment category", (widgetTester) async {
+    testWidgets("add payment", (widgetTester) async {
       // ! login input
       const email = "test@gmail.com";
       const password = "Choon@000905";
@@ -161,13 +161,14 @@ void main() {
         receiver.bank_account_no,
       );
 
-      // tap add category button
+      // tap add payment button
       await widgetTester.tap(find.byType(OutlinedButton));
       await widgetTester.pumpAndSettle();
 
       // verify Payment Screen loaded and display, check if payment is added
       expect(find.byType(PaymentScreen), findsOneWidget);
       expect(find.textContaining(payment.name), findsOneWidget);
+      sleep(const Duration(seconds: 3));
     });
   });
 }

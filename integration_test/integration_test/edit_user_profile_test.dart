@@ -85,6 +85,7 @@ void main() {
       // verify navigate back to profile screen and updated user data
       expect(find.byType(ProfileScreen), findsOneWidget);
       expect(find.textContaining(username), findsOneWidget);
+      sleep(const Duration(seconds: 3));
     });
   });
 }

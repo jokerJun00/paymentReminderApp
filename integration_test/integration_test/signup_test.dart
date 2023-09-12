@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -82,6 +84,7 @@ void main() {
       // check if the application has login and display home screen
       expect(find.byType(NavigationScreen), findsOneWidget);
       expect(find.text("Dashboard"), findsOneWidget);
+      sleep(const Duration(seconds: 3));
     });
   });
 }

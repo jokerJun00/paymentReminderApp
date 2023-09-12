@@ -115,7 +115,6 @@ void main() {
       // verify if budgeting plan edited
       expect(find.textContaining("RM $budgetAmount"), findsOneWidget);
       expect(find.textContaining(categoryName), findsOneWidget);
-
       sleep(const Duration(seconds: 3));
     });
   });

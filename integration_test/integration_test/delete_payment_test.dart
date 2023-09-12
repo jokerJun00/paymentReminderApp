@@ -1,19 +1,15 @@
 import 'dart:io';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:payment_reminder_app/application/core/services/date_time_formatter.dart';
-import 'package:payment_reminder_app/application/core/widgets/paid_payment_card.dart';
-import 'package:payment_reminder_app/application/core/widgets/upcoming_payment_card.dart';
+import 'package:payment_reminder_app/application/core/widgets/payment_card.dart';
 import 'package:payment_reminder_app/application/screens/auth/login_screen.dart';
 import 'package:payment_reminder_app/application/screens/navigation_screen.dart';
 import 'package:payment_reminder_app/application/screens/payment/add_payment_screen.dart';
 import 'package:payment_reminder_app/application/screens/payment/category_list_screen.dart';
-import 'package:payment_reminder_app/application/screens/payment/payment_history_screen.dart';
 import 'package:payment_reminder_app/application/screens/payment/payments_screen.dart';
-import 'package:payment_reminder_app/application/screens/payment/upcoming_screen.dart';
 import 'package:payment_reminder_app/data/models/payment_model.dart';
 import 'package:payment_reminder_app/data/models/receiver_model.dart';
 
@@ -22,18 +18,17 @@ import 'package:payment_reminder_app/main.dart' as app;
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  group("Mark Payment As Paid Test Case", () {
-    testWidgets("mark payment as paid", (widgetTester) async {
-      // first half same as add payment test
+  group("Delete Payment Test Case", () {
+    testWidgets("delete payment", (widgetTester) async {
       // ! login input
       const email = "test@gmail.com";
       const password = "Choon@000905";
 
       // ! payment input
       final payment = PaymentModel(
-        id: "",
-        name: "Test Upcoming Payment",
-        description: "Test Upcoming Payment",
+        id: "id",
+        name: "Test Delete Payment",
+        description: "Test Delete Payment",
         payment_date: DateTime.now(),
         notification_period: 1,
         billing_cycle: "monthly",
@@ -42,7 +37,7 @@ void main() {
         receiver_id: "",
         category_id: "",
       );
-      const categoryName = "rental";
+      const categoryName = "test";
       final receiver = ReceiverModel(
         id: "",
         name: "Lim Choon Kiat",
@@ -81,7 +76,6 @@ void main() {
       expect(find.byType(NavigationScreen), findsOneWidget);
       expect(find.text("Dashboard"), findsOneWidget);
 
-      // * Add Payment to test mark payment as paid function
       // ! go to Add Payment Screen
       // go to Payments Screen by tapping navigation bar item
       await widgetTester.tap(find.text("Payments"));
@@ -169,65 +163,28 @@ void main() {
         receiver.bank_account_no,
       );
 
-      // tap add category button
+      // tap add payment button
       await widgetTester.tap(find.byType(OutlinedButton));
       await widgetTester.pumpAndSettle();
 
+      // ! delete payment
       // verify Payment Screen loaded and display, check if payment is added
-      expect(find.byType(NavigationScreen), findsOneWidget);
       expect(find.byType(PaymentScreen), findsOneWidget);
       expect(find.textContaining(payment.name), findsOneWidget);
 
-      // * test mark payment as paid functions
-      //  ! go to upcoming payment screen
-      await widgetTester.tap(find.text("Upcoming"));
-      await widgetTester.pumpAndSettle();
-
-      // verify Upcoming  Screen loaded and display
-      expect(find.byType(UpcomingScreen), findsOneWidget);
-
-      // verify added payment display in upcoming payment list
-      expect(find.textContaining(payment.name), findsOneWidget);
-
-      // tap added payment
-      await widgetTester.tap(find.text(payment.name));
-      await widgetTester.pumpAndSettle();
-
-      // tap mark as paid button to pay the payment
-      await widgetTester.tap(find.text("Mark as Paid"));
-      await widgetTester.pumpAndSettle();
-
-      // verify the added payment is not in upcoming payment list anymore
-      expect(
-        find.widgetWithText(
-          UpcomingPaymentCard,
-          payment.name,
-        ),
-        findsNothing,
+      // slide added payment left to display delete button
+      await widgetTester.dragUntilVisible(
+        find.byType(SlidableAction),
+        find.widgetWithText(PaymentCard, payment.name),
+        const Offset(-50.0, 0),
       );
 
-      // go to history screen
-      await widgetTester.tap(find.byType(OutlinedButton));
+      // tap delete button
+      await widgetTester.tap(find.byType(SlidableAction));
       await widgetTester.pumpAndSettle();
 
-      // verify Payment History Screen is display
-      expect(find.byType(PaymentHistoryScreen), findsOneWidget);
-
-      // verify the paid payment is display in Payment History Screen
-      expect(
-        find.widgetWithText(
-          PaidPaymentCard,
-          payment.name,
-        ),
-        findsWidgets,
-      );
-      expect(
-        find.widgetWithText(
-          PaidPaymentCard,
-          "Date: ${DateTimeFormatter.formatDateTime(DateTime.now()).toString()}",
-        ),
-        findsWidgets,
-      );
+      // verify if payment deleted
+      expect(find.widgetWithText(PaymentCard, payment.name), findsNothing);
       sleep(const Duration(seconds: 3));
     });
   });

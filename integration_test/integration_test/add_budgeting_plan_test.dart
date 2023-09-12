@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -107,6 +109,7 @@ void main() {
       // verify if budgeting plan added
       expect(find.textContaining("RM $budgetAmount"), findsOneWidget);
       expect(find.textContaining(categoryName), findsOneWidget);
+      sleep(const Duration(seconds: 3));
     });
   });
 }
