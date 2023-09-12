@@ -142,7 +142,7 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
                 ),
                 const SizedBox(height: 30),
                 Text(
-                  'New Budget Plan',
+                  'Edit Budget Plan',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 35),
@@ -158,6 +158,7 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
+                        key: const Key("starting-amount-text-field"),
                         controller: startAmountController,
                         decoration:
                             const InputDecoration(labelText: 'Starting Amount'),
@@ -182,6 +183,7 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
+                        key: const Key("target-amount-text-field"),
                         controller: targetAmountController,
                         decoration:
                             const InputDecoration(labelText: 'Target Amount'),
@@ -212,6 +214,8 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
                             ),
                             const SizedBox(height: 10),
                             TextFormField(
+                              key: Key(
+                                  "${categoryList[index].name}-category-text-field"),
                               controller: categoryBudgetController[index],
                               decoration: InputDecoration(
                                   labelText: categoryList[index].name),
@@ -251,7 +255,7 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
                     width: double.infinity,
                     height: 60,
                     child: Center(
-                      child: Text('Create Budget Plan'),
+                      child: Text('Edit Budget Plan'),
                     ),
                   ),
                 ),

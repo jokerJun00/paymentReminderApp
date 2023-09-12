@@ -101,6 +101,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          key: const Key("username-text-field"),
                           decoration:
                               const InputDecoration(labelText: 'Username'),
                           keyboardType: TextInputType.name,
@@ -126,6 +127,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          key: const Key("email-text-field"),
                           decoration: const InputDecoration(labelText: 'Email'),
                           keyboardType: TextInputType.emailAddress,
                           autocorrect: false,
@@ -149,6 +151,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          key: const Key("phoneNumber-text-field"),
                           decoration: InputDecoration(
                             labelText: 'Phone Number',
                             prefixIcon: Container(
@@ -158,7 +161,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ),
-                            suffixIcon: _contactNoController.text.length > 9
+                            suffixIcon: _contactNoController.text.length > 8
                                 ? Container(
                                     margin: const EdgeInsets.all(10),
                                     decoration: const BoxDecoration(
@@ -198,6 +201,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          key: const Key("password-text-field"),
                           controller: _passwordController,
                           decoration:
                               const InputDecoration(labelText: 'Password'),
@@ -221,6 +225,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          key: const Key("confirm-password-text-field"),
                           controller: _confirmPasswordController,
                           decoration: const InputDecoration(
                               labelText: 'Confirm Password'),

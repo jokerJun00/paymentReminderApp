@@ -585,7 +585,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
       while (monthlySummary.length < 6) {
         monthlySummary[currentMonth.month] = 0;
 
-        currentMonth.subtract(const Duration(days: 30));
+        currentMonth = currentMonth.subtract(const Duration(days: 30));
       }
     }
 

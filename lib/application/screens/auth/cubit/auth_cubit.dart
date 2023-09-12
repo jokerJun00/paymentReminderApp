@@ -24,7 +24,6 @@ class AuthCubit extends Cubit<AuthState> {
   void signUp(
       String username, String email, String contactNo, String password) async {
     emit(const AuthStateLoading());
-
     // firebase signup authentication
     final userOrFailure = await authUseCases.signUp(
       username,

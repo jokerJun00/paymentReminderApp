@@ -133,6 +133,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          key: const Key("username-text-field"),
                           initialValue: _username,
                           decoration:
                               const InputDecoration(labelText: 'Username'),
@@ -159,6 +160,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          key: const Key("email-text-field"),
                           initialValue: _email,
                           decoration: const InputDecoration(labelText: 'Email'),
                           keyboardType: TextInputType.emailAddress,
@@ -183,6 +185,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          key: const Key("phoneNumber-text-field"),
                           decoration: InputDecoration(
                             labelText: 'Phone Number',
                             prefixIcon: Container(
@@ -276,6 +279,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
               height: 10,
             ),
             TextFormField(
+              key: const Key("password-text-field"),
               controller: _passwordController,
               decoration: const InputDecoration(labelText: 'Password'),
               obscureText: true,

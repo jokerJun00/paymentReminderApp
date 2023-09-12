@@ -71,7 +71,7 @@ class UpcomingPaymentCard extends StatelessWidget {
             style: Theme.of(context).textTheme.titleMedium,
           ),
           content: Text(
-            "This payment will mark as paid and store your payment history",
+            "This payment will mark as paid and record in history",
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           actions: <Widget>[

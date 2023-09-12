@@ -232,7 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 textStyle: Theme.of(context).textTheme.labelLarge,
               ),
               child: const Text(
-                'Logout',
+                'Confirm',
                 style: TextStyle(color: Colors.red),
               ),
               onPressed: () {

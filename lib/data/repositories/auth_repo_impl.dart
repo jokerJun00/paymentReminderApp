@@ -28,7 +28,6 @@ class AuthRepoImpl implements AuthRepo {
   Future<Either<UserEntity, Failure>> signUpFromDataSource(
       String username, String email, String contactNo, String password) async {
     try {
-      // sign up
       final user = await authDataSource.signUpFromDataSource(
           username, email, contactNo, password);
 

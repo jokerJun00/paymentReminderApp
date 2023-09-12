@@ -157,6 +157,7 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          key: const Key("name-text-field"),
                           decoration: const InputDecoration(labelText: 'Name'),
                           keyboardType: TextInputType.name,
                           autocorrect: false,
@@ -179,6 +180,7 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          key: const Key("description-text-field"),
                           decoration:
                               const InputDecoration(labelText: 'Description'),
                           keyboardType: TextInputType.multiline,
@@ -200,6 +202,7 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          key: const Key("payment-date-text-field"),
                           controller: paymentDateController,
                           decoration: const InputDecoration(
                             labelText: 'Payment Date',
@@ -235,6 +238,7 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
                         ),
                         const SizedBox(height: 10),
                         DropdownButtonFormField(
+                          key: const Key("notification-period-text-field"),
                           value: newPayment.notification_period,
                           items: [
                             DropdownMenuItem(
@@ -307,6 +311,7 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
                         ),
                         const SizedBox(height: 10),
                         DropdownButtonFormField<BillingCycle>(
+                          key: const Key("billing-cycle-text-field"),
                           items: BillingCycle.values
                               .map((BillingCycle billingCycle) {
                             return DropdownMenuItem<BillingCycle>(
@@ -341,6 +346,7 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          key: const Key("category-text-field"),
                           controller: categoryController,
                           readOnly: true,
                           onTap: () => Navigator.of(context).push(
@@ -369,6 +375,7 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          key: const Key("expected-amount-text-field"),
                           initialValue: newPayment.expected_amount.toString(),
                           decoration: const InputDecoration(
                             labelText: 'Expected Amount',
@@ -398,6 +405,7 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          key: const Key("receiver-name-text-field"),
                           decoration:
                               const InputDecoration(labelText: 'Receiver Name'),
                           keyboardType: TextInputType.name,
@@ -421,6 +429,7 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
                         ),
                         const SizedBox(height: 10),
                         DropdownButtonFormField<BankModel>(
+                          key: const Key("bank-name-text-field"),
                           items: bankList
                               .map((BankModel bank) =>
                                   DropdownMenuItem<BankModel>(
@@ -449,6 +458,7 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          key: const Key("bank-account-number-text-field"),
                           decoration: const InputDecoration(
                               labelText: 'Bank Account Number'),
                           keyboardType: TextInputType.number,

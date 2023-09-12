@@ -189,6 +189,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
+                  key: const Key("category-name-text-field"),
                   decoration: const InputDecoration(label: Text("name")),
                   validator: (value) {
                     if (value == null || value.trim() == "") {

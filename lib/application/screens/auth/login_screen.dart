@@ -73,6 +73,7 @@ class _LogInScreenState extends State<LogInScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          key: const Key("email-text-field"),
                           decoration: const InputDecoration(labelText: 'Email'),
                           style: Theme.of(context).textTheme.bodySmall,
                           keyboardType: TextInputType.emailAddress,
@@ -97,6 +98,7 @@ class _LogInScreenState extends State<LogInScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          key: const Key("password-text-field"),
                           decoration:
                               const InputDecoration(labelText: 'Password'),
                           style: Theme.of(context).textTheme.bodySmall,

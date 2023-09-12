@@ -1,4 +1,3 @@
-// import 'package:fl_chart/fl_chart.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,13 +20,16 @@ class _HomeScreenState extends State<HomeScreen> {
   List<BarChartGroupData> monthlySummary = [];
   double max = 0;
 
-  void getMonthlySummary() async {
+  void loadData() async {
+    final paymentCubit = BlocProvider.of<PaymentCubit>(context);
+    final upcomingPaymentFromDatabase = await paymentCubit.getUpcomingPayment();
     final monthlySummaryFromDatabase =
-        await BlocProvider.of<PaymentCubit>(context).getMonthlyPaidAmount();
+        await paymentCubit.getMonthlyPaidAmount();
 
     double maxFromMonthlySummary = 0;
     List<BarChartGroupData> barChartGroupData = [];
 
+    // set max value for bar chart
     monthlySummaryFromDatabase.forEach(
       (key, value) {
         if (value > maxFromMonthlySummary) {
@@ -48,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
               backDrawRodData: BackgroundBarChartRodData(
                 show: true,
                 color: Colors.white,
-                toY: maxFromMonthlySummary,
+                toY: maxFromMonthlySummary > 0 ? maxFromMonthlySummary : 100.0,
               ),
             ),
           ],
@@ -57,17 +59,9 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     setState(() {
-      monthlySummary = barChartGroupData.reversed.toList();
-      max = maxFromMonthlySummary;
-    });
-  }
-
-  void getUpcomingPayment() async {
-    final upcomingPaymentFromDatabase =
-        await BlocProvider.of<PaymentCubit>(context).getUpcomingPayment();
-
-    setState(() {
       upcomingPaymentList = upcomingPaymentFromDatabase;
+      monthlySummary = barChartGroupData.reversed.toList();
+      max = maxFromMonthlySummary > 0 ? maxFromMonthlySummary : 100.0;
     });
   }
 
@@ -84,8 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    getUpcomingPayment();
-    getMonthlySummary();
+    loadData();
   }
 
   @override
@@ -125,6 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             child: Container(
+                              key: const Key('bar-chart'),
                               height: 200,
                               width: double.infinity,
                               decoration: BoxDecoration(

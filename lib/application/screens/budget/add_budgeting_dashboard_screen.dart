@@ -135,6 +135,7 @@ class _AddBudgetingDashboardScreenState
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
+                        key: const Key("starting-amount-text-field"),
                         controller: startAmountController,
                         decoration:
                             const InputDecoration(labelText: 'Starting Amount'),
@@ -159,6 +160,7 @@ class _AddBudgetingDashboardScreenState
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
+                        key: const Key("target-amount-text-field"),
                         controller: targetAmountController,
                         decoration:
                             const InputDecoration(labelText: 'Target Amount'),
@@ -189,6 +191,9 @@ class _AddBudgetingDashboardScreenState
                             ),
                             const SizedBox(height: 10),
                             TextFormField(
+                              key: Key(
+                                "${categoryList[index].name}-category-text-field",
+                              ),
                               controller: categoryBudgetController[index],
                               decoration: InputDecoration(
                                   labelText: categoryList[index].name),
@@ -215,6 +220,7 @@ class _AddBudgetingDashboardScreenState
                 ),
                 const SizedBox(height: 65),
                 OutlinedButton(
+                  key: const Key("create-budgeting-plan-button"),
                   onPressed: addBugdetingPlan,
                   style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
                         textStyle: MaterialStatePropertyAll(
