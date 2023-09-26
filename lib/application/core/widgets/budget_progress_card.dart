@@ -37,12 +37,12 @@ class BudgetProgressCard extends StatelessWidget {
                 ? ">100%"
                 : "${((budget.current_amount / budget.budget_amount) * 100).toStringAsFixed(0)}%",
             style: GoogleFonts.inter(
-                fontSize: budget.current_amount / budget.budget_amount > 1.0
-                    ? 32
-                    : 40,
-                fontWeight: FontWeight.bold),
+              fontSize:
+                  budget.current_amount / budget.budget_amount > 1.0 ? 32 : 40,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          const SizedBox(height: 10),
+          const Spacer(),
           LinearPercentIndicator(
             width: 130,
             lineHeight: 20,
@@ -57,7 +57,8 @@ class BudgetProgressCard extends StatelessWidget {
             animationDuration: 1000,
             barRadius: const Radius.circular(10),
             padding: const EdgeInsets.all(0),
-          )
+          ),
+          const SizedBox(height: 5),
         ],
       ),
     );

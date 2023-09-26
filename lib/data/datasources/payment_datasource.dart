@@ -245,9 +245,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
     await firestore
         .collection('Categories')
         .add(newCategoryData)
-        .catchError((e) {
-      throw ServerException();
-    });
+        .catchError((e) => throw ServerException());
   }
 
   @override
@@ -447,6 +445,7 @@ class PaymentDataSourceImpl implements PaymentDataSource {
       platformChannelSpecifics,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       androidAllowWhileIdle: true,
       matchDateTimeComponents: cycle,
     );

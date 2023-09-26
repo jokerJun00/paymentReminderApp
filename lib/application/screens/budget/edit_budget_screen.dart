@@ -126,7 +126,7 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
 
         return Scaffold(
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
             child: ListView(
               children: [
                 Container(
@@ -259,6 +259,7 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 30),
               ],
             ),
           ),

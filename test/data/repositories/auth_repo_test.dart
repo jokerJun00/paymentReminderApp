@@ -23,7 +23,7 @@ void main() {
                 "junkiat54@gmail.com", "Kiat@000905"))
             .thenAnswer(
           (realInvocation) => Future.value(
-            UserModel(
+            const UserModel(
               id: "1",
               name: "Lim Choon Kiat",
               email: "junkiat54@gmail.com",
@@ -39,7 +39,7 @@ void main() {
         expect(result.isRight(), false);
         expect(
           result,
-          Left<UserModel, Failure>(
+          const Left<UserModel, Failure>(
             UserModel(
               id: "1",
               name: "Lim Choon Kiat",
@@ -60,7 +60,7 @@ void main() {
                 "junkiat54@gmail.com", "60176835363", "Kiat@000905"))
             .thenAnswer(
           (realInvocation) => Future.value(
-            UserModel(
+            const UserModel(
               id: "1",
               name: "Lim Choon Kiat",
               email: "junkiat54@gmail.com",
@@ -80,7 +80,7 @@ void main() {
         expect(result.isRight(), false);
         expect(
           result,
-          Left<UserModel, Failure>(
+          const Left<UserModel, Failure>(
             UserModel(
               id: "1",
               name: "Lim Choon Kiat",

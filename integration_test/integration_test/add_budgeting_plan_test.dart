@@ -98,9 +98,11 @@ void main() {
         find.byType(ListView),
         const Offset(0, -100.0),
       );
+      await widgetTester.pump();
 
       // tap Create Budget Plan Button
-      await widgetTester.tap(find.byType(OutlinedButton));
+      // await widgetTester.tap(find.byType(OutlinedButton));
+      await widgetTester.tap(find.text("Create Budget Plan"));
       await widgetTester.pumpAndSettle(const Duration(seconds: 3));
 
       // verify budgeting dashboard screen loaded and display

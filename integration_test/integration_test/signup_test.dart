@@ -29,7 +29,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   group("Sign Up Test Case", () {
     testWidgets("Sign Up", (widgetTester) async {
-      const userName = "Lim Choon Kiat";
+      const userName = "Lim Jun Kiat";
       const email = "test@gmail.com";
       const phoneNumber = "176835363";
       const password = "Choon@000905";
@@ -78,6 +78,11 @@ void main() {
       );
 
       // click sign up button and wait for log in screen display
+      await widgetTester.dragUntilVisible(
+        find.byType(OutlinedButton),
+        find.byType(SingleChildScrollView),
+        const Offset(0, 100.0),
+      );
       await widgetTester.tap(find.byType(OutlinedButton));
       await widgetTester.pumpAndSettle(const Duration(seconds: 3));
 

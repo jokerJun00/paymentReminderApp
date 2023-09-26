@@ -35,7 +35,7 @@ void main() {
         receiver_id: "",
         category_id: "",
       );
-      const categoryName = "test";
+      const categoryName = "instalment";
       final receiver = ReceiverModel(
         id: "",
         name: "Lim Choon Kiat",

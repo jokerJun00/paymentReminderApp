@@ -158,7 +158,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                   ),
                   const SizedBox(height: 30),
                   Text(
-                    'Update Payment',
+                    'Payment Detail',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 35),

@@ -68,11 +68,17 @@ class _BudgetingDashboardScreenState extends State<BudgetingDashboardScreen> {
           builder: (context, constraints) {
             final width = constraints.maxWidth;
             final height = constraints.maxHeight;
+
+            print("Width =======> $width");
             return Scaffold(
               body: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.only(
-                      left: 20, right: 20, top: 90, bottom: 20),
+                    left: 20,
+                    right: 20,
+                    top: 90,
+                    bottom: 20,
+                  ),
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -179,12 +185,13 @@ class _BudgetingDashboardScreenState extends State<BudgetingDashboardScreen> {
                                   SizedBox(
                                     height: height * 0.8,
                                     child: GridView.builder(
+                                      shrinkWrap: true,
                                       gridDelegate:
-                                          const SliverGridDelegateWithMaxCrossAxisExtent(
-                                        childAspectRatio: 1 / 1,
-                                        maxCrossAxisExtent: 200,
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
                                         crossAxisSpacing: 30,
                                         mainAxisSpacing: 25,
+                                        mainAxisExtent: width > 390 ? 170 : 200,
                                       ),
                                       itemCount: budgetList.length,
                                       itemBuilder: (_, index) {
