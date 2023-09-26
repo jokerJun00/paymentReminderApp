@@ -1,6 +1,6 @@
 # payment_reminder_app
 
-This is my FYP project. A Android Flutter app that help users to records and remind users to pay their expenses on time. It use Flutter framework as the main programming language and integrate with Firebase as the Cloud database. It follows the **Clean architecture** and **Bloc architecture** to develop the application. It also run unit test, integration test, bloc test to test the application functionality
+This is my FYP project. An Android Flutter app that helps users to record and remind users to pay their expenses on time. It uses the Flutter framework as the main programming language and integrates with Firebase as the Cloud database. It follows the **Clean architecture** and **Bloc architecture** to develop the application. It also runs unit test, integration test, and Bloc test to test the application functionality.
 
 
 ## Features
@@ -17,6 +17,10 @@ This is my FYP project. A Android Flutter app that help users to records and rem
 4. Firestore
 
 ## App Demo
+
+![app demo](https://github.com/jokerJun00/paymentReminderApp/assets/62992824/39c5ea3c-daa7-4e2b-b5bc-b9238e590ea6)
+
+
 
 
 
