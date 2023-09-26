@@ -20,6 +20,12 @@ This is my FYP project. An Android Flutter app that helps users to record and re
 
 ![app demo](https://github.com/jokerJun00/paymentReminderApp/assets/62992824/39c5ea3c-daa7-4e2b-b5bc-b9238e590ea6)
 
+![app demo](https://github.com/jokerJun00/paymentReminderApp/assets/62992824/14ca5245-92c5-4ead-a618-1d6025e3f150)
+
+https://github.com/jokerJun00/paymentReminderApp/assets/62992824/14ca5245-92c5-4ead-a618-1d6025e3f150
+
+
+
 
 
 
